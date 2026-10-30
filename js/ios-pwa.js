@@ -147,15 +147,29 @@
   }
 
   /* 初回の案内：タイトル画面が出て、しばらくしてから1回だけ。
-     ヘルプを隠す設定（helpText = off）の人には出さない。 */
-  if (!dismissed() && !isStandalone() && core.settings.helpText !== false) {
-    setTimeout(() => {
-      if (dismissed() || isStandalone() || overlay.hidden === false) return;
-      if (core.phase !== "title") return;
-      if (document.body.classList.contains("helpTextOff")) return;
-      openGuide();
-    }, 2600);
+     ・ヘルプを隠す設定（helpText = off）の人には出さない
+     ・「trk!にようこそ！」など、ほかの窓が開いている間は待つ（重ねて出さない） */
+  function anotherDialogOpen() {
+    return [...document.querySelectorAll('[role="dialog"][aria-modal="true"]')].some(node => {
+      if (node === overlay) return false;
+      if (node.closest("[hidden]") || node.hidden) return false;
+      return true;
+    });
   }
+  let attempts = 0;
+  function maybeShowGuide() {
+    if (dismissed() || isStandalone() || overlay.hidden === false) return;
+    if (core.phase !== "title") { retryGuide(); return; }
+    if (document.body.classList.contains("helpTextOff")) return;
+    if (anotherDialogOpen()) { retryGuide(); return; }
+    openGuide();
+  }
+  function retryGuide() {
+    attempts += 1;
+    if (attempts > 40) return;           /* 約2分待っても開かなければ、その回は諦める（設定から開ける） */
+    setTimeout(maybeShowGuide, 2500);
+  }
+  if (!dismissed() && !isStandalone() && core.settings.helpText !== false) setTimeout(maybeShowGuide, 2600);
 
   /* ---------- 3. ことばの言い換え（iOS にはフォルダの恒久アクセスが無い） ---------- */
   function relabel(id, key) {

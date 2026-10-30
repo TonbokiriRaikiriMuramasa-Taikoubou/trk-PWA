@@ -36,7 +36,7 @@
 | 新リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone`（空。READMEのみ、Pages未設定。**まだ移していません**） |
 | 作業ブランチ | `arena/608b424c-trk-pwa`（Phase 2・3 の実装。PR を開く） |
 | main | `8d33db6`（PR #1 マージ済み）。PR #2（docs）はこのブランチに取り込み済み |
-| テスト | `npm run check` **792 pass / 0 fail**（2026-10-30、trk220 の45件を追加） |
+| テスト | `npm run check` **794 pass / 0 fail**（2026-10-30、trk220 の47件を追加） |
 | Pages | `trk-PWA` で有効化済み（Source: GitHub Actions）。初回デプロイは `Configure Pages` で失敗（**Pages 有効化より前の実行**が原因。APIは `Not Found`）。有効化後の `main` への push で再実行される |
 | iPhone実機 | **未検証**（このセッションには端末がない） |
 
@@ -186,7 +186,7 @@
 
 ```sh
 npm ci
-npm run check          # 792 pass / 0 fail（2026-10-30時点）
+npm run check          # 794 pass / 0 fail（2026-10-30時点）
 node tools/check-repo.mjs
 node tools/check-security.mjs
 node tools/check-a11y.mjs

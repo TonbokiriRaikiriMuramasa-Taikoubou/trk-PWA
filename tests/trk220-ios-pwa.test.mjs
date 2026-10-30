@@ -119,6 +119,18 @@ describe("trk220 js/ios-pwa.js：iOS のときだけ働く", () => {
     assert.ok(iosSrc.includes("core.settings.helpText !== false"), "説明を隠す設定の人には出さない");
   });
 
+  test("「ようこそ」など、ほかの窓が開いている間は案内を出さずに待つ", () => {
+    assert.ok(iosSrc.includes("function anotherDialogOpen()"), "ほかのダイアログを数える");
+    assert.ok(iosSrc.includes('node === overlay'), "自分自身は数えない");
+    const maybe = iosSrc.slice(iosSrc.indexOf("function maybeShowGuide"), iosSrc.indexOf("function retryGuide"));
+    assert.ok(maybe.includes("if (anotherDialogOpen()) { retryGuide(); return; }"), "開いていたら待つ");
+    assert.ok(iosSrc.includes("attempts > 40"), "待ち続けない（約2分で諦め、設定から開ける）");
+  });
+
+  test("説明を隠す設定（helpText = off）の人には出さない", () => {
+    assert.ok(iosSrc.includes('document.body.classList.contains("helpTextOff")'));
+  });
+
   test("standalone のときは案内しない（もうアプリとして開いている）", () => {
     assert.ok(/navigator\.standalone === true/.test(iosSrc), "ホーム画面アプリの判定");
     const open = iosSrc.slice(iosSrc.indexOf("function openGuide"), iosSrc.indexOf("function hideGuide"));

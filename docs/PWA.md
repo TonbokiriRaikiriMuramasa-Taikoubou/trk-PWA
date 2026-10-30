@@ -198,7 +198,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 ```sh
 npm ci
-npm run check                                  # 792 pass / 0 fail（trk220 の45件を追加）
+npm run check                                  # 794 pass / 0 fail（trk220 の47件を追加）
 node tools/check-repo.mjs
 ```
 
