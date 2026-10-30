@@ -199,13 +199,13 @@
 - 告知（X、README、QRコード、コミュニティ）。
 - バックアップ導線（書き出し／読み戻し）。
 - フィードバックの受け皿（Issues）。
-- オリジンは**告知前に確定**。後から変えない。
+- オリジンは**告知前に確定**。後から変えない（2026-10-31 に `.../trk/` へ決定。§4.2）。
 
 ## 8. 検証コマンド
 
 ```sh
 npm ci
-npm run check          # 794 pass / 0 fail（2026-10-30時点）
+npm run check          # 821 pass / 0 fail（2026-10-31時点）
 node tools/check-repo.mjs
 node tools/check-security.mjs
 node tools/check-a11y.mjs
@@ -216,6 +216,7 @@ node tools/check-a11y.mjs
 ```sh
 python3 -m http.server 8000 --bind 0.0.0.0
 # http://localhost:8000/ と /tools/ios-probe.html
+# trk221 の確認：選曲画面の右上の 📱 を押す → PC のままスマホ型／曲を選ぶ → 下に再生バー
 ```
 
 ## 9. 既知の落とし穴
