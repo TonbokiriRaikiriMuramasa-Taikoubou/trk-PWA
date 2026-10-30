@@ -1329,9 +1329,18 @@ function frameCamera() {
   const d = (fh / 2) / Math.tan(L.THREE.MathUtils.degToRad(camera.fov) / 2);
   camera.position.set(0, cy, d); camera.lookAt(0, cy, 0);
 }
+/* 🖥 trk223（2026-10-31 レビュー）：VRM_RECT は 1920×1080 の設計座標で書いてあります。
+   拡大率（ステージの設計サイズが 1920/拡大率）やスマホ型（ステージが画面いっぱい）では、
+   そのまま置くとキャラだけ画面からずれます。ステージの実寸との比率で縮めます。 */
+function stageRectScale() {
+  const st = core.stage;
+  const w = st && st.offsetWidth ? st.offsetWidth : 0;
+  return w > 0 ? w / 1920 : 1;
+}
 function applyRect() {
   if (!renderer || !camera) return;
-  const R = mmdRect(), sc = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const k = stageRectScale(), base = mmdRect(), sc = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const R = { x: base.x * k, y: base.y * k, w: base.w * k, h: base.h * k };
   const pr = Math.min(typeof TrkLite === "object" ? TrkLite.pixelRatio(2) : 2, Math.max(0.5, (devicePixelRatio || 1) * sc));   // 🪶 軽量化は描画解像度の上限
   const key = `${R.x},${R.y},${R.w},${R.h},${pr.toFixed(2)}`;
   if (key === curKey) return;

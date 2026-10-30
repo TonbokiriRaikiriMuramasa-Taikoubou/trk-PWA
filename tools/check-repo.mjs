@@ -2417,7 +2417,7 @@ if (!read("js/main.js").includes("guideEggKind") ||
   if (!manifestOk) fail("manifest share_target / file_handlers (trk165) are missing or malformed");
   else if (!html.includes(shareTag) || html.indexOf(shareTag) < html.indexOf('<script src="js/backup.js"></script>')) fail("js/share-inbox.js must load after js/backup.js (all import entry points ready)");
   else if (!sw.includes("async function handleShareTarget(request)") || !sw.includes('const SHARE_CACHE = "trk-share-inbox-v1"') ||
-           !sw.includes("key !== SHARE_CACHE") || !sw.includes('if (request.method === "POST")') ||
+           !sw.includes("key === SHARE_CACHE_NAME") || !sw.includes('if (request.method === "POST")') ||
            !sw.includes('new URL("share-target/", SCOPE).pathname')) fail("sw.js share-target POST handling / inbox-cache whitelist is missing");
   else if (!share.includes("async function routeInboundFiles(files)") || !share.includes("addSongFiles(groups.audio)") ||
            !share.includes("addVideoFiles(groups.video)") || !share.includes("importArchives(groups.book)") ||

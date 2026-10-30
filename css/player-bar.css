@@ -118,9 +118,13 @@
    ========================================================================== */
 
 /* PC型：画面の下に余白を作り、カードの下端がバーに隠れないようにする。
-   ステージは 1920×1080 を縮小して見せているので、縮小率を打ち消した高さを使う。 */
+   ステージは 1920×1080 を縮小して見せているので、縮小率を打ち消した高さを使う。
+   🖥 trk223（2026-10-31 レビュー②）：ここは `1020px`（1080−余白30×2）を決め打ちしていたため、
+   拡大率 125%（設計の高さ 864px）でも 1020px を基準にしてしまい、カードの下端がバーの裏へ入っていた。
+   `.screen` の padding-bottom で下が空いているので、カードはその内容領域（＝ステージの高さ−余白−バー）に
+   収めればよい。100% のときは 1020px−バー と同じ値になる。 */
 body.trk-playerbar:not(.trk-mobile) #stage .screen { padding-bottom: calc(30px + var(--trk-playerbar-stage-h, 64px)); }
-body.trk-playerbar:not(.trk-mobile) #stage .card { max-height: calc(1020px - var(--trk-playerbar-stage-h, 0px)); }
+body.trk-playerbar:not(.trk-mobile) #stage .card { max-height: 100%; }
 
 /* スマホ型：カードの下余白に、バーの高さを足す（下部ナビの 100px はそのまま） */
 body.trk-playerbar.trk-mobile #stage[data-phase="title"] .card {

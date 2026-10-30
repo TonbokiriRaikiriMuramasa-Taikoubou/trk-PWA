@@ -28,9 +28,11 @@ function pngSize(rel) {
 }
 
 describe("trk220 manifest：iPhone・Android のホーム画面アプリ", () => {
-  test("display は standalone、fullscreen は display_override の先頭に置く", () => {
+  test("display は standalone、display_override は standalone を先頭にする", () => {
     assert.equal(manifest.display, "standalone", "iOS は fullscreen を解さない（standalone へ）");
-    assert.deepEqual(manifest.display_override, ["fullscreen", "standalone", "minimal-ui"], "Android は今までどおり全画面");
+    /* 🧭 trk223（2026-10-31 レビュー）：fullscreen を先頭にすると Android でステータスバーまで消える。
+       standalone を先頭にし、fullscreen は最後の候補にする。 */
+    assert.deepEqual(manifest.display_override, ["standalone", "minimal-ui", "fullscreen"], "standalone を先頭・fullscreen は最後");
   });
 
   test("id と、相対の start_url / scope を持つ（どのパスに置いても動く）", () => {
@@ -212,7 +214,9 @@ describe("trk220 sw.js：install で、アプリの殻を先に入れる", () =>
   });
 
   test("今までの約束は変えない（通信優先・セーフモード・固定 vendor）", () => {
-    assert.ok(swSrc.includes('fetch(request, { cache:"no-cache" })'), "通信優先のまま");
+    /* trk223：ナビゲーションは 3 秒で打ち切るので、取りに行く処理は fetchWithTimeout() を通る（no-cache はその中） */
+    assert.ok(swSrc.includes("fetchWithTimeout(request,"), "通信優先のまま（時間切れでキャッシュへ）");
+    assert.ok(swSrc.includes('{ cache: "no-cache" }'), "ブラウザのHTTPキャッシュを作り直す");
     assert.ok(swSrc.includes("Safe mode does not use the cached copy"), "セーフモードの扱い");
     assert.ok(swSrc.includes("BEGIN VENDOR PINS"), "固定 vendor");
     const cache = swSrc.match(/^const CACHE = "trk-v([\d.]+)-trk(\d+)";$/m);

@@ -441,7 +441,10 @@ const occurrences = (text, re) => [...text.matchAll(re)];
   const swSafe = sw.includes("const safeClients") && sw.includes("function safeWanted") &&
     sw.includes('params.has("safe")') && sw.includes('String(url.hash || "").toLowerCase().includes("safe")') && sw.includes("if (safeClient)") &&
     /const safeClient = safeClients\.has\(event\.clientId\) \|\| \(request\.mode === "navigate" && safeWanted\(url\)\);/.test(sw) &&
-    sw.indexOf("safeClients.add") < sw.indexOf("caches.match");
+    /* trk223：キャッシュの読み出しは「自分のスコープのキャッシュだけを見る」matchOwned() の呼び出しを通る。
+       見るのは fetch の処理の中の呼び出し（関数の定義はもっと前にあるので、それと比べない）。 */
+    sw.indexOf("safeClients.add") < sw.indexOf("await matchOwned(request, pinned)") &&
+    !/await caches\.match\(/.test(sw);
   rule(swSafe, "the service worker never serves cached copies to a ?safe=1 client (no cache poisoning bypass)");
   const safeSmoke = read("tools/smoke-browser.mjs");
   const offlineSafeRegression = safeSmoke.includes('path:"/index.html?safe=1"') && safeSmoke.includes('path:"/?safe=1"') &&

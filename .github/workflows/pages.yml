@@ -29,12 +29,22 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Assemble static site
         # リポジトリのルートをそのまま公開します（ビルド不要）。
-        # 開発用のファイルだけを除くので、css/ js/ icons/ docs/ にファイルを足しても
-        # このワークフローを直す必要はありません。
+        # 🧭 trk223（2026-10-31 レビュー）：これまでは開発用のファイル（tests/・tools/・
+        # package.json・capacitor.config.ts など）まで公開していました。アプリの動作に要らない
+        # ものは公開しない形に変えます。css/ js/ icons/ docs/ にファイルを足しても、
+        # このワークフローを直す必要はありません（docs は利用者向けの説明も入っているので公開します）。
         run: |
           mkdir -p _site
-          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' ./ _site/
+          rsync -a ./ _site/ \
+            --exclude '.git' --exclude '.github' --exclude '_site' \
+            --exclude 'tests/' --exclude 'tools/' --exclude 'node_modules/' \
+            --exclude 'package.json' --exclude 'package-lock.json' --exclude 'capacitor.config.ts' \
+            --exclude 'CONTRIBUTING.md'
           touch _site/.nojekyll
+          # 公開物に開発用の道具が混ざっていないことを確かめる（増えたらここで止まる）
+          for f in tests tools package.json capacitor.config.ts; do
+            if [ -e "_site/$f" ]; then echo "::error::開発用の $f が公開物に残っています"; exit 1; fi
+          done
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:

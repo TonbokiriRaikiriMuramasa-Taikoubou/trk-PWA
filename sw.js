@@ -14,15 +14,40 @@
    殻の先読みには自動で入ります（このファイルの一覧を手で直す必要はありません）。
 
    🖥 trk222: 拡大率などの設定の配線（js/ui-prefs.js）と、エフェクト欄のタブ分け（CSS）を足しました。
-   これも index.html が読み込むので、殻の先読みは自動で追随します。 */
-const CACHE = "trk-v2026.10.31-trk222";
+   これも index.html が読み込むので、殻の先読みは自動で追随します。
+
+   🧭 trk223（2026-10-31 レビュー④）：キャッシュの名前は「版＋置き場所（スコープ）」にしました。
+   同じホストで /trk/ と /trk-PWA/ のように2つの trk! を公開すると、CacheStorage はオリジンで共有なので、
+   版の名前だけだと片方の更新がもう片方のオフライン用キャッシュまで消してしまいます。 */
+const CACHE = "trk-v2026.10.31-trk223";
 const CACHE_PREFIX = "trk-";
 const SCOPE = new URL(self.registration.scope);
 const VENDOR_PREFIX = "assets/vendor/";
+
+/* 「置き場所」を名前に入れるための印（/trk-PWA/ → trk-pwa、ルート / → root）。
+   ページ側（js/share-inbox.js）にも同じ関数が要ります（共有の受け口の名前を合わせるため）。 */
+function scopeTagOf(pathname) {
+  const path = String(pathname || "/").replace(/\/+$/, "");
+  if (!path) return "root";
+  return path.slice(1).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "root";
+}
+const SCOPE_TAG = scopeTagOf(SCOPE.pathname);
+/* 版ごとのキャッシュ（自分のスコープの分だけを片付ける） */
+const CACHE_NAME = `${CACHE}@${SCOPE_TAG}`;
+/* 🧊 3Dの vendor（ハッシュ固定）は、版を上げても捨てない（オフラインのMMDが消えないように）。
+   中身は VENDOR_PINS と照合してから使うので、古いコピーが残っても安全側です。 */
+const VENDOR_CACHE_BASE = "trk-vendor-v1";
+const VENDOR_CACHE = `${VENDOR_CACHE_BASE}@${SCOPE_TAG}`;
+/* 殻の先読みで、index.html から拾えないもの（アプリが後から fetch する小さなJSON） */
+const PRECACHE_EXTRA = ["verified.json", "assets/mmd/lat-miku/preset.json"];
+/* 電波が弱いときに待ち続けない（ナビゲーションだけ・3秒でキャッシュへ切り替える） */
+const NAV_TIMEOUT_MS = 3000;
 /* 📥 share_target（trk165）：OSの共有シートで受け取ったファイルの一時置き場。
    名前が trk- 始まりでもバージョン別キャッシュではないので、activate の掃除から除外する（下記）。
    中身は js/share-inbox.js が起動時に読んで、既存の取り込み経路へ渡したあと消す。 */
 const SHARE_CACHE = "trk-share-inbox-v1";
+/* 共有の一時置き場もスコープごとに分ける（別の trk! が取り違えないように） */
+const SHARE_CACHE_NAME = `${SHARE_CACHE}@${SCOPE_TAG}`;
 const SHARE_PATH = new URL("share-target/", SCOPE).pathname;
 const SHARE_INBOX_PREFIX = new URL("share-inbox/", SCOPE).pathname;
 
@@ -142,9 +167,11 @@ function precacheWanted(url) {
   return !!(rest && !PRECACHE_SKIP.some(prefix => rest.startsWith(prefix)));
 }
 async function precacheShell() {
-  const cache = await caches.open(CACHE);
+  const cache = await caches.open(CACHE_NAME);
   const indexUrl = new URL("index.html", SCOPE).href;
-  const response = await fetch(indexUrl);
+  /* 🧭 trk223（レビュー推奨）：Pages は max-age=600 を返すので、更新直後に古い JS を殻へ入れてしまう。
+     先読みのときだけ、ブラウザの HTTP キャッシュを作り直す（no-cache）。 */
+  const response = await fetch(indexUrl, { cache: "no-cache" });
   if (!response.ok) return;
   await cache.put(indexUrl, response.clone());
   /* スコープの根（./）で開かれたときのために、同じ中身を根の URL でも入れておく。
@@ -154,12 +181,13 @@ async function precacheShell() {
   const urls = new Set();
   for (const m of html.matchAll(/<script\b[^>]*\bsrc=["']([^"'#?]+)["']/gi)) urls.add(m[1]);
   for (const m of html.matchAll(/<link\b[^>]*\bhref=["']([^"'#?]+)["']/gi)) urls.add(m[1]);
+  for (const rel of PRECACHE_EXTRA) urls.add(rel);
   await Promise.all([...urls].map(async ref => {
     let url;
     try { url = new URL(ref, indexUrl); } catch { return; }
     if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname) || !precacheWanted(url)) return;
     try {
-      const res = await fetch(url.href);
+      const res = await fetch(url.href, { cache: "no-cache" });
       if (res.ok && res.type === "basic") await cache.put(url.href, res);
     } catch { /* 通信できない・容量が足りない：そのファイルだけオフラインで欠ける */ }
   }));
@@ -172,10 +200,33 @@ self.addEventListener("install", event => {
   })());
 });
 
+/* そのキャッシュが「このスコープのもの」か。
+   trk223：名前の末尾が @<自分のスコープ> なら自分のもの。@ が付いているのに別のタグなら、ほかの trk! のもの。
+   @ が付いていない古い形（trk222 以前）は、中身に自分のパスの URL があるかで見分ける
+   （ルート / に置いたアプリは、同じオリジンに別の trk! を置けないので自分のものとみなす）。 */
+async function cacheIsOurs(key) {
+  if (key === CACHE_NAME || key === VENDOR_CACHE || key === SHARE_CACHE_NAME) return true;
+  if (key.includes("@")) return key.endsWith(`@${SCOPE_TAG}`);
+  if (SCOPE_TAG === "root") return true;
+  try {
+    const cache = await caches.open(key);
+    const requests = await cache.keys();
+    return requests.some(req => {
+      try { return new URL(req.url).pathname.startsWith(SCOPE.pathname); } catch { return false; }
+    });
+  } catch { return false; }
+}
+
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE && key !== SHARE_CACHE).map(key => caches.delete(key)));
+    const old = [];
+    for (const key of keys) {
+      if (!key.startsWith(CACHE_PREFIX)) continue;
+      if (key === CACHE_NAME || key === VENDOR_CACHE || key === SHARE_CACHE_NAME) continue;
+      if (await cacheIsOurs(key)) old.push(key);
+    }
+    await Promise.all(old.map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
@@ -227,7 +278,7 @@ async function handleShareTarget(request) {
       }
     }
     if (!files.length) return Response.redirect(`${home}?shared=empty`, 303);
-    const cache = await caches.open(SHARE_CACHE);
+    const cache = await caches.open(SHARE_CACHE_NAME);
     const stamp = Date.now();
     let saved = 0, failed = 0;
     for (let i = 0; i < files.length; i++) {
@@ -245,6 +296,31 @@ async function handleShareTarget(request) {
   } catch {
     return Response.redirect(`${home}?shared=error`, 303);
   }
+}
+
+/* 時間を区切って取りに行く（ms が 0 なら今までどおり待つ）。
+   中断したときは例外（AbortError）になるので、呼び出し側の catch がキャッシュへ落とす。 */
+async function fetchWithTimeout(request, ms) {
+  if (!ms || typeof AbortController !== "function") return fetch(request, { cache: "no-cache" });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(request, { cache: "no-cache", signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+/* 自分のスコープのキャッシュからだけ探す（ほかの trk! のキャッシュを読まない） */
+async function matchOwned(request, pinned) {
+  const names = pinned ? [VENDOR_CACHE, CACHE_NAME] : [CACHE_NAME, VENDOR_CACHE];
+  for (const name of names) {
+    try {
+      const cache = await caches.open(name);
+      const hit = await cache.match(request);
+      if (hit) return hit;
+    } catch { /* storage may be unavailable */ }
+  }
+  return null;
 }
 
 self.addEventListener("fetch", event => {
@@ -270,17 +346,19 @@ self.addEventListener("fetch", event => {
     /* セーフモードのクライアントは、固定された vendor でもキャッシュを読まない（F-19） */
     if (pinned && !safeClient) {
       try {
-        const cache = await caches.open(CACHE);
+        const cache = await caches.open(VENDOR_CACHE);
         const hit = await cache.match(request);
         if (hit && await pinnedMatches(hit, pinned)) return hit;
       } catch { /* storage may be unavailable; go to the network */ }
     }
     try {
-      /* Revalidate the browser's HTTP cache on each online request. CacheStorage remains the offline fallback. */
-      const response = await fetch(request, { cache:"no-cache" });
+      /* Revalidate the browser's HTTP cache on each online request. CacheStorage remains the offline fallback.
+         🧭 trk223：ナビゲーション（画面の読み込み）は電波が弱いと何十秒も待つので、3秒で切り上げて
+         キャッシュの殻へ切り替える（アプリが開かないより、少し古い画面のほうがよい）。 */
+      const response = await fetchWithTimeout(request, request.mode === "navigate" ? NAV_TIMEOUT_MS : 0);
       if (response.ok && response.type === "basic") {
         try {
-          const cache = await caches.open(CACHE);
+          const cache = await caches.open(pinned ? VENDOR_CACHE : CACHE_NAME);
           await cache.put(request, response.clone());
         } catch { /* storage may be unavailable or full; the network response still works */ }
       }
@@ -292,12 +370,12 @@ self.addEventListener("fetch", event => {
           headers: { "Content-Type": "text/plain; charset=utf-8" }
         });
       }
-      const cached = await caches.match(request);
+      const cached = await matchOwned(request, pinned);
       /* 固定された vendor は、照合が合うものだけ（オフラインでも汚染されたコピーは返さない） */
       if (cached && (!pinned || await pinnedMatches(cached, pinned))) return cached;
       if (request.mode === "navigate") {
         const offlineHome = new URL("index.html", SCOPE).href;
-        const fallback = await caches.match(offlineHome);
+        const fallback = await matchOwned(new Request(offlineHome), false);
         if (fallback) return fallback;
       }
       return new Response("trk! is offline. Reconnect to load this file.", {

@@ -170,11 +170,15 @@
     const navRect = nav && !nav.hidden && typeof nav.getBoundingClientRect === "function" ? nav.getBoundingClientRect() : null;
     const navHeight = nav && !nav.hidden ? ((navRect && navRect.height > 0 ? navRect.height : nav.offsetHeight) || 66) : 0;
     root.style.setProperty("--trk-playerbar-offset", `${barOffset(navHeight)}px`);
-    /* PC は 1920×1080 のステージを縮小して見せる。余白は縮小前の座標に直して渡す */
+    /* PC は 1920×1080 のステージを縮小して見せる。余白は縮小前の座標に直して渡す。
+       🖥 trk223（2026-10-31 レビュー②）：拡大率を入れたので、ステージの「設計の高さ」は 1080 とは限らない
+       （125% なら 864px、50% なら 2160px）。/1080 で割ると 125% では余白が足りず、50% では余りすぎるので、
+       実際の設計の高さ（offsetHeight＝transform の影響を受けない）で割る。 */
     const shellMode = document.body.classList.contains("trk-mobile");
     const stage = document.getElementById("stage");
     const rect = stage && typeof stage.getBoundingClientRect === "function" ? stage.getBoundingClientRect() : null;
-    const scale = !shellMode && rect && rect.height > 0 ? Math.max(0.2, rect.height / 1080) : 1;
+    const designH = stage && stage.offsetHeight > 0 ? stage.offsetHeight : 1080;
+    const scale = !shellMode && rect && rect.height > 0 ? Math.max(0.05, rect.height / designH) : 1;
     root.style.setProperty("--trk-playerbar-stage-h", `${Math.ceil(height / scale)}px`);
   }
 
@@ -369,12 +373,22 @@
   }
 
   /* 画面の形（スマホ型／PC型）が切り替わると、下部ナビの有無でバーの載る位置が変わります。
-     JS が測って配るので、切り替わったら測り直します（バーが隠れているときは何もしない）。 */
+     JS が測って配るので、切り替わったら測り直します（バーが隠れているときは何もしない）。
+     ついでに、窓（ようこそ・確認・インストール案内）の開閉でも出し入れをやり直します。 */
+  /* バーの出し入れに関わる窓か（modalOpen() と同じ顔ぶれ） */
+  function isOverlayNode(node) {
+    if (!node || node.nodeType !== 1) return false;
+    return !!(node.matches && node.matches('.plOverlay,.instOverlay,.iosInstall,[role="dialog"][aria-modal="true"],#welcomeBox'));
+  }
   function watchShell() {
     if (typeof MutationObserver !== "function" || !document.body) return;
     try {
       new MutationObserver(records => {
-        if (!bar || bar.hidden) return;
+        if (!bar) return;
+        /* 🖥 trk223（2026-10-31 レビュー）：窓が閉じたときこそバーを出し直す必要があるので、
+           「バーが隠れている」では早期に戻らない。ここは先に見る。 */
+        if (records.some(record => record.type === "attributes" && isOverlayNode(record.target))) { sync(); return; }
+        if (bar.hidden) return;
         const nav = document.querySelector(".trk-mobile-nav");
         const relevant = records.some(record => {
           /* body の印（画面の形）と、下部ナビの出入り・表示（ナビが隠れると下の余白が0になる） */
@@ -403,7 +417,8 @@
     setInterval(() => { if (!bar || bar.hidden) return; if (core.video && !core.video.paused) tick(); }, 250);
   }
 
-  for (const name of ["language", "settings", "settingsClose", "phase", "screen", "songSelected", "songTags", "nowPlaying", "mediaReady", "studyOpen", "studyClose", "skin", "lite"]) {
+  /* 🖥 trk223（レビュー②）：拡大率が変わるとステージの設計サイズが変わるので、測り直が要ります */
+  for (const name of ["language", "settings", "settingsClose", "phase", "screen", "songSelected", "songTags", "nowPlaying", "mediaReady", "studyOpen", "studyClose", "skin", "lite", "uiscale"]) {
     core.on(name, sync);
   }
   if (core.video) for (const name of ["play", "pause", "ended", "timeupdate", "loadedmetadata", "durationchange"]) core.video.addEventListener(name, tick);
