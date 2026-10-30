@@ -115,6 +115,13 @@ input[type=color]{width:52px;height:34px;padding:2px;border:1px solid var(--ui-b
 .brand h1 span{color:var(--ui-accent)}
 .brand p{margin:8px 0 0;color:var(--ui-muted);font-size:18px}
 .headTools{display:flex;gap:12px;align-items:flex-end}
+/* 🖥 trk221：選曲画面の右上の「画面の形」（自動 → スマホ型 → PC型）。
+   PC でもスマホ型に切り替えられるようにするため、スマホ以外でも見える場所に置きます。 */
+.uiModeBtn{min-width:44px;min-height:44px;padding:0 10px;border:1px solid var(--ui-border);border-radius:12px;
+  background:var(--ui-soft);color:var(--ui-text);font-size:18px;line-height:1;cursor:pointer;touch-action:manipulation}
+.uiModeBtn:hover{background:var(--ui-button-hover)}
+.uiModeBtn:focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px}
+.uiModeBtn[data-mode="mobile"]{border-color:var(--ui-accent)}
 .quickGuide{margin-top:18px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,209,102,.08),rgba(103,200,255,.06))}
 .quickGuide summary{cursor:pointer;color:var(--ui-gold);font-weight:850}
 .quickGuide>p{margin:8px 0 0}
@@ -2021,3 +2028,23 @@ body.noDev .devOnly { display: none !important; }
 .libRow.ghost .libName::after{content:" \u25CB";font-size:11px;opacity:.6}
 .ghostBadge{font-size:11px;padding:2px 6px;border-radius:999px;background:var(--ui-field);border:1px dashed var(--ui-border);color:var(--ui-muted)}
 .ghostActions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ==========================================================================
+   🖥 trk222：拡大率（50／75／100／125%）
+   ・ステージの設計サイズを 1/拡大率 に縮めて、その分だけ大きく描く（js/core.js の fitStage）。
+     中の文字とボタンが同じ比率で大きくなり、ステージ全体は今までどおり画面に収まる。
+   ・ゲーム中（playing／paused）は js 側で 100% に戻すので、盤面は欠けない。
+   ・--trk-ui-zoom   … 拡大率（1／0.75／…）
+   ・--trk-icon-zoom … アイコンだけの割り戻し（「アイコンの大きさは100%で固定」がオンのとき 1/拡大率）
+   ========================================================================== */
+:root{--trk-ui-zoom:1;--trk-icon-zoom:1}
+
+/* 拡大しても、カードが画面からはみ出さないようにする（100% のときは今までと同じ 1020px 以内） */
+body.trk-zoom #stage .card{max-height:100%;max-width:100%}
+
+/* アイコンの大きさを 100% で固定する（絵文字は拡大で崩れやすいため） */
+body.trk-zoom.trk-icon-fixed .uiModeBtn{font-size:calc(18px * var(--trk-icon-zoom))}
+body.trk-zoom.trk-icon-fixed .trk-mobile-nav button > span[aria-hidden="true"]{font-size:calc(20px * var(--trk-icon-zoom));line-height:1}
+body.trk-zoom.trk-icon-fixed .trk-playerbar button{font-size:calc(16px * var(--trk-icon-zoom))}
+body.trk-zoom.trk-icon-fixed .trk-playerbar .trk-pb-play{font-size:calc(18px * var(--trk-icon-zoom)) !important}
+body.trk-zoom.trk-icon-fixed .trk-pb-art{font-size:calc(20px * var(--trk-icon-zoom))}

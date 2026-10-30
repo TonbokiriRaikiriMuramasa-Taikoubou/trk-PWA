@@ -1,8 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* trk! offline shell: network first, cached same-origin app files as a fallback.
    Exception: the hash-pinned vendor files (assets/vendor, tools/vendor-lock.json) are cache-first,
-   but a cached copy is used only when its SHA-384 matches the pin below. */
-const CACHE = "trk-v2026.10.29-trk219";
+   but a cached copy is used only when its SHA-384 matches the pin below.
+
+   📱 trk220（iPhone のホーム画面アプリ）: install のときに、アプリの殻（index.html と、
+   その index.html が読み込む CSS・JS・アイコン）を先にキャッシュします。これまでは
+   「一度も開いていない画面は、オフラインだと 503」でした。殻だけを先に入れるので、
+   未使用の 3D（assets/vendor）・同梱デモ音源・docs は、使ったときに初めて入ります。
+   殻の一覧は index.html から読むので、ファイルを足してもこのファイルの直しは要りません。
+
+   🖥 trk221: PC でもスマホ型の画面（js/mobile-shell.js）と、画面の下の再生バー
+   （js/player-bar.js・css/player-bar.css）を足しました。どちらも index.html が読み込むので、
+   殻の先読みには自動で入ります（このファイルの一覧を手で直す必要はありません）。
+
+   🖥 trk222: 拡大率などの設定の配線（js/ui-prefs.js）と、エフェクト欄のタブ分け（CSS）を足しました。
+   これも index.html が読み込むので、殻の先読みは自動で追随します。 */
+const CACHE = "trk-v2026.10.31-trk222";
 const CACHE_PREFIX = "trk-";
 const SCOPE = new URL(self.registration.scope);
 const VENDOR_PREFIX = "assets/vendor/";
@@ -118,8 +131,45 @@ const VENDOR_PINS = {
 };
 // END VENDOR PINS
 
+/* アプリの殻（index.html が読み込んでいる CSS・JS・アイコン）を先にキャッシュする。
+   ・一覧は index.html から読む（ファイルを足しても、このファイルを直さなくてよい）
+   ・1つ失敗しても、ほかを止めない（オフラインで欠けるのはその1つだけ）
+   ・ブラウザの HTTP キャッシュをそのまま使うので、初回の通信を二重にしない
+   ・assets/vendor（重い 3D）と、容量の大きいメディアは入れない */
+const PRECACHE_SKIP = ["assets/vendor/", "assets/optional-demo-audio/", "docs/", "tools/"];
+function precacheWanted(url) {
+  const rest = url.pathname.slice(SCOPE.pathname.length);
+  return !!(rest && !PRECACHE_SKIP.some(prefix => rest.startsWith(prefix)));
+}
+async function precacheShell() {
+  const cache = await caches.open(CACHE);
+  const indexUrl = new URL("index.html", SCOPE).href;
+  const response = await fetch(indexUrl);
+  if (!response.ok) return;
+  await cache.put(indexUrl, response.clone());
+  /* スコープの根（./）で開かれたときのために、同じ中身を根の URL でも入れておく。
+     ナビゲーションのオフライン時の控え（fetch の最後）がこれで見つかる。 */
+  await cache.put(new URL("./", SCOPE).href, response.clone());
+  const html = await response.text();
+  const urls = new Set();
+  for (const m of html.matchAll(/<script\b[^>]*\bsrc=["']([^"'#?]+)["']/gi)) urls.add(m[1]);
+  for (const m of html.matchAll(/<link\b[^>]*\bhref=["']([^"'#?]+)["']/gi)) urls.add(m[1]);
+  await Promise.all([...urls].map(async ref => {
+    let url;
+    try { url = new URL(ref, indexUrl); } catch { return; }
+    if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname) || !precacheWanted(url)) return;
+    try {
+      const res = await fetch(url.href);
+      if (res.ok && res.type === "basic") await cache.put(url.href, res);
+    } catch { /* 通信できない・容量が足りない：そのファイルだけオフラインで欠ける */ }
+  }));
+}
+
 self.addEventListener("install", event => {
-  event.waitUntil(self.skipWaiting());
+  event.waitUntil((async () => {
+    try { await precacheShell(); } catch { /* 殻が入らなくても、今までどおり通信優先で動く */ }
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", event => {

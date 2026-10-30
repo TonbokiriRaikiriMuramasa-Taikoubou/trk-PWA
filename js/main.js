@@ -637,6 +637,7 @@ if (!fullscreenSupported) { core.$("fullBtn").hidden = true; core.$("fullBtnTitl
 
 core.applySkin(core.settings.skin, false);
 core.applyLanguage(core.settings.language);
+core.applyUiScale();   /* 🖥 拡大率（50/75/100/125%）とアイコンの大きさを、起動時に反映する */
 syncTutorialUI();
 window.Trk.custom.syncNoteUI(); showFxPower(); window.Trk.custom.updateMascotUI(); syncOptionsUI();
 core.setStatus("seStatus", core.settings.seEnabled ? "seOn" : "seDefault");

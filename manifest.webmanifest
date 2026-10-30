@@ -3,17 +3,27 @@
   "short_name": "trk!",
   "description": "手持ちの曲で遊べる、非営利のオープンなブラウザ音ゲー。MANUAL・TRUCK・ORBIT・STAGE・CATCHの5モード。",
   "lang": "ja",
+  "dir": "ltr",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
-  "display": "fullscreen",
-  "orientation": "landscape",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
+  "orientation": "any",
   "background_color": "#07080d",
   "theme_color": "#07080d",
+  "categories": ["games", "music", "entertainment"],
   "icons": [
     {
       "src": "./icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
       "purpose": "any"
     },
     {
@@ -26,7 +36,19 @@
       "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "share_target": {

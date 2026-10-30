@@ -8,6 +8,10 @@
 <meta name="description" content="万能なブラウザ再生プレイヤー。完全無料。手持ちの音楽、画像、漫画、小説、そして音ゲーを楽しめます。データは、端末の中だけ。">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/study-room.css">
+<!-- 📱 スマホ用の画面シェル（body.trk-mobile が付いたときだけ効きます。PCの見た目は変わりません） -->
+<link rel="stylesheet" href="css/mobile-shell.css">
+<!-- 🎵 画面の下に出す再生バー（js/player-bar.js）。出すかどうかは設定で選べます -->
+<link rel="stylesheet" href="css/player-bar.css">
 <!-- SNSで共有したときのカード（画像は https:// から始まる完全なURLにする）。
      ⚠ 同じ名前のmeta・linkは1回だけ書く（trk129：同じ名前が2回あり、SNSが先の方の説明文を拾っていた）
      ※ 配布ZIP用ビルドでは og:url／og:image を外すが、GitHub Pages版は公開URLがあるので残す -->
@@ -23,8 +27,20 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-1024.png" sizes="1024x1024" type="image/png">
+<!-- 🍎 iPhone / iPad：ホーム画面のアイコンは 180×180。Safari は manifest の icons ではなくこちらを使う -->
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
 <meta name="theme-color" content="#07080d">
+<!-- 🍎 iOS のホーム画面アプリ（standalone）として開くための指定。
+     iOS 26 以降は manifest が無くても standalone で開きますが、古い iOS のために残します。 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="trk!">
+<meta name="application-name" content="trk!">
+<meta name="format-detection" content="telephone=no">
 
 <!-- VRMを使うときだけ読み込む3Dの部品（three-vrm 3.5.5 は three 0.180 に対応） -->
 <script type="importmap">
@@ -166,27 +182,32 @@
                 <button id="libSkinBtn" class="libSkinBtn" type="button" hidden></button>
               </span>
             </div>
-            <div class="miniActions">
-              <button id="libOpenBtn" type="button" data-i18n="libOpen"></button>
-              <!-- 📤 共有：端末に1回だけ許可して、ミュージックフォルダの中身を一気に取り込む（library.js） -->
-              <button id="libShareBtn" type="button" data-i18n="libShare"></button>
-              <button id="libReconnectBtn" type="button" hidden></button>
-              <button id="libRescanBtn" type="button" hidden data-i18n="libRescan"></button>
-              <label class="fileBtn small">
-                <input id="mediaFile" type="file" accept="video/*,audio/*,.mid,.midi,.mkv,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
-                <span data-i18n="libAddFile"></span>
-              </label>
-              <!-- 🎬 動画を読み込む：最初のフレームまで確かめて「映像つき」として記録し、そのまま全画面で流す -->
-              <label class="fileBtn small" id="libVideoLabel">
-                <input id="videoFile" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.mkv,.avi,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
-                <span data-i18n="libAddVideo"></span>
-              </label>
-              <label class="fileBtn small">
-                <input id="songPackFile" type="file" accept=".stpack,.zip" hidden>
-                <span data-i18n="libAddPack"></span>
-              </label>
-            </div>
-            <div class="hint" data-i18n="libOpenShareHint"></div>
+            <!-- 📱 スマホでは、この折りたたみを閉じた状態から始めます（js/mobile-shell.js）。
+                 中のボタンは今までどおり同じ id なので、配線（library.js）は変わりません。 -->
+            <details class="trk-import" id="trkImportDetails" open>
+              <summary id="trkImportSummary" data-i18n="libImportToggle"></summary>
+              <div class="miniActions">
+                <button id="libOpenBtn" type="button" data-i18n="libOpen"></button>
+                <!-- 📤 共有：端末に1回だけ許可して、ミュージックフォルダの中身を一気に取り込む（library.js） -->
+                <button id="libShareBtn" type="button" data-i18n="libShare"></button>
+                <button id="libReconnectBtn" type="button" hidden></button>
+                <button id="libRescanBtn" type="button" hidden data-i18n="libRescan"></button>
+                <label class="fileBtn small">
+                  <input id="mediaFile" type="file" accept="video/*,audio/*,.mid,.midi,.mkv,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
+                  <span data-i18n="libAddFile"></span>
+                </label>
+                <!-- 🎬 動画を読み込む：最初のフレームまで確かめて「映像つき」として記録し、そのまま全画面で流す -->
+                <label class="fileBtn small" id="libVideoLabel">
+                  <input id="videoFile" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.mkv,.avi,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
+                  <span data-i18n="libAddVideo"></span>
+                </label>
+                <label class="fileBtn small">
+                  <input id="songPackFile" type="file" accept=".stpack,.zip" hidden>
+                  <span data-i18n="libAddPack"></span>
+                </label>
+              </div>
+              <div class="hint" data-i18n="libOpenShareHint"></div>
+            </details>
             <input id="libDirInput" type="file" webkitdirectory multiple hidden>
             <div class="libTools">
               <input id="libSearch" type="search" autocomplete="off" data-i18n-aria="libSearch">
@@ -365,6 +386,46 @@
       <div class="grid">
         <!-- 左：見た目 -->
         <div class="col">
+          <!-- 🖥 画面の形と、下に出す再生バー（js/mobile-shell.js・js/player-bar.js。trk221）
+               「PCでも縦型のスタンドで使う」「大きいタブレットで広く使う」を行き来するための欄です -->
+          <details class="panel" id="uiPanel">
+            <summary data-i18n="secUi"></summary>
+            <label class="field">
+              <span data-i18n="uiModeLabel"></span>
+              <select id="uiMode">
+                <option value="auto" data-i18n="uiModeAuto"></option>
+                <option value="desktop" data-i18n="uiModeDesktop"></option>
+                <option value="mobile" data-i18n="uiModeMobile"></option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="uiModeHint"></div>
+            <label class="field">
+              <span data-i18n="playerBarLabel"></span>
+              <select id="playerBarMode">
+                <option value="on" data-i18n="playerBarOn"></option>
+                <option value="auto" data-i18n="playerBarAuto"></option>
+                <option value="off" data-i18n="playerBarOff"></option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="playerBarHint"></div>
+            <!-- 🖥 trk222：拡大率（画面と文字をまとめて大きく／小さく） -->
+            <label class="field">
+              <span data-i18n="uiScaleLabel"></span>
+              <select id="uiScale">
+                <option value="50">50%</option>
+                <option value="75">75%</option>
+                <option value="100" data-i18n="uiScaleNormal"></option>
+                <option value="125">125%</option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="uiScaleHint"></div>
+            <label class="check"><input id="fixedIconSize" type="checkbox"><span data-i18n="fixedIconSize"></span></label>
+            <div class="hint" data-i18n="fixedIconSizeHint"></div>
+            <!-- 🎛 trk222：スマホ型で、エフェクトの欄をどのタブに置くか -->
+            <label class="check"><input id="fxInLibrary" type="checkbox"><span data-i18n="fxInLibrary"></span></label>
+            <div class="hint" data-i18n="fxInLibraryHint"></div>
+          </details>
+
           <details class="panel" open>
             <summary data-i18n="secDisplay"></summary>
             <div><label><span data-i18n="displayModeLabel"></span> <select id="displayMode"><option value="simple" data-i18n="displaySimple"></option><option value="full" data-i18n="displayFull"></option></select></label></div>
@@ -878,6 +939,9 @@
             <div class="hint" data-i18n="showMasterDiffHint"></div>
 
             <h3 data-i18n="secMystery"></h3>
+            <!-- 🖥 trk222：画面の形は、常に選んだものを使う（オフなら開くたびに端末へ合わせて選び直す） -->
+            <label class="check"><input id="uiModeLock" type="checkbox"><span data-i18n="uiModeLock"></span></label>
+            <div class="hint" data-i18n="uiModeLockHint"></div>
             <label class="check"><input id="swayAllModes" type="checkbox"><span data-i18n="swayAllModes"></span></label>
             <div class="hint" data-i18n="swayAllModesHint"></div>
             <label class="check"><input id="escNoReturn" type="checkbox"><span data-i18n="escNoReturn"></span></label>
@@ -1093,6 +1157,18 @@
             </div>
             <label class="check"><input id="ignoreLimitsChk" type="checkbox"><span data-i18n="ignoreLimits"></span></label>
             <div class="hint" data-i18n="ignoreLimitsHint"></div>
+          </details>
+
+          <!-- 🍎 iPhone / iPad の案内（js/ios-pwa.js）。ほかの端末では hidden のまま出しません -->
+          <details class="panel ios-only" id="iosPanel">
+            <summary data-i18n="secIos"></summary>
+            <div class="hint" data-i18n="iosStorageHint"></div>
+            <div class="hint" data-i18n="iosAudioHint"></div>
+            <div class="miniActions">
+              <button id="iosInstallBtn" type="button" data-i18n="iosInstallBtn"></button>
+              <button id="iosUpdateBtn" type="button" data-i18n="iosUpdateBtn"></button>
+            </div>
+            <div id="iosUpdateStatus" class="hint status" role="status" aria-live="polite"></div>
           </details>
 
           <!-- 🎵 明示的に保存した曲・動画だけを IndexedDB の仮想棚へ置く（trk1.0.4候補） -->
@@ -1993,5 +2069,15 @@
 <script src="js/zip-io.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/share-inbox.js"></script>
+<!-- 📱 スマホ用の画面シェル（下部ナビ・エフェクト画面・縦向きの案内）。PC では何もしません -->
+<script src="js/mobile-shell.js"></script>
+<!-- ⚙ 設定で開いた欄を覚える（スマホのときだけ） -->
+<script src="js/mobile-settings-panels.js"></script>
+<!-- 🎵 画面の下に出す再生バー（曲名・再生・曲送り・位置・音量）。設定で on／auto／off -->
+<script src="js/player-bar.js"></script>
+<!-- 🖥 画面と再生バーの追加の設定（拡大率・アイコンの大きさ・画面の形の固定・エフェクト欄の置き場所） -->
+<script src="js/ui-prefs.js"></script>
+<!-- 🍎 iPhone / iPad の調整（インストール案内・音のセッション）。ほかの端末では何もしません -->
+<script src="js/ios-pwa.js"></script>
 </body>
 </html>

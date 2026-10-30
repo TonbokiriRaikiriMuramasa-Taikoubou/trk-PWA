@@ -1,0 +1,182 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+   スマホ用の画面シェル（iPhone / Android の縦画面・横画面）。
+
+   これまでの trk! は 1920×1080 のステージを縮小して見せる PC 向けの画面でした。
+   このファイルは、選曲・設定の画面だけを「実際の画面のピクセル」で組み直し、
+   下部のナビゲーション（ライブラリ／エフェクト／再生／書斎／ゲーム）を足します。
+   ゲーム中のステージ（#stage[data-phase="play"]）は今までどおり 1920×1080 のままです。
+
+   body.trk-mobile … js/mobile-shell.js が、スマホ・タブレットで起動したときだけ付けます。
+   PC のブラウザではクラスが付かないので、このファイルの見た目は一切かかりません。 */
+
+.trk-mobile #stage[data-phase="title"] {
+  left: 0; top: 0; width: 100%; height: 100%; transform: none !important;
+}
+.trk-mobile #stage[data-phase="title"] .screen {
+  display: block; padding: 0; overflow: hidden;
+}
+.trk-mobile #stage[data-phase="title"] .screen[hidden] { display: none; }
+.trk-mobile #stage[data-phase="title"] .card {
+  width: 100%; max-width: none; height: 100%; max-height: none; border: 0; border-radius: 0;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+           calc(100px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.trk-mobile .selectGrid { display: block; margin-top: 16px; }
+.trk-mobile[data-trk-view="library"] .detailCol,
+.trk-mobile[data-trk-view="game"] .songCol { display: none; }
+.trk-mobile .head { align-items: center; flex-wrap: wrap; gap: 10px; }
+.trk-mobile .brand h1 { font-size: 32px; }
+.trk-mobile .brand p { font-size: 13px; }
+.trk-mobile .headTools { flex-wrap: wrap; }
+.trk-mobile .headTools button { min-height: 44px; }
+.trk-mobile #tvDock { display: none !important; }
+.trk-mobile .libHead { flex-wrap: wrap; gap: 8px; }
+.trk-mobile .libTools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.trk-mobile .libTools input { grid-column: 1 / -1; min-width: 0; }
+.trk-mobile #libList { height: auto; max-height: none; overflow: visible; }
+.trk-mobile .libRow { min-height: 52px; }
+/* 押すところは指で押せる大きさ（44px 以上）にそろえる */
+.trk-mobile .favChip, .trk-mobile .favLock { min-width: 48px; min-height: 48px; }
+.trk-mobile #selectScreen .screen h2 { font-size: inherit; }
+.trk-mobile .grid { grid-template-columns: 1fr; }
+.trk-mobile .fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.trk-mobile .fields input { width: 100%; min-width: 0; }
+.trk-mobile .screen h2 { font-size: 28px; }
+.trk-mobile .screen .setTitle { font-size: 24px; }
+.trk-mobile .bannerTitle { font-size: 23px; }
+.trk-mobile #floatingSafeBtn { bottom: calc(80px + env(safe-area-inset-bottom)) !important; min-width: 44px; min-height: 44px; touch-action: manipulation; }
+.trk-mobile #floatingSafeBtn[hidden] { display: none !important; }
+.trk-mobile #quickGuide button, .trk-mobile .welcomeActions button,
+.trk-mobile #libTabs button, .trk-mobile .libTabs button,
+.trk-mobile .favChipsRow button, .trk-mobile .libTools button { min-height: 44px; }
+.trk-mobile .mediaHeader { flex-wrap: wrap; }
+
+/* ---------- 下部ナビゲーション（5つの行き先） ---------- */
+.trk-mobile-nav {
+  position: fixed; z-index: 1000; bottom: 0; left: 0; right: 0; display: flex;
+  padding: 5px max(4px, env(safe-area-inset-right)) max(5px, env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
+  background: var(--ui-panel); border-top: 1px solid var(--ui-border); box-shadow: 0 -6px 24px #0004;
+}
+.trk-mobile-nav[hidden] { display: none; }
+.trk-mobile-nav button {
+  flex: 1; min-width: 0; min-height: 56px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px; padding: 5px 2px;
+  border: 0; border-radius: 12px; background: transparent; color: var(--ui-muted); font-size: 20px;
+}
+.trk-mobile-nav button[aria-current="page"] { color: var(--ui-accent-ink, var(--ui-accent)); background: var(--ui-button-hover); }
+.trk-mobile-nav-label { font-size: 11px; white-space: nowrap; }
+.trk-mobile-media-game { min-height: 44px; font-size: 13px; }
+@media (max-width: 360px) { .trk-mobile-nav-label { font-size: 10px; letter-spacing: -.02em; } }
+@media (min-width: 840px) {
+  .trk-mobile #stage[data-phase="title"] .card { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+  .trk-mobile-nav { max-width: 560px; margin: auto; border: 1px solid var(--ui-border); border-bottom: 0; border-radius: 16px 16px 0 0; }
+}
+
+/* スペクトラムはゲームの帯を占領せず、設定の中へ引っ込める（シェルのときだけ） */
+.trk-mobile .specBannerCanvas { display: none !important; }
+
+/* ---------- コンテンツの追加（折りたたみ） ----------
+   PC では今までと同じ見た目にする（見出しを出さず、中のボタンをそのまま並べる）。
+   折りたたみが効くのはスマホのときだけ。 */
+.trk-import { display: contents; }
+.trk-import > summary { display: none; }
+.trk-mobile .trk-import { display: block; margin: 10px 0; border: 1px solid var(--ui-border); border-radius: 14px; background: var(--ui-field); }
+.trk-mobile .trk-import > summary { min-height: 48px; display: flex; align-items: center; padding: 10px 14px; cursor: pointer; font-weight: 750; }
+.trk-mobile .trk-import > summary::after { content: "＋"; margin-left: auto; color: var(--ui-muted); }
+.trk-mobile .trk-import[open] > summary::after { content: "−"; }
+.trk-mobile .trk-import .miniActions, .trk-mobile .trk-import > .hint { margin: 0 12px 12px; }
+.trk-mobile #libPanel #mediaOpenBtn, .trk-mobile #libPanel #studyOpenBtn { display: none; }
+
+/* ---------- エフェクトの画面 ---------- */
+.trk-mobile[data-trk-view="effects"] .songCol,
+.trk-mobile[data-trk-view="effects"] .detailCol { display: none; }
+.trk-mobile[data-trk-view="effects"] #quickGuide,
+.trk-mobile[data-trk-view="game"] #quickGuide { display: none; }
+.trk-effects { min-width: 0; color: var(--ui-text); }
+.trk-effects[hidden] { display: none !important; }
+.trk-effects h2 { margin: 0 0 14px; font-size: 26px; }
+.trk-effect-card { padding: 18px; margin-bottom: 12px; border: 1px solid var(--ui-border); border-radius: 16px; background: var(--ui-soft); }
+.trk-effect-card h3 { margin: 0 0 5px; font-size: 17px; }
+.trk-effect-card p { margin: 0 0 12px; color: var(--ui-muted); font-size: 13px; line-height: 1.5; }
+.trk-effect-card select { width: 100%; min-height: 48px; padding: 10px; border: 1px solid var(--ui-border); border-radius: 10px; background: var(--ui-field); color: var(--ui-text); }
+.trk-effect-actions { display: flex; gap: 8px; margin-top: 10px; }
+.trk-effect-actions button { min-height: 44px; flex: 1; border-radius: 10px; }
+.trk-effects-advanced { min-height: 44px; font-size: 13px; }
+.trk-effects-now { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding: 12px; border: 1px solid var(--ui-border); border-radius: 14px; background: var(--ui-field); }
+.trk-effects-now[hidden] { display: none; }
+.trk-effects-track { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trk-effects-now button { min-height: 44px; }
+.trk-effects-stage .mediaStage { margin-bottom: 12px; }
+.trk-media-effects #mediaPlayerMode .mediaHeader,
+.trk-media-effects #mediaPlayerMode .mediaBody { display: none; }
+#mediaPlayerMode .trk-effects { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px; overscroll-behavior: contain; }
+#mediaPlayerMode .trk-mobile-nav { position: static; flex: none; width: 100%; max-width: none; margin: 0; border-radius: 0; }
+.trk-mobile .mediaStageCanvas, .trk-mobile .videoMaxCanvas { filter: var(--trk-video-filter, none); }
+.trk-effect-card .trk-eq-title { margin-top: 20px; }
+.trk-eq-rows { display: grid; gap: 6px; margin: 12px 0; }
+.trk-eq-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) 52px; align-items: center; gap: 8px; min-height: 40px; font-size: 12px; }
+.trk-eq-row input { width: 100%; }
+.trk-eq-row output { text-align: right; font-variant-numeric: tabular-nums; }
+#trkEqReset { min-height: 44px; font-size: 13px; }
+
+/* ---------- 🍎 iPhone（body.ios は js/ios-pwa.js が付けます） ---------- */
+.ios-only { display: none !important; }
+body.ios .ios-only { display: block !important; }
+body.ios button.ios-only, body.ios .iosHidden { display: inline-block !important; }
+
+/* インストール案内（iOS には beforeinstallprompt がありません＝自前で案内する） */
+.iosInstall {
+  position: fixed; inset: 0; z-index: 52000; display: grid; place-items: center;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+           max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: rgba(3, 5, 12, .82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.iosInstall[hidden] { display: none !important; }
+.iosInstallCard {
+  width: min(460px, 100%); max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain;
+  padding: 22px 20px; border: 1px solid var(--ui-border); border-radius: 20px;
+  background: var(--ui-panel); color: var(--ui-text); text-align: left;
+  box-shadow: var(--ui-shadow);
+}
+.iosInstallCard h2 { margin: 0 0 8px; font-size: 22px; }
+.iosInstallCard p { margin: 0 0 12px; color: var(--ui-muted); font-size: 14px; line-height: 1.6; }
+.iosInstallSteps { margin: 0 0 14px; padding-left: 1.35em; font-size: 14px; line-height: 1.7; }
+.iosInstallNote { margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--ui-border); border-radius: 12px; background: var(--ui-soft); font-size: 13px; line-height: 1.6; color: var(--ui-muted); }
+.iosInstallActions { display: flex; gap: 8px; flex-wrap: wrap; }
+.iosInstallActions button { min-height: 46px; flex: 1 1 140px; }
+
+/* 縦向きでゲームを開いたときの案内（横向き固定は iOS ではできないため、CSS で案内する） */
+.rotateHint {
+  position: fixed; inset: 0; z-index: 51000; display: grid; place-items: center; text-align: center;
+  padding: 24px; background: rgba(3, 5, 12, .88); color: var(--ui-text);
+}
+.rotateHint[hidden] { display: none !important; }
+.rotateHintCard { max-width: 420px; padding: 20px; border: 1px solid var(--ui-border); border-radius: 18px; background: var(--ui-panel); }
+.rotateHintCard strong { display: block; font-size: 20px; margin-bottom: 8px; }
+.rotateHintCard span { color: var(--ui-muted); font-size: 14px; line-height: 1.6; }
+
+/* ==========================================================================
+   🎛 trk222：エフェクトの欄は「エフェクト」のタブへ集める（ライブラリのタブを軽くする）
+   ・対象は、トリガー（#fxDock＝🎛 エフェクト・#tvDock＝▶ TV）と、その直後に続く本物の欄
+     （.dockMore＝くわしく(EQ・スキン・メニュー)／.tvMore＝くわしく(設定と映像の確認)／
+      #fxAmp＝TRKアンプ／#richPanel＝TRKエフェクト／#midiMixPanel＝TRK MIDI MIX）。
+   ・DOM は動かさない（tv-dock.js・fx-dock.js が列の中身を並べ替えるので、動かすと取り合いになる）。
+     「いまどのタブか」（body[data-trk-view]）で、見せる／隠すだけを切り替えます。
+   ・ライブラリのタブでは、設定（🎛 ライブラリにもエフェクトの欄を出す）がオフなら隠します。
+     オンなら、ライブラリのタブにも同じ欄が出ます（エフェクトのタブには、どちらでも出ます）。
+   ========================================================================== */
+/* エフェクトのタブ：曲リストの列を「エフェクトの欄だけ」に絞る（曲リスト・検索・追加は隠す）。
+   欄そのものは hide しない（display を上書きすると、#fxDock のような flex の見た目が崩れるため）。 */
+.trk-mobile[data-trk-view="effects"] .songCol { display: block; }
+.trk-mobile[data-trk-view="effects"] .songCol > *:not(#fxDock):not(#tvDock):not(.dockMore):not(.tvMore):not(#ampPanel):not(#richPanel):not(#midiMixPanel) { display: none; }
+
+/* ライブラリのタブ：設定（🎛 ライブラリにもエフェクトの欄を出す）がオフなら隠す */
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) #fxDock,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) #tvDock,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > .dockMore,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > .tvMore,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > #ampPanel,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > #richPanel,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > #midiMixPanel { display: none; }
+/* ライブラリにも出す設定のときは、曲リストとの間に少し余白を入れる */
+.trk-mobile.trk-fx-in-library[data-trk-view="library"] #fxDock { margin-top: 14px; }
