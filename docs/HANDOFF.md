@@ -1,9 +1,42 @@
 # trk! 開発引き継ぎ
 
-> **最終更新：2026-10-29（trk217・**1.1.6**＝🐔 trk's playlist を trk-apk の新基準に揃えた版。🐔 trk's playlist を **trk-apk の新基準**に揃えた＝起動時にカタログを一括で作らず、設定の「プレイリストを選択」から**選んだリストだけ**を追加する（`create:false` の起動・100曲ごとの Vol 分割・24文字の ID・消したリストもここから戻す・♻ は出さない）。trk216・**1.1.5**＝🎼 譜面生成方式の既定を **Bタイプ（方式4）** に（触った感触で B が良い、という利用者の判断。**設定で選んだ人＝`chartGenChosen` はそのまま**・アップデート後に B へ移るのは選んだ印が無い人だけ）。trk215・⭐ お気に入りの4フォルダ（⭐1軍／⭐2軍／🧊フリーズ／📤元お気に入り）を全部使えるようにした：2軍〜元お気に入り・ピン・🧊凍結・選んでいたフォルダを `settings.favs` に保存（1.1.4 までは保存していなかったので、0個の2軍を選ぶとタブごと消え、リロードで戻っていた）、⭐タブはどのフォルダかに入っていれば出し、凍結の解除は 🧊／🔒 の3秒長押し（❓謎設定「フリーズの解除をワンタップにする」＝**既定オフ**で1タップ）。2026-10-27（trk214・**1.1.4**＝1.1.3 レビュー反映：🖥 ドラッグ中はポインターを掴んで外へ出てもずらす・ピンチのあと残った1本指でそのまま動かす・配布物のリンク切れ検査。trk212・trk213・**1.1.3**：🖥 全画面の動画をホイール／ドラッグ／ピンチで拡大・縮小（100〜500%・ポインター中心・1回 2/5/10%）、⏱ 曲名タブの「ここをプレビュー開始位置にする」を設定で出す（**初期オフ**）。**1.1.3 は trk213 を配る版**。1.1.0→1.1.1→1.1.2 のレビュー反映もそれぞれのZIPに同梱済み。1.0.9〜1.1.2 の配布ZIPの形と時刻もここに集約）**。現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md) を参照してください。
+> **最終更新：2026-10-31**（`trk-PWA` の **trk222**）。アプリ本体は trk222、`npm run check` は **835 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk222`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
 >
-> **本書の読み方**：§2＝今の仕様、§3＝壊してはいけない条件、§4＝実機で確認していないこと（ここが最重要）、§5＝ファイルの場所、§6＝自動検査で確かめたこと、§7＝最近の変更、§8＝変更時の点検、§9＝配布ZIPの形と作り方（1.0.8〜・現在 1.1.4）。
+> 現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`../README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`../NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md)。**レビューと実機確認のお願いは [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)**。
 
+## 0. この文書の使い方
+
+| 節 | 内容 | いつ読むか |
+| --- | --- | --- |
+| §0.1 | 版の要約 | 経緯をざっと知りたいとき |
+| §1 | 作業の基本 | 作業を始める前に |
+| §1.5 | **このリポジトリ（trk-PWA）の今** | まずここ |
+| §2 | 今の仕様（機能ごと） | 触る前に |
+| §3 | 維持するデータ・安全条件 | 変更の前後 |
+| §4 | **実機で確認していないこと（最重要）** | 配る前 |
+| §5 | 主なファイル | 実装を探すとき |
+| §6 | 直近の検証（自動検査で確かめたこと） | 検証を足すとき |
+| §7 | 最近の変更（新しい順） | 経緯を追うとき |
+| §8 | 変更時チェックリスト | PR を出す前 |
+| §9 | 配布物（上流 trk のZIP）の形と作り方 | 配布するとき |
+
+### 0.1 版の要約（詳細は §7・それ以前は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)）
+
+| 版 | trk番号 | 中身（1行） | 日付 |
+| --- | --- | --- | --- |
+| （trk-PWA） | trk222 | 拡大率・アイコンの大きさ・PC型／スマホ型の2択・エフェクト欄のタブ分け | 2026-10-31 |
+| （trk-PWA） | trk221 | PC でもスマホ型の UX＋下の再生バー（スキンに追従） | 2026-10-31 |
+| （trk-PWA） | trk220 | iPhone のホーム画面から使う standalone PWA の仕上げ | 2026-10-30 |
+| 1.1.8 | trk219 | 出力デバイスを切り替えても再生を止めない | 2026-10-29 |
+| 1.1.7 | trk218 | 🐔 trk のリストを曲画面に出さない・👁／🗑／📋 | 2026-10-29 |
+| 1.1.6 | trk217 | 🐔 trk's playlist をカタログから選んで追加（起動時に作らない） | 2026-10-29 |
+| 1.1.5 | trk216・trk215 | 譜面生成の既定を Bタイプへ／⭐4フォルダを使えるように | 2026-10-29 |
+| 1.1.4 | trk214 | 全画面ズームの仕上げ・配布物のリンク切れ検査 | 2026-10-27 |
+| 1.1.3 | trk213・trk212 | 開始位置ボタンを初期オフ／全画面の動画をホイールで拡大 | 2026-10-27 |
+| 1.1.2 | trk211 | 🔓 の文面を「次に聞く1本」にそろえる | 2026-10-27 |
+| 1.1.1 | trk210 | 📂 共有フォルダーの × が戻る・1本ずつ許可・書斎の同名 | 2026-10-27 |
+| 1.1.0 | trk208・trk209 | 📂 フォルダー共有を何本でも・動画も・書斎の画像も | 2026-10-27 |
+| 1.0.9 | trk200〜trk207 | 音が出ない理由・📄参照の保存停止・セーフモード・配布ZIPの形 | 2026-10-27 |
 ## 1. 作業の基本
 
 - 作業前に `git status --short` と差分を見て、既存の変更を破棄・上書きしない。
@@ -12,6 +45,24 @@
 - 変更後は `npm run check` と `git diff --check` を実行。静的・VM・スモーク検査の成功を、実音声・実機での確認済みとは扱いません。
 - 公開JSを変更したら関連テスト・文書・`sw.js` のcache名更新要否を確認します。vendor pinの正は `tools/vendor-lock.json` です。
 - `js/fx.js`／`js/fx-presets.js` の凍結は **trk114で解除**しました（2026-10-11、空さんの判断。trk109でfx.jsに足したMIDI MIXの経路も追認）。ほかのファイルと同じく、変更時はテスト・文書・実音声で確認します。fx.jsが読むための互換名（`chartMeta`・`phase`・`prefs`・`stats`・`videoReady`、読み取り専用の `_trkStudyRoomOpen`）はまだ残っていて、fx.jsを書き換えれば外せます（`docs/ADDONS.md` §0、`docs/NAMESPACE-PLAN.md`）。
+
+## 1.5 このリポジトリ（trk-PWA）の今（2026-10-31）
+
+このチェックアウトは **`trk-PWA`**＝上流 `trk` 1.1.8 を履歴ごと取り込み、**通信を行わない standalone PWA** として仕上げる系統です。配り方が上流と違う（ZIP ではなく Pages）ため、§9 は上流の話として読んでください。
+
+| 項目 | 今の状態 |
+| --- | --- |
+| 目的 | iPhone のホーム画面から開く standalone PWA。0円・不特定多数・ストアなし・バックエンドなし・広告なし・端末内データ・GPL-3.0-or-later |
+| ミッションと決定事項 | [`HANDOFF-TRK-STANDALONE.md`](HANDOFF-TRK-STANDALONE.md)、配布URLの決定は [`ORIGIN.md`](ORIGIN.md) |
+| 配り方 | GitHub Pages（`.github/workflows/pages.yml`）＋ `manifest.webmanifest` ＋ `sw.js`。配布ZIPは作りません |
+| 画面の形 | `settings.uiMode`（PC型／スマホ型の2択）＋❓謎設定「画面の形は、常に選んだものを使う」。詳しくは [`UI-MODE-AND-PLAYER-BAR.md`](UI-MODE-AND-PLAYER-BAR.md) |
+| trk222 の設定 | `uiScale`（50/75/100/125）・`fixedIconSize`・`uiModeLock`・`fxInLibrary`・`playerBar`。**新しい保存キーは増やしていません** |
+| テスト | `npm run check` **835 pass / 0 fail**（trk220 の47件・trk221 の27件・trk222 の13件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning |
+| Service Worker | cache は **`trk-v2026.10.31-trk222`**。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1） |
+| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。確認項目は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) にまとめています |
+| 移行 | 新リポジトリ `trk-Standalone` はまだ空。Pages の有効化と初回デプロイは未実施 |
+
+**この系統で変えてはいけないこと**：§3 の条件に加えて、**実行時に外部へ通信しない**（CDN・外部API・解析タグを足さない）、**端末内データだけ**、**GPL-3.0-or-later のクレジットを消さない**、**保存キーを変えるときは移行を書く**（[`MIGRATIONS.md`](MIGRATIONS.md)）。
 
 ## 2. 現在の実装状態
 
@@ -339,7 +390,13 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 ## 4. 未完了の確認
 
-一覧（状態は 2026-10-27 時点）。詳細は下の「4.1 詳細」にあります。既存項目の番号は維持しています。
+一覧（trk218 までの状態は 2026-10-29、trk220〜trk222 は 2026-10-31 時点）。詳細は下の「4.1 詳細」にあります。既存項目の番号は維持しています。
+
+**まず見てほしい3件（2026-10-31）**：このリポジトリで足した trk220〜trk222 は、**自動検査はすべて緑・実機は未確認**です。確認の手順は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) にチェックリストでまとめました。
+
+- **#61 trk222**：拡大率（50/75/100/125%）・アイコンの大きさ固定・PC型／スマホ型の2択・エフェクト欄のタブ分け。とくに **CSS の `zoom`（再生バーの拡大）はブラウザ差**が出やすい箇所です。
+- **#62 trk221**：PC でのスマホ型 UX・下の再生バー（スキン追従・音量・ゲーム中の引っ込み）。
+- **#63 trk220**：iPhone のホーム画面から起動・オフライン・縦向きの案内・設定の欄の記憶。
 
 | # | 項目 | 状態 | 次の一手 |
 |---|---|---|---|
@@ -403,6 +460,9 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 58 | 1.1.7 の配布ZIP（trk218 入り・2026-10-29） | ZIP の形・`unzip -t`・sha256・全エントリ同時刻（`2026-10-29 13:00` UTC）・`--check`・ローカル配信は確認済み（§6）。**実ブラウザで 👁／🗑／📋 を触っての確認は未了**（§4-57） |
 | 59 | trk219：🔈 出力デバイスの切り替えで再生を止めない | `tests/trk219-audio-output-keep.test.mjs` の17件＋`npm run check` 746 pass で確認済み（偽の再生要素・時計・AudioContext で実動）。**実機で出力デバイスを切り替えての確認は未了**（§4-59 の手順で確認する） |
 | 60 | 1.1.8 の配布ZIP（trk219 入り・2026-10-29） | ZIP の形・`unzip -t`・sha256・全エントリ同時刻（`2026-10-29 14:00` UTC）・`--check`・ローカル配信・差分を当てて完全一致は確認済み（§6）。**実機で出力デバイスを切り替えての確認は未了**（§4-59） |
+| 61 | trk222：🔍 拡大率・アイコンの大きさ・PC型／スマホ型の2択・エフェクト欄のタブ分け | `tests/trk222-ui-zoom.test.mjs`（13件）＋jsdom の通し確認（37項目）＋`npm run check` **835 pass**。1280×800 等の 6画面×4拡大率でのはみ出しなしも確認。**実ブラウザ・実機は未確認** | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) §2-3 の順に実機で確認。とくに 125% の文字の大きさ、再生バーの `zoom`（Safari／Firefox）、縦型モニタでの見え方 |
+| 62 | trk221：📱 PC でもスマホ型の UX＋下の再生バー | `tests/trk221-ui-mode.test.mjs`（11件）・`tests/trk221-player-bar.test.mjs`（17件）＋jsdom の通し確認。**実機は未確認**（スキンごとの色・タッチの当たり・音の大きさ） | §2-2 の順に実機で確認。各スキンでバーの色が読めるか、下部ナビと重ならないか、ゲーム中・再生画面・書斎で引っ込むか |
+| 63 | trk220：📲 iPhone のホーム画面から使う standalone PWA | `tests/trk220-*.test.mjs`（47件）＋manifest／meta／SW の静的検査。**実機は未確認**（インストール・オフライン起動・セーフエリア） | §2-1 の順に実機で確認。ホーム画面から起動して URL バーが出ないこと、機内モードでも起動すること、ノッチ・ホームバーと重ならないこと |
 
 #### 実ブラウザsmoke／CIの容量（trk162調査）
 
@@ -500,7 +560,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 📦 まるごとバックアップ・ZIP CRC・復元 | `js/backup.js`（歌詞・字幕キーの許可、アドオン概要の確認、復元アドオンの無効化）、`js/zip-io.js`、`js/custom.js`（.stpackのストリーム読書き・`packIdentityFromManifest`）、`tests/backup-codec.test.mjs`、`tests/backup-restore.test.mjs`、`tests/pack-identity.test.mjs`、`tests/pack-zip-stream.test.mjs`、`tests/zip-io.test.mjs`、`tools/check-security.mjs` |
 | CBZ／ZIP書斎のページ展開上限 | `js/study-room.js`（`studyAlbumLimits`・`studyImportArchiveBook`）、`tests/storage-limits.test.mjs` |
 | Endfield楽曲台帳・曲名fixture・検査 | `docs/ARKNIGHTS-ENDFIELD-MUSIC.md`、`tools/endfield-zeroth-directive-tracklist.json`、`tools/endfield-msr-albums-tracklist.json`、`tools/check-repo.mjs` |
-| Service Worker | `sw.js`（現行cache名：`trk-v2026.10.29-trk219`＝trk219。**配布ZIP（1.1.7）は `trk218`**、配布済みの 1.1.6 は `trk217`、1.1.5 は `trk216`、1.1.4 は `trk214`。1.1.2 は `trk211`、1.1.1 は `trk210`、1.1.0 は `trk208`、1.0.9 は `trk207`。アプリ本体が変わらない版では cache 名を上げない） |
+| Service Worker | `sw.js`（**このリポジトリの現行cache名：`trk-v2026.10.31-trk222`＝trk222**。上流の配布版は `trk-v2026.10.29-trk219`＝trk219。**配布ZIP（1.1.7）は `trk218`**、配布済みの 1.1.6 は `trk217`、1.1.5 は `trk216`、1.1.4 は `trk214`。1.1.2 は `trk211`、1.1.1 は `trk210`、1.1.0 は `trk208`、1.0.9 は `trk207`。アプリ本体が変わらない版では cache 名を上げない） |
 | 🚪 メディアプレイヤーの抜け方（trk206） | `js/media-player-mode.js`（`mediaExitPlan`・`closeMedia`）、`js/library.js`（`previewContinue`）、`js/core.js`（`mediaReloadOnExit`）、`js/i18n-options.js`＋`index.html`（❓謎設定）、`tests/trk206-media-exit.test.mjs` |
 | 📦 配布ZIPの組み立て（1.0.8〜・現在 1.1.7） | `tools/prepare-release.mjs`（`npm run release`。`index.html`＋`README.txt`＋`trk-files/` に組み、形を検査してZIPにする）、`release/README.txt`（配布用のかんたん起動。`--readme` を省くとこれが入る。**版と `README-1.x.y.md` の名前は `--version` とそろえる**）、`tests/release-layout.test.mjs`（形・時刻・README の版） |
 | 📂 フォルダー共有の共通部品（trk208） | `js/shared-folders.js`（`window.TrkSharedFolders`＝`plan`／`uniqueLabel`／`mergeScans`／`walk`／`pathParts`／`readFileAt`。DOM・IndexedDB・書き込みなし）、`js/library.js`（登録簿 `"folders"`・`addSharedFolder`／`readSharedFolders`／`restoreSharedFolders`／`folderAutoKickShared`／`removeSharedFolder`／`renderSharedFolderList`）、`index.html`（`#libShareVideoBtn`・`#libSharedFolderList`）、`tests/trk208-shared-folders.test.mjs` |
@@ -511,9 +571,27 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 🐔 カタログのリスト選択（trk217・未配布） | `js/library.js`（`trkPickEntries`／`trkPickHas`／`trkPickAdd`／`trkPickRender`・`TRK_SHELVES`／`TRK_SERIES_FOLDER`・`trkSelectedFoldersOnly`・`ensureTrkDistributionPlaylists({ create:false })`）、`index.html`（`#trkPickSelect`／`#trkPickAdd`／`#trkPickHint`／`#trkPickStatus`）、`sw.js`（`trk217`）、`tests/trk217-playlist-catalog.test.mjs`、`docs/PLAYLIST-CATALOG-REVIEW.md`（trk-apk との突き合わせ） |
 | 🔈 出力デバイスの切り替えで止まらない（trk219） | `js/audio-keep.js`（`keepPlan`・`recover`・1秒の見張り・`#video` の `play()`／`pause()` を包む）、`js/fx.js`（`wakeAudioHard(force)`・`TrkFX.context()`／`TrkFX.wake(force)`）、`index.html`（`media.js` の次の1行）、`tests/trk219-audio-output-keep.test.mjs`、`docs/guide/sound.md`・`docs/guide/en.md` |
 | ⏱ 曲名タブの開始位置ボタン（trk213） | `js/core.js`（`previewStartShow`・`resetVideoPrefs`）、`js/library.js`（`previewSetShown`・`syncPreviewSetBtn`・`renderBanner`／`updateSpBuilder`）、`js/spectrum.js`（`buildBox` の `specPreviewSet`・TEXT 8キー）、`tests/trk213-preview-set-toggle.test.mjs` |
+| 📱 スマホ型の画面シェル（trk220） | `js/mobile-shell.js`（下部ナビ・1画面1役割・`applyMode`）、`css/mobile-shell.css`、`js/mobile-settings-panels.js`（設定の欄の記憶）、`tests/trk220-*.test.mjs` |
+| 🍎 iPhone の standalone PWA（trk220） | `manifest.webmanifest`（`id`・`standalone`・`display_override`・アイコン）、`index.html`（`apple-mobile-web-app-*`・`apple-touch-icon`）、`js/ios-pwa.js`、`sw.js`（install の事前キャッシュ）、[`PWA.md`](PWA.md) |
+| 🖥📱 画面の形の2択（trk221・trk222） | `js/mobile-shell.js`（`uiMode()`・`setUiMode`・`toggle`／`sync`・`sessionMode`）、`index.html`（`#uiMode`・`#uiModeLock`）、`js/core.js`（`uiMode`・`uiModeLock`）、`tests/trk221-ui-mode.test.mjs` |
+| ▶ 下の再生バー（trk221） | `js/player-bar.js`（本物の再生要素を触るだけ・独自の再生状態を持たない）、`css/player-bar.css`（高さは `getBoundingClientRect` で測る）、`tests/trk221-player-bar.test.mjs` |
+| 🔍 拡大率・アイコンの大きさ（trk222） | `js/core.js`（`UI_SCALES`・`uiScaleValue`・`applyUiScale`・`fitStage`）、`js/ui-prefs.js`（設定の配線）、`css/style.css`（`--trk-ui-zoom`・`--trk-icon-zoom`）、`css/player-bar.css`、`tests/trk222-ui-zoom.test.mjs` |
+| 🎛 スマホ型のエフェクト欄のタブ分け（trk222） | `js/mobile-shell.js`（`fxSync`＝body の印だけ）、`css/mobile-shell.css`（`body[data-trk-view]`＋`body.trk-fx-in-library` で見せ分け。**DOM は動かさない**）、`js/core.js`（`fxInLibrary`） |
+| 📝 レビューと実機確認の依頼（2026-10-31） | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)（レビューしてほしいコード・実機で見てほしいこと・判断してほしいこと） |
 | 全体・安全検査 | `tools/check-repo.mjs`、`tools/check-security.mjs`、`tools/check-a11y.mjs`、`tools/check-lite.mjs` |
 
 ## 6. 直近の検証
+
+**trk220〜trk222（2026-10-30〜31・このリポジトリ）の確認**
+
+| 検査 | 結果 | 範囲・注意 |
+|---|---|---|
+| `npm run check` | **835 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の27件・trk222 の13件を足して 835。Static 0 failure・0 warning |
+| `node tools/check-repo.mjs` | **0 failure / 0 warning** | 文書・`sw.js` の cache 名・読み込み順・名前空間の検査を含む |
+| jsdom で実 `index.html` を通しで操作（trk221） | **OK** | PC→スマホ型の切り替え・保存・設定の欄の追随、曲を選んだときの再生バー表示、音量の反映、プレイ中に隠れる、PC型へ戻したときの後片付け、往復、設定中は下余白0 |
+| jsdom で実 `index.html` を通しで操作（trk222） | **OK（37項目）** | 既定値（100%／on／アイコン固定オン／謎設定オン）、125%・75%・50% の設計サイズと倍率、アイコン固定のオン／オフ、知らない値は100%、プレイ中は等倍、縦型 1080×1920 でのはみ出しなし、スマホ型はステージを拡大しない、エフェクト／ライブラリのタブで `display` が設計どおり、2択ボタンの往復と保存の有無 |
+| 画面サイズ×拡大率のはみ出し | **OK（24/24）** | 1920×1080・1440×900・1366×768・1080×1920・2560×1440・800×600 の6通り × 50・75・100・125% の4通り。ステージが画面からはみ出さない |
+| 実ブラウザ・実機で触る | **未確認** | この作業環境にブラウザも端末もない。とくに再生バーの拡大に使う CSS の `zoom` はブラウザ差が出やすい。手順は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) の §2 |
 
 **trk219（2026-10-29）の確認**
 
@@ -662,6 +740,18 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 ## 7. 最近の変更
 
+- **🔍 trk222：拡大率・アイコンの大きさ・2択の画面切り替え・エフェクト欄のタブ分け（2026-10-31）**：実際に触っての要望5点。
+  - **拡大率**（`settings.uiScale`＝50／75／100／125%、既定100%）：`fitStage()` がステージの設計サイズを `1/拡大率` に縮めて `min(iw/W, ih/H) × 拡大率` で描くので、文字とボタンが同じ比率で大きくなり、**画面からはみ出さない**。ゲーム中は100%（盤面を欠けさせない）、スマホ型は再生バーだけ `zoom` で拡大。
+  - **アイコンの大きさは100%で固定**（`fixedIconSize`・既定オン）：アイコンだけ `1/拡大率` に割り戻す（`--trk-icon-zoom`）。
+  - **右上の切り替えを2択に**：📱／🖥 は押すたび PC型 ↔ スマホ型。❓謎設定「画面の形は、常に選んだものを使う」（`uiModeLock`・既定オン）をオフにすると、その場だけ切り替えて保存しない（`sessionMode`）。
+  - **スマホ型のエフェクト欄をエフェクトのタブへ**（🎛／▶ TV／くわし×2／TRKアンプ／TRKエフェクト／TRK MIDI MIX）。`fxInLibrary`（既定オフ）でライブラリのタブにも出せる。**DOM は動かさず**、`body[data-trk-view]` と `body.trk-fx-in-library` の印＋CSS で見せ分け（`tv-dock.js`・`fx-dock.js` の MutationObserver と取り合わない）。
+  - 設定の配線は **`js/ui-prefs.js`（新規）**。保存は `core.settings` のみで**新しい保存キーなし**（`?reset=all` で既定へ）。`sw.js` の cache は **`trk-v2026.10.31-trk222`**、`tests/trk222-ui-zoom.test.mjs`（13件）で **835 pass**。実ブラウザ・実機は未確認（§4-61）。
+- **▶📱 trk221：PC でもスマホ型の UX＋下の再生バー（2026-10-31）**：`settings.uiMode`（`auto`／`desktop`／`mobile`）で、PC でもスマホ型・大きいタブレットでも PC型を選べる。下部ナビ・1画面1役割は trk220 のものを使い回す。
+  - **下の再生バー**（`js/player-bar.js`＋`css/player-bar.css`）：ジャケット・曲名／歌手・⏮▶⏭・上端のシーク線・経過と長さ・音量・⛶・✕。参考は Clementine／VLC の下部プレイヤー。色はスキンの CSS 変数だけ。
+  - **独自の再生状態を持たない**：▶ は曲名バナーの本物のボタン、曲送りは `nextSong`／`prevSong`、シークは `Trk.play.seekTo`、再生画面は `TrkMediaPlayer.open`。ゲーム中・再生画面・書斎・ほかの窓では引っ込み、下部ナビの上に載り 🛟 とトーストの位置も逃がす。
+  - `tests/trk221-ui-mode.test.mjs`（11件）・`tests/trk221-player-bar.test.mjs`（17件）。実機は未確認（§4-62）。
+- **📲 trk220：iPhone のホーム画面から使う standalone PWA の仕上げ（2026-10-30）**：スマホ用の画面シェル（下部ナビ・1画面1役割・取込の折りたたみ・設定の欄の記憶・縦向きの案内）、iOS の meta と manifest、`js/ios-pwa.js`、`sw.js` の install 事前キャッシュ、CI（`.github/workflows/check.yml`）。詳細は [`PWA.md`](PWA.md)。`tests/trk220-*.test.mjs`（47件）。実機は未確認（§4-63）。
+
 - **📦 1.1.8：trk219 を配る版（2026-10-29）**：**アプリ本体は trk219**（出力デバイスを切り替えても再生を止めない）。1.1.7 の配布ZIPの `trk-files/` を土台に、**コード4ファイル**（`index.html`・`js/audio-keep.js`＝新規・`js/fx.js`・`sw.js`）と**配布版のガイド2本**（`docs/guide/sound.md`・`docs/guide/en.md`）を差し替え、`README-1.1.7.md` を `README-1.1.8.md` に改名して今回の内容を追記、`README.md`・`README-SLIM.md`・`release/README.txt` を 1.1.8 に（`README-SLIM.md` のファイル数も 225 に）。
   - ZIP は **`2026-10-29 14:00`（UTC）** で組み立て＝**227エントリ・3,933,293 bytes**・`unzip -t` 破損なし・全エントリ同時刻・**`sha256 8075ce5bc3a15af65273455b5f29ed9be9657283ecf9b61dedda9d80274be9c2`**。`--check` OK・ローカル配信 200・差分は 1.1.7 に当てると配布物と完全一致。
   - **1.1.0〜1.1.7 のZIPと Drive の `trk-1.1.0`〜`trk-1.1.7` はそのまま**（同じ名前で作り直さない）。
@@ -732,8 +822,13 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 - [ ] 配布物を作るときは §9 の手順で `tools/prepare-release.mjs --check` を通し、`index.html`・`README.txt`・`trk-files/` 以外がルートに出ていないことを確かめた。
 - [ ] 版を上げたときは §9 の「版を上げるときに直す場所」を全部直し、`release/README.txt`・配布アプリの `README-1.x.y.md`・`sw.js` の `CACHE`・`release-manifest.json` の `version` がそろっていることを確かめた。
 - [ ] Drive へ上げたら、**落とし直してバイト一致**を確かめ、`SHA256SUMS` を新しいハッシュで上書きした（§9）。
+- [ ] **オフラインで起動できる**：`sw.js` の install 事前キャッシュに、`index.html` が読み込む CSS・JS・アイコンが入っている（`node tools/check-repo.mjs` が検査）。実機では機内モードで一度起動する。
+- [ ] **ホーム画面から起動して URL バーが出ない**：`manifest.webmanifest` の `display`／`display_override`・`start_url`・`scope`・アイコンを変えたときは、実機で入れ直して確かめる（`id` を変えると別アプリ扱いになる）。
+- [ ] **実機で確かめていないことを「確認済み」と書かない**：§4 に番号で残し、[`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) の該当項目を更新する。
 
 ## 9. 配布物の形（1.0.8〜／現在 **1.1.8**：`index.html`＋`README.txt`＋`trk-files/`）
+
+> **このリポジトリ（trk-PWA）では配布ZIPを作りません。** 配り方は GitHub Pages です（[`PWA.md`](PWA.md) §11・[`ORIGIN.md`](ORIGIN.md)）。以下の §9 は上流 `trk` の 1.1.x のZIPの話で、`npm run release` を使うときだけ関係します。
 
 **決めたこと（2026-10-26／1.0.8〜1.1.8）**：ZIPを開いたときに **`index.html`・`README.txt`・`trk-files/` の3つだけ**が見える形にする（1.0.6 のころの試作 `trk-1.0.6-layout-proto.zip` と同じ見た目。利用者からの指定）。**OS別のZIPは作らない**——Windows・macOS・Linux は同じアプリ本体で動くので、1本で足りる（1.0.7 までの win/linux・mac の2本は廃止）。
 

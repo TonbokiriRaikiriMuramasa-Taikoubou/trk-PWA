@@ -34,7 +34,7 @@
 | 元リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA`（上流 `trk` 1.1.8 を履歴ごと取り込み済み） |
 | 上流 | `TonbokiriRaikiriMuramasa-Taikoubou/trk`（1.1.8、`06cef87`） |
 | 新リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone`（空。READMEのみ、Pages未設定。**まだ移していません**） |
-| 作業ブランチ | `arena/608b424c-trk-pwa`（Phase 2・3 の実装。PR を開く） |
+| 作業ブランチ | `arena/608b424c-trk-pwa`（Phase 2・3・4 の実装。PR #3 を開いてマージ待ち） |
 | main | `8d33db6`（PR #1 マージ済み）。PR #2（docs）はこのブランチに取り込み済み |
 | テスト | `npm run check` **835 pass / 0 fail**（2026-10-31、trk220 の47件・trk221 の27件・trk222 の13件を追加） |
 | Pages | `trk-PWA` で有効化済み（Source: GitHub Actions）。初回デプロイは `Configure Pages` で失敗（**Pages 有効化より前の実行**が原因。APIは `Not Found`）。有効化後の `main` への push で再実行される |
@@ -57,11 +57,12 @@
 - 保存キーは増やしていません（`core.settings` のみ。`?reset=all` で既定へ）。
 - **trk222（2026-10-31）**：再生バーの既定を「つねに表示」へ。**拡大率（50／75／100／125%）** を追加（PC型の画面と再生バー。ゲーム中は100%）。**アイコンの大きさは100%で固定**（既定オン）。右上の 📱／🖥 を **PC型 ↔ スマホ型 の2択**にし、❓ 謎設定に「画面の形は、常に選んだものを使う」（既定オン）を追加。スマホ型のエフェクト欄（音楽・映像・くわし・TRKアンプ・TRKエフェクト・MIX）を**エフェクトのタブへ集約**し、ライブラリのタブにも出せる設定（既定オフ）を追加。
 - 詳しい設計・検証・未実施の項目は `docs/UI-MODE-AND-PLAYER-BAR.md`（§8 が trk222）、要約は `docs/PWA.md` §9.1。
+- **レビューと実機確認のお願い**は `docs/REVIEW-REQUEST-2026-10-31.md`（コードレビューの観点・実機チェックリスト・判断してほしいこと）。
 
 ### まだ残っているもの
 
 - **iPhone実機の確認**：Phase 0。`docs/IPHONE-PWA-BRAINSTORM-2026-10-30.md` §6 の18項目。**未実施**。
-- **実ブラウザでの見た目**：trk221 の再生バーと画面の形の切り替え。jsdom の通し確認だけで、Chrome／Safari での見た目は**未実施**（`docs/UI-MODE-AND-PLAYER-BAR.md` §5・§6）。
+- **実ブラウザでの見た目**：trk221 の再生バーと画面の形の切り替え、trk222 の拡大率とエフェクト欄のタブ分け。jsdom の通し確認だけで、Chrome／Safari での見た目は**未実施**（`docs/UI-MODE-AND-PLAYER-BAR.md` §5・§6）。
 - **初回デプロイの成功**：`main` にマージしたあと、Actions の `Deploy GitHub Pages` を見る。
 - **オリジンの移行作業**：§4.2・§5。URL は `.../trk/`（リポジトリ `trk`）に決まりました。**コードを `trk` へ移す作業と、告知の時期は所有者の判断**です。
 - **公開告知**：Phase 4。バックアップ導線（書き出し／読み戻し）の案内もここで詰める。
