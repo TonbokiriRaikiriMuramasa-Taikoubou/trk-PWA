@@ -60,22 +60,38 @@ git push origin <作業ブランチ>
 
 - 上流のバージョン（`HANDOFF.md` の「現在のバージョン」）を確認し、**このファイルの「上流コミット」も更新**します。
 - チェックが通らないまま配信しない。`npm run check` は静的検査・セキュリティ・a11y・vendor・各機能テストを含みます。
+- `README.md` はチェック上 **12KB（12,288 bytes）が上限**です。Phase 1時点で **12,189 bytes** と余裕が少ないので、上流の追記で超えたら先頭のPWA案内を短くしてください。
 
 ## 5. 配信の仕組み
 
 `.github/workflows/pages.yml`（上流から流用）が、リポジトリ直下をそのまま `_site/` にコピーしてGitHub Pagesへ出します。ビルドはありません。
 
+### 初回だけ人が必要な作業
+
+**Pagesの有効化は、リポジトリ設定で人が行う必要があります。**
+
+1. GitHubのリポジトリ → **Settings** → **Pages**
+2. **Build and deployment** → **Source** を **GitHub Actions** にする
+
+理由：
+
+- エージェントのGitHub接続（GitHub Appのインストールトークン）にはPagesの管理権限がなく、APIは **403 `Resource not accessible by integration`** を返しました。
+- `actions/configure-pages` の `enablement: true` は、action.ymlの仕様上 **`GITHUB_TOKEN` 以外のトークン**（`administration:write` と `pages:write`）が必要です。Secretsを増やさない方針なので採用していません。
+
+### デプロイ
+
 - `main` へpush → 自動デプロイ。
-- 作業ブランチから試験デプロイする場合：Actionsの `Deploy GitHub Pages` を `workflow_dispatch` で、そのブランチを指定して実行。
-- **Pagesは「最後にデプロイした内容」を配る**ので、作業ブランチから配信すると、その内容が本番URLに出ます。試験公開であることを忘れずに。
+- `workflow_dispatch` は、**ワークフローファイルが既定ブランチ（main）に存在しないと実行できません**。そのため、作業ブランチから直接の試験デプロイはできません。
+- **Pagesは「最後にデプロイした内容」を配る**ので、main以外から配信した場合はその内容が本番URLに出ます（現状はmainのみ）。
 
 配信物には `tools/`・`tests/`・`docs/` も含まれます（Phase 1は簡便さを優先）。容量や不要な公開が気になる段階で、除外リストを検討します。
 
 ## 6. 公開前に確認すること（Phase 1）
 
-- [x] 上流1.1.8を取り込み、`npm run check` が通る
+- [x] 上流1.1.8を取り込み、`npm run check` が通る（747 pass）
 - [x] Pages用ワークフローがある
-- [ ] Pagesを有効化し、HTTPSのURLが出る
+- [ ] **Pagesを有効化**（Settings → Pages → Source: GitHub Actions。人が行う）
+- [ ] `main` へマージし、HTTPSのURLが出る
 - [ ] `/` が開き、Service Workerが登録される（DevToolsのApplication）
 - [ ] `manifest.webmanifest` とアイコンが200で返る
 - [ ] オフラインで再読み込みできる（一度開いた後）
@@ -94,4 +110,4 @@ git push origin <作業ブランチ>
 - モバイル画面シェルの移植（Phase 2）
 - iOS向けのmanifest・インストール案内・保存説明・取込・音・向きの調整（Phase 3）
 - 独自ドメインの取得、App Store／TestFlight／代替マーケットへの登録
-- `main` へのマージ（別途確認）
+- `main` へのマージ（別途確認。Phase 1の公開はこのマージで始まる）

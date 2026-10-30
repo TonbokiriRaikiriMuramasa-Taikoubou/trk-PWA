@@ -22,8 +22,8 @@
 | このリポジトリへの書き込み | 作業ブランチへのcommit／push、ドキュメント追加 | `contents: write` | 実施 |
 | 依存関係の取得 | `npm ci`（npm registry） | ネットワーク | 実施 |
 | 静的検査・テスト | `npm run check` | ローカル実行 | 実施 |
-| GitHub Actionsの実行 | `Deploy GitHub Pages` の `workflow_dispatch` | `actions: write`、`pages: write`、`id-token: write` | 実施 |
-| GitHub Pagesの有効化 | Actions配信（`build_type=workflow`）の設定 | リポジトリ管理（admin） | 実施 |
+| GitHub Actionsの実行 | `Deploy GitHub Pages` の `workflow_dispatch` | `actions: write`、`pages: write`、`id-token: write` | **未実施**（ワークフローがmainに無いためdispatch不可） |
+| GitHub Pagesの有効化 | Actions配信（`build_type=workflow`）の設定 | リポジトリ管理（admin）＋Pages権限 | **未実施**（APIは403。人がSettingsで設定） |
 | 診断ページの追加 | `tools/ios-probe.html` | `contents: write` | 実施 |
 | プルリクエストの作成 | 作業ブランチ → `main`（レビュー用） | `pull_requests: write` | 任意 |
 
@@ -31,6 +31,7 @@
 
 - ログイン：`TonbokiriRaikiriMuramasa-Taikoubou`（ArenaのGitHub接続経由）
 - このリポジトリの権限：`admin: true` / `maintain: true` / `push: true` / `triage: true` / `pull: true`
+- ただし、この接続は**GitHub Appのインストールトークン**で、Pagesの管理権限は含まれていません。`POST /repos/.../pages` は **403 `Resource not accessible by integration`** でした。リポジトリのadmin表示＝Pages管理ができる、ではありません。
 - トークンの値は**表示も保存もしません**（`gh auth status` の表示はマスク済み）。
 - ワークフローに与える権限は `.github/workflows/pages.yml` の中だけ：`contents: read` / `pages: write` / `id-token: write`。
 - 新しいSecrets、環境変数、デプロイキーは**作りません**。
@@ -56,6 +57,7 @@
 ## 6. 有効期間と見直し
 
 - 有効：**Phase 1が終わるまで**（または次の指示があるまで）。
+- Phase 1のうち、**Pagesの初回有効化（Settings → Pages）と `main` へのマージは人が行う**。エージェントはマージ後のデプロイ結果の確認までを担当する。
 - 次に再確認する作業：Phase 2（モバイルシェル移植）、Phase 3（iOS調整）、`main` へのマージ、独自ドメイン、ストア登録、外部サービスとの連携、課金、個人情報を扱う変更。
 - 上流 `trk` の更新を取り込むときは、この記録の「今回許可された作業」の範囲内で行い、差分を `docs/PWA.md` に追記します。
 
