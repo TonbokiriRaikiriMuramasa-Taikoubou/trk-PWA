@@ -372,15 +372,17 @@
     try {
       new MutationObserver(records => {
         if (!bar || bar.hidden) return;
+        const nav = document.querySelector(".trk-mobile-nav");
         const relevant = records.some(record => {
-          if (record.type === "attributes") return record.target === document.body;
+          /* body の印（画面の形）と、下部ナビの出入り・表示（ナビが隠れると下の余白が0になる） */
+          if (record.type === "attributes") return record.target === document.body || record.target === nav;
           const kids = [...record.addedNodes, ...record.removedNodes];
           return kids.some(node => node.nodeType === 1 &&
             ((node.classList && node.classList.contains("trk-mobile-nav")) ||
              (node.querySelector && node.querySelector(".trk-mobile-nav"))));
         });
         if (relevant) measure();
-      }).observe(document.body, { attributes: true, attributeFilter: ["class"], childList: true });
+      }).observe(document.body, { attributes: true, attributeFilter: ["class", "hidden"], childList: true, subtree: true });
     } catch (_) { /* MutationObserver が使えなくても、次の sync で測り直す */ }
   }
 
