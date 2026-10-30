@@ -41,6 +41,10 @@
      オフなら、開き直したときに端末へ合わせて選び直します（設定には書きません）。 */
   let sessionMode = null;
   function uiMode() {
+    /* 🖥 trk223（2026-10-31 レビュー）：固定（uiModeLock）がオフなら、保存してある uiMode は使わない。
+       その場で選んだ形（sessionMode）だけを使い、開き直したら端末に合わせて選び直す。
+       これまでは「オフにしても保存済みの形がそのまま使われて」いた。 */
+    if (core.settings.uiModeLock === false) return sessionMode && UI_MODES.includes(sessionMode) ? sessionMode : "auto";
     const mode = sessionMode || core.settings.uiMode;
     return UI_MODES.includes(mode) ? mode : "auto";
   }
@@ -427,7 +431,8 @@
   }
   function setUiMode(mode, { save = true, say = true } = {}) {
     const nextMode = UI_MODES.includes(mode) ? mode : "auto";
-    if (save) {
+    /* 保存するのは「画面の形は、常に選んだものを使う」がオンのときだけ。オフなら必ずその場だけ。 */
+    if (save && core.settings.uiModeLock !== false) {
       sessionMode = null;
       core.settings.uiMode = nextMode;
       if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
@@ -473,9 +478,11 @@
     uiButtonSync();
   }
   function syncUiControls() {
-    for (const [id, key] of [["uiMode", "uiMode"], ["playerBarMode", "playerBar"]]) {
+    /* 画面の形は、いま効いている値（固定がオフなら「自動」）を見せる */
+    const effective = [["uiMode", uiMode()], ["playerBarMode", core.settings.playerBar || ""]];
+    for (const [id, value] of effective) {
       const node = document.getElementById(id);
-      if (node && node.value !== String(core.settings[key] || "")) node.value = String(core.settings[key] || "");
+      if (node && node.value !== String(value)) node.value = String(value);
     }
     uiButtonSync();
   }

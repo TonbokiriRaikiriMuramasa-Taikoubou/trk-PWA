@@ -32,7 +32,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* ===== 3. ステージ（1920×1080 を画面に合わせて縮小） ===== */
 #stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%);
   overflow:hidden;background:var(--stage-bg);user-select:none;-webkit-user-select:none}
-#view,#fx{position:absolute;inset:0;width:1920px;height:1080px}
+/* 🖥 trk223（2026-10-31 レビュー）：背景の映像・演出のキャンバスは 1920×1080 の絵を描きますが、
+   置き場所はステージいっぱい（100%）にします。拡大率 50% ではステージが 3840×2160 になるため、
+   1920px 固定だと左上の 1/4 しか塗られませんでした。100% のときは今までと同じ大きさです。 */
+#view,#fx{position:absolute;inset:0;width:100%;height:100%}
 #fx{z-index:3;pointer-events:none}
 #vrmCanvas,#mmdCanvas{position:absolute;z-index:2;pointer-events:none}
 #video{position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none}

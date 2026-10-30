@@ -35,6 +35,13 @@ const fnDrain = grab(shareSrc, /async function drainShareInbox\(\) \{[\s\S]*?\n\
 const shareCacheConst = grab(shareSrc, /const SHARE_CACHE = "[^"]+";/, "SHARE_CACHE (page)");
 const fnHandleShare = grab(swSrc, /async function handleShareTarget\(request\) \{[\s\S]*?\n\}/, "handleShareTarget()");
 const swCacheConst = grab(swSrc, /const SHARE_CACHE = "[^"]+";/, "SHARE_CACHE (sw)");
+/* trk223：共有の一時置き場もスコープ付き（/trk/ と /trk-PWA/ で取り違えない）。
+   置き場所の印の作り方は sw.js の scopeTagOf() と、ページ側の shareScopeTag() で同じでなければならない。 */
+const swTagFn = grab(swSrc, /function scopeTagOf\(pathname\) \{[\s\S]*?\n\}/, "scopeTagOf()");
+const pageTagFn = grab(shareSrc, /function shareScopeTag\(pathname\) \{[\s\S]*?\n\}/, "shareScopeTag()");
+const pageScopePathFn = grab(shareSrc, /function shareScopePath\(\) \{[\s\S]*?\n\}/, "shareScopePath()");
+const swNameConst = grab(swSrc, /const SHARE_CACHE_NAME = [^;]+;/, "SHARE_CACHE_NAME");
+const pageNameConst = grab(shareSrc, /const SHARE_CACHE_NAME = [^;]+;/, "SHARE_CACHE_NAME (page)");
 const swPathConst = grab(swSrc, /const SHARE_PATH = [^;]+;/, "SHARE_PATH");
 const swInboxConst = grab(swSrc, /const SHARE_INBOX_PREFIX = [^;]+;/, "SHARE_INBOX_PREFIX");
 /* 振り分けに使う実物の表（library.js／core.js から切り出す。テスト用に書き写さない） */
@@ -178,7 +185,10 @@ function drainSandbox({ inbox = [], extraUrls = [], withCaches = true, confirmAn
   }
   vm.createContext(sandbox);
   vm.runInContext(`
+${pageTagFn}
+${pageScopePathFn}
 ${shareCacheConst}
+${pageNameConst}
 ${fnInboxPrefix}
 ${fnDisplayName}
 ${fnDrain}
@@ -202,7 +212,7 @@ test("drainShareInbox() reads only the inbox prefix, restores names, routes once
   });
   const n = await api.__drain();
   assert.equal(n, 2);
-  assert.equal(api.__state.opened[0], "trk-share-inbox-v1");
+  assert.equal(api.__state.opened[0], "trk-share-inbox-v1@trk", "the inbox cache is scoped to /trk/ (trk223)");
   const routed = api.__routed();
   assert.equal(routed.length, 1, "one batch");
   assert.equal(routed[0][0].name, "song.mp3");
@@ -247,12 +257,15 @@ function swHarness({ fields = null, formThrows = false, putFailsFor = "" } = {})
   };
   vm.createContext(sandbox);
   vm.runInContext(`
+${swTagFn}
+const SCOPE_TAG = scopeTagOf(SCOPE.pathname);
 ${swCacheConst}
+${swNameConst}
 ${swPathConst}
 ${swInboxConst}
 ${fnHandleShare}
 window.__handle = handleShareTarget;
-window.__paths = { SHARE_PATH, SHARE_INBOX_PREFIX, SHARE_CACHE };
+window.__paths = { SHARE_PATH, SHARE_INBOX_PREFIX, SHARE_CACHE, SHARE_CACHE_NAME };
 `, sandbox, { filename: "sw.js#share-target" });
   const request = {
     formData: async () => {
@@ -335,7 +348,8 @@ test("wiring: script order, exported entry points, worker cleanup whitelist, fou
   assert.ok(librarySrc.includes("LIB_SHOW, MEDIA_EXT, VIDEO_EXT, addSongFiles"), "library exports its extension tables");
   assert.ok(studySrc.includes("importArchives:studyImportArchives"), "study room exposes the same validated archive import");
   assert.ok(customSrc.includes("updateMascotUI, installAndUse"), "custom exposes installAndUse (the pack-file input's own path)");
-  assert.ok(swSrc.includes("key !== SHARE_CACHE"), "the activate cleanup spares the share inbox");
+  /* trk223：掃除はスコープ付きの名前（SHARE_CACHE_NAME）を例外にする */
+  assert.ok(swSrc.includes("key === SHARE_CACHE_NAME"), "the activate cleanup spares the share inbox");
   assert.ok(swSrc.includes('if (request.method === "POST")'), "the fetch handler branches on POST before the GET-only logic");
   /* sw.js の cache 版数はリリースごとに進むので、ここでは固定しない（check-repo.mjs が確認する） */
   for (const key of ["shareInboundNone", "shareInboundError", "shareInboundUnsupported", "shareInboundAsk"]) {
@@ -347,6 +361,30 @@ test("wiring: script order, exported entry points, worker cleanup whitelist, fou
   assert.doesNotMatch(shareSrc.slice(launchStart, launchEnd), /confirm\s*\(/, "explicit Open-with-this-app does not get a second confirmation");
   assert.ok(shareSrc.includes("window.TrkShareInbox = Object.freeze({ classifyInboundFile, zipLooksLikePack, routeInboundFiles, drainShareInbox, SHARE_CACHE })"), "test handles are exported");
   assert.equal(swCacheConst, shareCacheConst, "worker and page agree on the inbox cache name");
+});
+
+/* trk223（2026-10-31 レビュー④）：キャッシュ名にスコープの印を付ける。sw.js とページ側で同じ計算か。 */
+test("trk223: the inbox cache name is scoped, and the worker and the page compute the same tag", () => {
+  const run = (fnSrc, name) => {
+    const sandbox = {};
+    vm.createContext(sandbox);
+    vm.runInContext(`${fnSrc}; globalThis.__tag = ${name};`, sandbox);
+    return sandbox.__tag;
+  };
+  const swTag = run(swTagFn, "scopeTagOf");
+  const pageTag = run(pageTagFn, "shareScopeTag");
+  for (const pathname of ["/", "/trk/", "/trk-PWA/", "/Trk%20PWA/", "/a/b/", "/trk-PWA"]) {
+    assert.equal(swTag(pathname), pageTag(pathname), `${pathname} で同じ印になる`);
+  }
+  assert.equal(swTag("/"), "root");
+  assert.equal(swTag("/trk/"), "trk");
+  assert.equal(swTag("/trk-PWA/"), "trk-pwa");
+  /* 別のスコープのキャッシュを消さない（trk と trk-pwa は互いの名前を含まない） */
+  assert.ok(!`trk-v1@trk-pwa`.endsWith("@trk"));
+  assert.ok(!`trk-v1@trk`.endsWith("@trk-pwa"));
+  /* sw.js は掃除の例外にスコープ付きの名前を使う */
+  assert.ok(swSrc.includes("key === SHARE_CACHE_NAME"), "the activate cleanup spares this scope's inbox");
+  assert.ok(swSrc.includes("ok_never_used_placeholder") === false);
 });
 
 /* trk177（レビュー）：share_target はほかのサイトのフォームからも届くので、取り込む前に件数と名前を見せて尋ねる */

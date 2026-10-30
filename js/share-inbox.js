@@ -41,6 +41,18 @@ Object.assign(TEXT.ko, {
 });
 
 const SHARE_CACHE = "trk-share-inbox-v1";
+/* 🧭 trk223（2026-10-31 レビュー④）：CacheStorage はオリジンで共有なので、同じホストに /trk/ と
+   /trk-PWA/ の2つを置くと、共有の一時置き場も取り違えます。sw.js と同じ規則で、置き場所の印を付けます
+   （sw.js の scopeTagOf() と同じ計算。片方だけ直さないこと）。 */
+function shareScopeTag(pathname) {
+  const path = String(pathname || "/").replace(/\/+$/, "");
+  if (!path) return "root";
+  return path.slice(1).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "root";
+}
+function shareScopePath() {
+  try { return new URL(".", document.baseURI).pathname; } catch (_) { return "/"; }
+}
+const SHARE_CACHE_NAME = `${SHARE_CACHE}@${shareScopeTag(shareScopePath())}`;
 const PACK_JSON_RE = /(^|\/)pack\.json$/;   /* custom.js の installPackFileSerial と同じ探し方 */
 
 function shareToast(key, vars) {
@@ -119,7 +131,7 @@ async function drainShareInbox() {
   const prefix = shareInboxPrefix();
   if (!prefix) return 0;
   let cache;
-  try { cache = await caches.open(SHARE_CACHE); } catch (_) { return 0; }
+  try { cache = await caches.open(SHARE_CACHE_NAME); } catch (_) { return 0; }
   let keys;
   try { keys = await cache.keys(); } catch (_) { return 0; }
   const inbox = keys.filter(req => { try { return new URL(req.url).pathname.startsWith(prefix); } catch (_) { return false; } });

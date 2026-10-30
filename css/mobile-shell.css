@@ -29,7 +29,11 @@
 .trk-mobile .brand p { font-size: 13px; }
 .trk-mobile .headTools { flex-wrap: wrap; }
 .trk-mobile .headTools button { min-height: 44px; }
-.trk-mobile #tvDock { display: none !important; }
+/* ▶ TV（#tvDock）は、trk220 では選曲画面に出さない扱いだった。
+   trk223（2026-10-31 レビュー①）：trk222 で「エフェクトのタブへ集める」ようにしたので、
+   !important の1行で無条件に隠すと、エフェクトのタブでもライブラリ（設定オン）でも出なくなる。
+   隠すのは「エフェクトのタブでもなく、ライブラリに出す設定でもないとき」だけに絞る。 */
+.trk-mobile:not([data-trk-view="effects"]):not(.trk-fx-in-library) #tvDock { display: none !important; }
 .trk-mobile .libHead { flex-wrap: wrap; gap: 8px; }
 .trk-mobile .libTools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .trk-mobile .libTools input { grid-column: 1 / -1; min-width: 0; }
@@ -87,8 +91,11 @@
 .trk-mobile .trk-import .miniActions, .trk-mobile .trk-import > .hint { margin: 0 12px 12px; }
 .trk-mobile #libPanel #mediaOpenBtn, .trk-mobile #libPanel #studyOpenBtn { display: none; }
 
-/* ---------- エフェクトの画面 ---------- */
-.trk-mobile[data-trk-view="effects"] .songCol,
+/* ---------- エフェクトの画面 ----------
+   右の列（選択中の曲）は、エフェクトのタブでは隠す。
+   trk223（2026-10-31 レビュー）：ここで左の列（.songCol）まで display:none にしていたため、
+   あとの規則で flex に戻すことになり、指定がぶつかっていました。左の列は下の trk222 の規則
+   （`.trk-mobile[data-trk-view="effects"] .songCol { display: flex; }`）に任せます。 */
 .trk-mobile[data-trk-view="effects"] .detailCol { display: none; }
 .trk-mobile[data-trk-view="effects"] #quickGuide,
 .trk-mobile[data-trk-view="game"] #quickGuide { display: none; }
@@ -166,8 +173,10 @@ body.ios button.ios-only, body.ios .iosHidden { display: inline-block !important
      オンなら、ライブラリのタブにも同じ欄が出ます（エフェクトのタブには、どちらでも出ます）。
    ========================================================================== */
 /* エフェクトのタブ：曲リストの列を「エフェクトの欄だけ」に絞る（曲リスト・検索・追加は隠す）。
-   欄そのものは hide しない（display を上書きすると、#fxDock のような flex の見た目が崩れるため）。 */
-.trk-mobile[data-trk-view="effects"] .songCol { display: block; }
+   欄そのものは hide しない（display を上書きすると、#fxDock のような flex の見た目が崩れるため）。
+   trk223（レビュー）：`display:block` にすると、`.songCol` の flex と gap:14px が消えて欄が詰まる。
+   flex のまま（列の向きと gap は css/style.css の .songCol から引き継ぐ）。 */
+.trk-mobile[data-trk-view="effects"] .songCol { display: flex; }
 .trk-mobile[data-trk-view="effects"] .songCol > *:not(#fxDock):not(#tvDock):not(.dockMore):not(.tvMore):not(#ampPanel):not(#richPanel):not(#midiMixPanel) { display: none; }
 
 /* ライブラリのタブ：設定（🎛 ライブラリにもエフェクトの欄を出す）がオフなら隠す */

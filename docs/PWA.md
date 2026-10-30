@@ -179,7 +179,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 | --- | --- |
 | 画面の形（`settings.uiMode`） | `auto`／`desktop`／`mobile`。既定 `auto` はこれまでどおり（スマホ・タブレットだけスマホ型）。`js/mobile-shell.js` の `enable()`／`disable()` で**開き直さずに**切り替わる |
 | 切り替えの入口 | ⚙ → 🖥 画面と再生バー／選曲画面の右上の 📱／🖥（3回で一周） |
-| 下の再生バー（`settings.playerBar`） | `on`／`auto`／`off`。既定 `auto`（曲を選ぶと出る）。`js/player-bar.js`・`css/player-bar.css` |
+| 下の再生バー（`settings.playerBar`） | `on`／`auto`／`off`。既定 `on`（trk222。つねに表示）。`js/player-bar.js`・`css/player-bar.css` |
 | バーの中身 | ジャケット・曲名・歌手・⏮▶⏭・経過/長さ・上端のシーク線・音量・⛶（再生画面）・✕（表示しない） |
 | 本体との関係 | 再生はバナーの ▶ をそのまま押す／曲送りは `nextSong`・`prevSong`・`selectSong`／シークは `Trk.play.seekTo`／再生画面は `TrkMediaPlayer.open`。**独自の再生状態を持たない** |
 | 引っ込む場面 | ゲーム中（`playing`／`paused`）・再生画面・書斎・ほかの窓（プレイリスト／ようこそ／案内） |
@@ -200,6 +200,16 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 | エフェクトの欄 | スマホ型では **エフェクトのタブ**へ集約。`fxInLibrary`（既定オフ）でライブラリのタブにも出せる。DOM は動かさず CSS で切り替え |
 
 詳しくは `docs/UI-MODE-AND-PLAYER-BAR.md` §8。
+
+**trk223（2026-10-31 追加・trk222 レビューへの対応）**
+
+| 項目 | 実装 |
+| --- | --- |
+| cache の名前 | `trk-v2026.10.31-trk223@<スコープ>`（`/trk-PWA/` なら `@trk-pwa`、ルート `/` なら `@root`）。activate は**自分のスコープのものだけ**を削除（同じオリジンに2つ置いても取り違えない） |
+| 殻の先読み | `fetch(…, { cache: "no-cache" })` で古い JS を拾わない。`verified.json` と `assets/mmd/lat-miku/preset.json` も先に入れる |
+| 通信優先 | ナビゲーションだけ **3 秒**で打ち切ってキャッシュへ（`AbortController`）。セーフモードは今までどおりキャッシュを使わない |
+| 共有の受け口 | `SHARE_CACHE_NAME` もスコープごと（`js/share-inbox.js` と同じ印） |
+| manifest | `display_override` を `["standalone","minimal-ui","fullscreen"]` に（先頭が `fullscreen` だと Android でステータスバーまで消える） |
 
 ## 10. Phase 3：iOS の詰め（実装済み・未実機）
 
@@ -229,7 +239,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 ```sh
 npm ci
-npm run check                                  # 835 pass / 0 fail（trk220 の47件・trk221 の27件・trk222 の13件を追加）
+npm run check                                  # 861 pass / 0 fail（trk220 の47件・trk221 の27件・trk222 の13件・trk223 の25件を追加）
 node tools/check-repo.mjs                      # 0 failure / 0 warning
 ```
 

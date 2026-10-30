@@ -446,7 +446,22 @@ const settings = {
   frameInterp: pick(prefs.frameInterp, ["off", "blend", "flow"], "off"),
   frameInterpStrength: num(prefs.frameInterpStrength, 0, 1, .85)
 };
-function saveUserPrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefsForSave())); } catch (_) {} }
+/* 🖥 trk223（2026-10-31 レビュー⑤）：同じオリジンで2つの trk! を公開できる（/trk/ と /trk-PWA/）。
+   localStorage はオリジンで共有なので、片方（古い版）が保存すると、その版が知らない設定
+   （uiScale・uiMode・playerBar など）が丸ごと消えていた。保存のときは、いま保存されている生の値に
+   重ねて書き、知らないキーはそのまま残す。工場出荷に戻したとき（fresh）だけは、きれいに置き換える。 */
+function storedPrefsRaw() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(PREFS_KEY) || "null");
+    return raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+  } catch (_) { return {}; }
+}
+function saveUserPrefs({ fresh = false } = {}) {
+  try {
+    const out = fresh ? prefsForSave() : Object.assign({}, storedPrefsRaw(), prefsForSave());
+    localStorage.setItem(PREFS_KEY, JSON.stringify(out));
+  } catch (_) {}
+}
 /* 🛟 trk202：セーフモードが安全側に倒した値を、保存に持ち込まない。
    いまは ?safe=1 で入っても、そのあと何か設定を保存すると folderAutoRead・mediaStartFromZero・
    previewEnabled が false のまま残り、通常の URL で開き直しても戻らなかった（1.0.7 レビューの指摘）。
@@ -805,7 +820,7 @@ function parseHashParams(hash) {
             setTimeout(() => b.remove(), 5000);
           };
           askFactoryReset(
-            () => { resetAllPrefs(); saveUserPrefs(); toast("♻️ " + tr("factoryAskYes")); setTimeout(() => location.reload(), 400); },
+            () => { resetAllPrefs(); saveUserPrefs({ fresh: true }); toast("♻️ " + tr("factoryAskYes")); setTimeout(() => location.reload(), 400); },
             () => toast(tr("factoryAskCanceled"))
           );
         }, 300);
@@ -838,7 +853,7 @@ function parseHashParams(hash) {
       k = String(k).toLowerCase();
       if (["all","factory"].includes(k)) {
         /* ♻️ コンソールからの trkReset("all") も、消す前に確認する */
-        askFactoryReset(() => { resetAllPrefs(); saveUserPrefs(); location.reload(); }, () => {});
+        askFactoryReset(() => { resetAllPrefs(); saveUserPrefs({ fresh: true }); location.reload(); }, () => {});
         return;
       }
       if (k==="safe") enterSafeMode(); else if (["tv","video"].includes(k)) resetVideoPrefs(); else if (["audio","sound"].includes(k)) resetAudioPrefs(); else if (k==="notes") resetNotesPrefs(); else if (["lite","light"].includes(k)) resetLitePrefs(); else if (["keys","key","pad","controller","input"].includes(k)) resetKeysPrefs(); else if (["amp","rack"].includes(k)) resetAmpPrefs(); else resetVideoPrefs();
