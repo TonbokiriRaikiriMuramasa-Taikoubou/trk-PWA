@@ -27,6 +27,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # 初回だけPagesを有効化する（すでに有効なら無視される）
+          enablement: true
       - name: Assemble static site
         # リポジトリのルートをそのまま公開します（ビルド不要）。
         # 開発用のファイルだけを除くので、css/ js/ icons/ docs/ にファイルを足しても
