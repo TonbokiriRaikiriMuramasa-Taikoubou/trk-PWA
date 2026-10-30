@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>プライバシー — trk!</title>
+<meta name="description" content="trk! のプライバシーについて。アカウントや広告を使わず、曲と設定を端末内で扱います。">
+<link rel="stylesheet" href="css/privacy.css">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+<header class="siteHeader">
+  <a class="brand" href="./"><span class="brandMark">trk!</span><span>All-Generation Rhythm Game</span></a>
+  <a class="backLink" href="./">ゲームへ戻る</a>
+</header>
+
+<main class="page">
+  <article class="card">
+    <p class="eyebrow">PRIVACY</p>
+    <h1>プライバシーについて</h1>
+    <p class="lead">trk! は、手持ちの曲で遊ぶための、サーバーを持たないブラウザ音ゲーです。現在のWeb版とPWA版では、アカウント登録・広告・行動分析を使いません。</p>
+    <p class="updated">最終更新：2026年10月15日</p>
+
+    <nav class="toc" aria-label="このページの項目">
+      <a href="#collect">収集する情報</a>
+      <a href="#local">端末内の保存</a>
+      <a href="#network">ネットワーク通信</a>
+      <a href="#delete">削除方法</a>
+      <a href="#apk">APK版について</a>
+      <a href="#contact">お問い合わせ</a>
+    </nav>
+
+    <section id="collect">
+      <h2>1. 収集する情報</h2>
+      <p>trk! の作者は、ゲーム内で次の情報を集めたり、利用目的のためにサーバーへ送信したりしません。</p>
+      <ul>
+        <li>氏名、メールアドレス、アカウント情報</li>
+        <li>プレイ履歴、スコア、設定、入力した曲の内容</li>
+        <li>広告用ID、アクセス解析用ID、位置情報</li>
+        <li>マイクやカメラからの録音・撮影データ</li>
+      </ul>
+      <p>曲、譜面、画像、VRM／MMDモデルなどを読み込む処理は、原則としてこのブラウザまたはアプリ内で完結します。共有機能はファイルを他者へ送る機能ではなく、端末上の曲を選曲画面へ渡す機能です。</p>
+    </section>
+
+    <section id="local">
+      <h2>2. 端末内に保存される情報</h2>
+      <p>ゲームを動かすため、次の情報がブラウザの <code>localStorage</code>、IndexedDB、またはCache Storageに保存されることがあります。trk! はこれらを運営者のサーバーへ送信しません。</p>
+      <ul>
+        <li>音量、言語、スキン、キー割り当て、シンセの設定</li>
+        <li>スコア、記録、お気に入り、カスタムスキン、エフェクト設定</li>
+        <li>ユーザーが明示的に「端末に残す」を選んだ共有曲のファイルとメタデータ</li>
+        <li>📚 書斎へ取り込んだ画像・テキストのコピー、栞と栞一覧、書き出し前のメモ、曲へ割り当てたジャケット、書斎の表示設定（IndexedDB <code>trk_study_room_v1</code>）。CBZ／ZIPを取り込む場合も、展開したページ画像をこの端末の書斎へコピーします。元のアーカイブやファイルは変更しません。</li>
+        <li>手で選んだ歌詞（<code>trk_lyrics_v1</code>）、字幕と字幕の遅延（<code>trk_subs_v1</code>）。ファイルの内容は表示のために端末内へ保存され、元ファイルには書き戻しません。</li>
+        <li>ユーザーが追加したアドオンのコードや設定。バックアップにも含まれる場合があります。</li>
+        <li>PWAをオフラインで起動するためのアプリファイルのキャッシュ</li>
+      </ul>
+      <p>曲の端末保存は初期状態ではオフです。保存した曲や設定は、ゲーム内の削除操作、設定のリセット、ブラウザのサイトデータ削除で消せます。ブラウザの保存容量やOSの判断により、保存が拒否・削除されることがあります。</p>
+      <p>📚 書斎の本・画像・文章・栞・メモや、パックを取り込むとき、または設定の「💾 端末の保存」から、ブラウザに保存領域の固定（<code>navigator.storage.persist()</code>）を求めることがあります。許可するかどうかはブラウザが決めます。許可されても、ユーザーがサイトデータを削除した場合などの消失を防ぐ保証にはなりません。</p>
+      <p>設定の「📦 まるごとバックアップ」は、選んだ端末内データからZIPをブラウザ内で作成してダウンロードします。設定・記録・プレイリスト・書斎・カスタムパックなどが含まれ、曲・VRM・MMDなどの大きなファイルは任意で追加できます。復元時は、バックアップに含まれる領域を置き換えます。復元されたアドオンは安全のためオフで戻ります。バックアップファイルはユーザーのダウンロード先に保存され、trk!から自動送信されません。個人データやアドオンコードを含むことがあるため、ファイル自体を安全に保管してください。</p>
+      <p>書斎へ取り込んだ本やメディアのコピーは端末内だけに保存され、外部へ送信・アップロードしません。本棚の「この本を削除」またはブラウザのサイトデータ削除で消せます。栞・メモ・ジャケットの割り当て・手動で選んだ歌詞や字幕は、各機能の削除操作またはブラウザのサイトデータ削除で消せます。</p>
+    </section>
+
+    <section id="permissions">
+      <h2>3. ファイルと権限</h2>
+      <p>曲やモデルを選ぶときだけ、ブラウザが提供するファイル選択機能を使います。フォルダ共有を使う場合は、ブラウザの許可ダイアログが表示されます。許可を取り消す方法はブラウザまたはOSの設定に従います。</p>
+      <p>インストール済みPWAのOS共有シート（<code>share_target</code>）から届いたファイルは、Service Worker が Cache Storage の一時領域（<code>trk-share-inbox-v1</code>）に置き、取り込む前にファイル名と件数を表示して確認します。確認をキャンセルした場合は取り込まず、一時領域から削除します。共有のPOST受け口は他のWebサイトのフォームからも呼び出せます。ブラウザはOS共有とWebフォームを区別しないため、心当たりのないファイルはキャンセルしてください。デスクトップの「このアプリで開く」はユーザーがOSで選んだ操作なので、別の確認は出しません。共有されたURL・タイトル・文章は取り込みません。</p>
+      <p>受け取ったファイルは、曲・動画・書斎の本・パックの既存の取り込み処理を通り、この端末内で使います。ファイル自体を他の利用者へ配布・公開・アップロードすることを前提にしていません。ユーザーが書き出し機能で作成したパックや譜面を自分で共有する場合は、含まれる素材の権利と配布先の規約を確認してください。</p>
+    </section>
+
+    <section id="network">
+      <h2>4. ネットワーク通信と外部サービス</h2>
+      <ul>
+        <li>GitHub Pagesから、trk!のHTML、CSS、JavaScript、画像などを配信します。GitHub Pages側のアクセスログ等については、GitHubのポリシーが適用されます。</li>
+        <li>VRM／MMDマスコットを使うとき、three.jsなどのライブラリをこのアプリに同梱したファイルから読み込みます（同一オリジン）。使わないときは、これらのライブラリを読み込みません。</li>
+        <li>GitHub Issues、X、その他の外部リンクを開いた場合は、そのサービスへ移動します。投稿内容は公開される可能性があるため、個人情報を含めないでください。</li>
+      </ul>
+      <p>曲の再生、譜面生成、Web Audioによる音声合成は、外部の音楽サービスへ送信せずに行います。サーバー側のアクセスログ等や、GitHub Issues・Xなど外部リンク先の扱いは、各サービスのポリシーに従います。</p>
+    </section>
+
+    <section id="delete">
+      <h2>5. 情報の削除</h2>
+      <p>trk!の作者がサーバー上に個人データを保管していないため、作者へ削除依頼を出す対象のユーザーデータはありません。端末に保存されたデータは、次の方法で削除できます。</p>
+      <ol>
+        <li>設定画面のデータ削除・リセット機能を使う。</li>
+        <li>「共有をやめる」や保存曲の削除操作を使う。</li>
+        <li>ブラウザのサイトデータ、またはアプリのストレージをOS設定から消去する。</li>
+      </ol>
+      <p>GitHub Issuesなど外部サービスへ本人が投稿した情報の削除は、投稿先サービスの手順に従ってください。</p>
+    </section>
+
+    <section id="apk">
+      <h2>6. APK版・アプリ版</h2>
+      <p>APK版は現在、配布していません。このリポジトリではPWAのWeb資産をCapacitorのWebViewへコピーしてAndroidプロジェクトを生成できる仕組みを整備していますが、ネイティブ版の権限や配布を開始したことを意味しません。</p>
+      <p>将来、Androidの音楽ライブラリへ直接アクセスする機能を追加する場合は、必要な権限、読み取る情報、端末内だけで扱う範囲をこのページとアプリのストア説明に追記します。現在のAPK準備では、Web版と同じくユーザーが選択したファイルを端末内で扱うことを基本とします。</p>
+    </section>
+
+    <section id="contact">
+      <h2>7. お問い合わせと変更</h2>
+      <p>このポリシーを変更した場合は、このページの更新日を変更します。質問や問題の報告は、公開情報を含めない形で <a href="https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a> へ送ってください。</p>
+      <p class="note">trk! は非営利のオープンなファンプロジェクトです。コードと第三者素材の権利については <a href="NOTICE.md">NOTICE.md</a> も確認してください。</p>
+    </section>
+  </article>
+
+  <article class="card english" lang="en">
+    <p class="eyebrow">ENGLISH SUMMARY</p>
+    <h2>Privacy summary</h2>
+    <p>trk! is a local-first browser rhythm game. The current web and PWA versions do not require an account and do not use advertising, analytics, or telemetry. User-selected songs, charts, settings, scores, favorites, manually selected lyrics/subtitles, and optional saved media stay in browser or app storage; trk! does not upload them to an operator server. Imported CBZ/ZIP pages are copied into the local Study Room without changing the source archive.</p>
+    <p>When you import Study Room books or custom packs, or use the storage setting, trk! may request persistent browser storage with <code>navigator.storage.persist()</code>. The browser decides whether to grant it; this is not a guarantee against data loss or deliberate deletion. A full backup is built locally and downloaded as a ZIP. It may contain personal data and add-on code; media files are optional. Restored add-ons start disabled.</p>
+    <p>An installed PWA can receive files through the OS share sheet. The Service Worker temporarily keeps incoming files in Cache Storage and asks before importing, showing names and a count. A website can also submit to the share-target endpoint, and the browser cannot distinguish that from OS sharing; cancel unexpected requests. “Open with this app” is an explicit OS action and does not show another prompt. Shared URLs and text are ignored; files are handled locally.</p>
+    <p>The app may request file or folder access when you choose music. VRM/MMD features load bundled three.js-related libraries from the app's same origin. GitHub Pages access logs and external destinations such as GitHub Issues and X are governed by their respective policies.</p>
+    <p>The APK build is not distributed yet. This repository contains a Capacitor preparation path for packaging the same web assets; any future native media permissions will be documented here before release.</p>
+    <p>See the Japanese sections above for the full current policy. Last updated: October 15, 2026.</p>
+  </article>
+</main>
+
+<footer class="siteFooter">
+  <a href="./">trk!へ戻る</a>
+  <span>·</span>
+  <a href="credits.html">Credits / 権利</a>
+  <span>·</span>
+  <a href="NOTICE.md">NOTICE</a>
+  <span>·</span>
+  <a href="https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk" target="_blank" rel="noopener noreferrer">Source code</a>
+</footer>
+</body>
+</html>

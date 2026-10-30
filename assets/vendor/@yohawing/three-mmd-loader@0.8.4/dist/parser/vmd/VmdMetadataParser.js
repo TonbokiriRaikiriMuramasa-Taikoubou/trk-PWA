@@ -1,0 +1,177 @@
+import { BinaryReader, toUint8Array } from "../binary/index.js";
+const asciiDecoder = new TextDecoder("ascii");
+const shiftJisDecoder = new TextDecoder("shift-jis");
+const vmdBoneFrameBytes = 111;
+const vmdMorphFrameBytes = 23;
+const vmdCameraFrameBytes = 61;
+const vmdLightFrameBytes = 28;
+const vmdSelfShadowFrameBytes = 9;
+const maxVmdSectionCount = 10_000_000;
+export function parseVmdMetadata(input) {
+    const inventory = parseVmdSectionInventory(input);
+    return {
+        format: "vmd",
+        signature: inventory.signature,
+        encoding: "shift-jis",
+        modelName: inventory.modelName,
+        counts: inventory.counts,
+        trailingBytes: inventory.trailingBytes
+    };
+}
+export function parseVmdSectionInventory(input) {
+    const reader = new BinaryReader(toUint8Array(input));
+    const signature = readFixedText(reader, 30, asciiDecoder);
+    if (!signature.startsWith("Vocaloid Motion Data")) {
+        throw new Error(`Invalid VMD signature: ${JSON.stringify(signature)}`);
+    }
+    const modelName = readFixedText(reader, 20, shiftJisDecoder);
+    const sections = [];
+    const bones = readCount(reader, "bone");
+    readFixedSizeSection(reader, sections, "bone", bones, vmdBoneFrameBytes);
+    const morphs = readCount(reader, "morph");
+    readFixedSizeSection(reader, sections, "morph", morphs, vmdMorphFrameBytes);
+    // Old-format / morph-only (lip-sync) VMDs end after the morph section and
+    // omit camera onward entirely, so every trailing count is optional.
+    const cameraCountOffset = reader.offset;
+    const cameras = readOptionalCount(reader, "camera");
+    if (reader.offset !== cameraCountOffset) {
+        readFixedSizeSection(reader, sections, "camera", cameras, vmdCameraFrameBytes, cameraCountOffset);
+    }
+    const lightCountOffset = reader.offset;
+    const lights = readOptionalCount(reader, "light");
+    if (reader.offset !== lightCountOffset) {
+        readFixedSizeSection(reader, sections, "light", lights, vmdLightFrameBytes, lightCountOffset);
+    }
+    const selfShadowCountOffset = reader.offset;
+    const selfShadows = readOptionalTailCount(reader, "self-shadow");
+    if (reader.offset !== selfShadowCountOffset) {
+        readFixedSizeSection(reader, sections, "selfShadow", selfShadows, vmdSelfShadowFrameBytes, selfShadowCountOffset);
+    }
+    const propertyCountOffset = reader.offset;
+    const properties = readOptionalTailCount(reader, "property");
+    if (reader.offset !== propertyCountOffset) {
+        readPropertySection(reader, sections, properties, propertyCountOffset);
+    }
+    return {
+        format: "vmd",
+        signature,
+        encoding: "shift-jis",
+        modelName,
+        sections,
+        counts: {
+            bones,
+            morphs,
+            cameras,
+            lights,
+            selfShadows,
+            properties
+        },
+        trailingBytes: reader.remaining
+    };
+}
+function readFixedSizeSection(reader, sections, name, count, entrySize, countOffset = reader.offset - 4) {
+    const dataOffset = reader.offset;
+    const byteLength = checkedSectionBytes(count, entrySize, name);
+    reader.skip(byteLength);
+    sections.push({
+        name,
+        count,
+        countOffset,
+        dataOffset,
+        byteLength
+    });
+}
+function readPropertySection(reader, sections, count, countOffset) {
+    const dataOffset = reader.offset;
+    const layout = selectPropertyFrameLayout(reader, count);
+    for (let i = 0; i < count; i++) {
+        reader.skip(5);
+        if (layout === "extendedPhysics") {
+            reader.skip(1);
+        }
+        const ikStates = readCount(reader, "property IK state");
+        reader.skip(checkedSectionBytes(ikStates, 21, "property IK state"));
+    }
+    sections.push({
+        name: "property",
+        count,
+        countOffset,
+        dataOffset,
+        byteLength: reader.offset - dataOffset
+    });
+}
+function selectPropertyFrameLayout(reader, count) {
+    if (count === 0) {
+        return "classic";
+    }
+    const classicEnd = scanPropertyFrameLayout(reader, count, "classic");
+    const extendedEnd = scanPropertyFrameLayout(reader, count, "extendedPhysics");
+    if (extendedEnd === undefined) {
+        return "classic";
+    }
+    if (classicEnd === undefined) {
+        return "extendedPhysics";
+    }
+    const byteLength = reader.view.byteLength;
+    return byteLength - extendedEnd < byteLength - classicEnd ? "extendedPhysics" : "classic";
+}
+function scanPropertyFrameLayout(reader, count, layout) {
+    const startOffset = reader.offset;
+    try {
+        for (let index = 0; index < count; index += 1) {
+            reader.skip(5);
+            if (layout === "extendedPhysics") {
+                reader.skip(1);
+            }
+            const ikStates = readCount(reader, "property IK state");
+            reader.skip(checkedSectionBytes(ikStates, 21, "property IK state"));
+        }
+        return reader.offset;
+    }
+    catch {
+        return undefined;
+    }
+    finally {
+        reader.offset = startOffset;
+    }
+}
+function readOptionalCount(reader, label) {
+    if (reader.remaining === 0) {
+        return 0;
+    }
+    return readCount(reader, label);
+}
+function readOptionalTailCount(reader, label) {
+    if (reader.remaining === 0) {
+        return 0;
+    }
+    if (reader.remaining < 4) {
+        return readCount(reader, label);
+    }
+    const offset = reader.offset;
+    const count = reader.u32();
+    if (count > maxVmdSectionCount) {
+        reader.offset = offset;
+        return 0;
+    }
+    return count;
+}
+function readCount(reader, label) {
+    const count = reader.u32();
+    if (count > maxVmdSectionCount) {
+        throw new Error(`Invalid VMD ${label} count: ${count}`);
+    }
+    return count;
+}
+function readFixedText(reader, byteLength, decoder) {
+    const bytes = reader.bytes(byteLength);
+    const end = bytes.indexOf(0);
+    return decoder.decode(end >= 0 ? bytes.subarray(0, end) : bytes).trim();
+}
+function checkedSectionBytes(count, entrySize, label) {
+    const byteLength = count * entrySize;
+    if (!Number.isSafeInteger(byteLength)) {
+        throw new Error(`Invalid VMD ${label} byte length`);
+    }
+    return byteLength;
+}

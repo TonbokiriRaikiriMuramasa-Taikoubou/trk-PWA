@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: 💬 感想・苦情・ご意見 / Feedback & Complaints
+description: ゲームの感想、楽しかったところ、理不尽に感じた苦情やご意見はこちらへ！/ Impressions, praise, or complaints.
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        遊んでいただきありがとうございます！
+        「ここが面白かった！」「この演出や曲が最高だった」という感想から、
+        「ここが難しすぎて理不尽に感じた」「この操作がやりづらい」といった苦情・ご不満まで、
+        制作・改善の大きな励みと参考になりますので、どうぞ自由にお書きください。
+        Thanks for playing! Feel free to share your thoughts, what you enjoyed, or any frustrations/complaints.
+  - type: dropdown
+    id: category
+    attributes:
+      label: どんな内容ですか / Category
+      options:
+        - 💖 楽しかった・良かったところ（感想・称賛） / Praise & fun moments
+        - 💢 難しすぎた・理不尽・不満（苦情） / Complaint & frustration
+        - 📱 操作性・画面の見やすさ / Controls & readability
+        - 🎵 譜面や難易度について / Chart & difficulty balance
+        - 🎨 スキン・映像・エフェクト / Visuals & audio FX
+        - その他 / Other
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: ご感想・苦情・ご意見 / Your thoughts & feedback
+      description: 率直な感想や苦情をお聞かせください。/ Please share your honest thoughts.
+      placeholder: |
+        ・遊んだ曲やモード：
+        ・感じたこと（良かった点・不満だった点など）：
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 主に遊んだモード / Main mode played
+      options:
+        - MANUAL 🥁（和太鼓・2ボタン）
+        - TRUCK 🚚（障害物避け・ドライブ）
+        - ORBIT 🪐（円形軌道）
+        - STAGE 🎪（多レーンステージ）
+        - CATCH 🚛（荷物キャッチ）
+        - 全体・選曲画面 / Overall & UI
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: プレイ環境 / Device & browser (任意 / Optional)
+      placeholder: PC（Chrome）、iPhone（Safari）、Android など
+    validations:
+      required: false

@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: 🎵 譜面・難易度バランスの意見 / Chart & Balance feedback
+description: 自動生成譜面の叩き心地、難易度（Lv.1〜20）、トリル配置などのご意見はこちらへ。/ Feedback on charts, level ratings, and patterns.
+title: "[Chart] "
+labels: ["chart", "balance"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        譜面の生成アルゴリズムや難易度設定に関するご意見を募集しています！
+        「この曲のHardがノリノリで楽しかった」「このBPMでこのトリルは厳しすぎる」「推定Lvが体感とズレている」など、
+        具体的な曲名やBPMとあわせて教えていただけると助かります。
+        Share your impressions on chart generation, trill patterns, and level ratings!
+  - type: input
+    id: song
+    attributes:
+      label: 曲名または動画 / Song title or video
+      placeholder: Pulse Study、YouTube動画名、自作音源など
+    validations:
+      required: true
+  - type: dropdown
+    id: diff
+    attributes:
+      label: 難易度 / Difficulty
+      options:
+        - 初級 (Easy)
+        - 中級 (Normal)
+        - 上級 (Hard)
+        - 達人 (MASTER)
+        - 2000 RUSH
+    validations:
+      required: true
+  - type: input
+    id: level
+    attributes:
+      label: 表示された推定レベル（Lv.xx）と体感 / Displayed level vs your feel
+      placeholder: 例：表示はLv.9だが、体感はLv.11くらいに感じた
+    validations:
+      required: false
+  - type: textarea
+    id: thoughts
+    attributes:
+      label: 詳しいご意見 / Detailed feedback
+      placeholder: |
+        ・トリル（交互連打）や複合配置の叩き心地はどうでしたか？
+        ・曲のリズムや盛り上がりにノーツが合っていましたか？
+        ・改善してほしい点など：
+    validations:
+      required: true

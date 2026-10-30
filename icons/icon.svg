@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#07080d"/>
+  <circle cx="256" cy="256" r="200" fill="#151826"/>
+  <text x="256" y="292" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-weight="900" font-size="150" fill="#f4f4f8" letter-spacing="4">trk<tspan fill="#ff3b55">!</tspan></text>
+  <circle cx="206" cy="352" r="22" fill="#ff3b55"/>
+  <circle cx="306" cy="352" r="22" fill="#55aaff"/>
+</svg>

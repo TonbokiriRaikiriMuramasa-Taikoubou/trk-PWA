@@ -1,0 +1,506 @@
+{
+  "note": "Vendored third-party modules. Verified offline by tools/check-vendor.mjs (part of npm run check).",
+  "source": "npm",
+  "entries": {
+    "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-animation@3.5.5/LICENSE": {
+      "local": "assets/vendor/@pixiv/three-vrm-animation@3.5.5/LICENSE",
+      "sha384": "UwKvHw1lgiV3ZFzt81XZs3FGkoYlpTRYQNdrdWuL5045ZGu4sCbTSigeN2K7nmGp",
+      "bytes": 1072
+    },
+    "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-animation@3.5.5/lib/three-vrm-animation.module.js": {
+      "local": "assets/vendor/@pixiv/three-vrm-animation@3.5.5/lib/three-vrm-animation.module.js",
+      "sha384": "XE402mcX5aFIp/O2rRam4ThAYBooleJWzN7mwYS0dkwtRumMQERsRD7iCxhSMLVC",
+      "bytes": 362996
+    },
+    "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.5.5/LICENSE": {
+      "local": "assets/vendor/@pixiv/three-vrm@3.5.5/LICENSE",
+      "sha384": "UwKvHw1lgiV3ZFzt81XZs3FGkoYlpTRYQNdrdWuL5045ZGu4sCbTSigeN2K7nmGp",
+      "bytes": 1072
+    },
+    "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.5.5/lib/three-vrm.module.min.js": {
+      "local": "assets/vendor/@pixiv/three-vrm@3.5.5/lib/three-vrm.module.min.js",
+      "sha384": "0eKYXVEzMZHC65jBi4pvegRrAJUf4hlPDrPJfp8j6Ra0wadM3lHq4eWmHi/u+y2f",
+      "bytes": 154699
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/LICENSE": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/LICENSE",
+      "sha384": "hq+S++J431JfkQ3UhnLjkCZ4C2gX1Jr6lQR62eMTRmsbJrC5mtadrQSri/klZEym",
+      "bytes": 1065
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/index.js",
+      "sha384": "NW1V+f2zHRh74bUy3FUOlnmmozIMhaBUcbKrITsHDjcBlalhqH7VTcChPMRitooS",
+      "bytes": 296
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/accessory/AccessoryParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/accessory/AccessoryParser.js",
+      "sha384": "/NHPwcLQiVpt5LK8OKKCAwDe9EnZ6vSSc7w+KJ6B0Tykr5lSe6Unz7ZKMqQeXnLj",
+      "bytes": 274
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/accessory/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/accessory/index.js",
+      "sha384": "56vSSyDyPkfUFcCdBPmv2ibKB/nHvRgQKJKfkHby26VUyKYA2hx2Lu4u+ezd5PT4",
+      "bytes": 55
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/binary/BinaryReader.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/binary/BinaryReader.js",
+      "sha384": "nBVRkXqIH6AS7zd+8FNVDw8tw8BPw9CWYQE9k6PHYwMd3lW79ukyaELqo9cBOwGQ",
+      "bytes": 2153
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/binary/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/binary/index.js",
+      "sha384": "93HaHxibgqg6lxB694ssWhowGJX8e+b0EeAv+saK0KDRIrUMbSFTrF7wgg7C/pg/",
+      "bytes": 64
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/formatDetection.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/formatDetection.js",
+      "sha384": "1EdnDURKg0Q6zcXWjJd4sWpa0GScyfHWFmadg9v1LoLWj9DGbld5bxbr1ktuDgoc",
+      "bytes": 418
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/index.js",
+      "sha384": "i3XL8KNkJKSFAdbVY9SvijZpuOmTzPc3b023iORrJXzggggI3bf2l4rf9eDPZs22",
+      "bytes": 803
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/PmdModelParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/PmdModelParser.js",
+      "sha384": "xULI8IHUYY84p+wc47bqV0nTbqv6gY9syEiMnOis1Q/T4TuUaZ/EwsOK2OUbMHDz",
+      "bytes": 21345
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/PmxModelParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/PmxModelParser.js",
+      "sha384": "PZo9IFUMwEJ4MxYCfqSdU05WhAROUGdK1fKmSiotYiDjtEI6aQUW2gRvN1l+A3LR",
+      "bytes": 35284
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/denseMorphProvider.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/denseMorphProvider.js",
+      "sha384": "gA0iIpjju8gplLSJ3XAZAd//8TtbqORwm4Kwc17U1yJRsPLNjtBnyFcgCXSyHnN4",
+      "bytes": 87
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/diagnostics.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/diagnostics.js",
+      "sha384": "KI7YGvfEeTvRAsJS2iUiHcptxYDCN0BA5LNvnCi1llx9bq+jTRSw6D/QE6Jhj9+H",
+      "bytes": 4845
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/normalSanitization.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/model/normalSanitization.js",
+      "sha384": "mSSXQge/ma8UrgkSGL43GJzKHWyp7waVK3hEuLS2aLRA8w1L7KxKXkH7kerquk9j",
+      "bytes": 3573
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmd/PmdMetadataParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmd/PmdMetadataParser.js",
+      "sha384": "ptHiO5qSGYPuUWuQpLuVB7RCdvqAOxrbTtXL/h43x7HESxkCGGp38R2Qy2CfIRaL",
+      "bytes": 8388
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmd/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmd/index.js",
+      "sha384": "dwU77B/uRQkVeSyLKzB4If/BYcJjYnSCkpqgiN1UvriJW5JXh2IJSIymwaIgmse4",
+      "bytes": 85
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmm/PmmParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmm/PmmParser.js",
+      "sha384": "BuTHiOO2csUWeyaYZju2lt3OnU3L0EdwQLqeAa0q9xfiFE/ye0YEmy+8SSWLGctB",
+      "bytes": 7100
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmm/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmm/index.js",
+      "sha384": "2Fatfodd/rLrgNtbpmrzJ+yEBv7ajOJzZvjFveduqhgvwa/rVfWlXrqGgIeP5U2Y",
+      "bytes": 164
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmx/PmxMetadataParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmx/PmxMetadataParser.js",
+      "sha384": "iln74ktK/2ccqOWeSM1e2Yac3oSzCJtsrngZrHKzDpKQ02qkLL5pujKmInnmedFH",
+      "bytes": 14583
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmx/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/pmx/index.js",
+      "sha384": "O1/7WENVc/IUUED0rEx/FYIOjGWGlfXCgN5i0xJiXhyaVcqzo8a8nd6Kof88Vddn",
+      "bytes": 85
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/skeleton/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/skeleton/index.js",
+      "sha384": "U9/RVxfOMmHEZ1jZ0zigGZFiV2J5Lnigd822aMkayD+aRQQXDpLxFAp0mLVRdPSk",
+      "bytes": 86
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/skeleton/standardBones.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/skeleton/standardBones.js",
+      "sha384": "qnIJe807T6Zep/NAk6ApD1zA6AqV/1XrqpCwGIzjxU64AurUTR4krGkazw36HKgB",
+      "bytes": 7400
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/vmd/VmdMetadataParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/vmd/VmdMetadataParser.js",
+      "sha384": "QPo6I1ii0Rrj/au2omEgIrAnmJqXpizJWSY7oLPTLT1YeSMCxvUGkGmD4YaMa+83",
+      "bytes": 6166
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/vmd/VmdParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/vmd/VmdParser.js",
+      "sha384": "HgcibYTYFVvaK554cHrtl69aWQJw0pBLD3iOM8Y60gvAMdYZ6WiEHUR2mh7gA9Ok",
+      "bytes": 14785
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/vmd/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/vmd/index.js",
+      "sha384": "AB9m4J3knoPS4PyABG9Y8aMipJt8hw70kwahxJ0oRtq/3XaepQB60YqYHTtTuZcv",
+      "bytes": 128
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/vpd/VpdMetadataParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/vpd/VpdMetadataParser.js",
+      "sha384": "hX3Him6kVMZYbcAx/mY4aZPnskPDhbkOUsiWkGJ6UhsrLhhSE69Ux5hInkBtVodt",
+      "bytes": 6393
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/vpd/VpdParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/vpd/VpdParser.js",
+      "sha384": "eE9MtWk5W8DonkkStGm3ctH0bSnKRoVgBXheJAkT8tM42Xi7v4TwFPLqQJDo/1Ee",
+      "bytes": 7260
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/vpd/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/vpd/index.js",
+      "sha384": "Cs7SnnMXb5llk+8hjvbLiVojLUHxuRd3Gb2yAUnnHf2+VxQ1q+K19wmdoV+mn9Jo",
+      "bytes": 159
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/FallbackCore.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/FallbackCore.js",
+      "sha384": "URe8VzwyQZ2HmnGjmsg6k+PjKIVP4fIWpw2mXYryTwkB+SMDB2PgRZmLa66YBQUS",
+      "bytes": 1262
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/MmdAnimBackedCore.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/MmdAnimBackedCore.js",
+      "sha384": "IUbD9OZvR9qok9ZWyyujaduHWlsvtIQlXC8gb3fM4fufhtaGjMSEb2jWcxJ5urSI",
+      "bytes": 15610
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/ParsedModel.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/ParsedModel.js",
+      "sha384": "qdrMU3AKmOZVg+dhkkEFzUkcIRFBsqNG0cKlhSYsWXRgaXy4EcJ4ITLZPwX0Kfbq",
+      "bytes": 1087
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/createParsedModel.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/createParsedModel.js",
+      "sha384": "lUQ++jTAULjE/WR64k6f1CpMWIRc/YLJNyZhEqM8GcwMNJSZXBOq8pj7O3wGxmvV",
+      "bytes": 471
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/generated/mmd_anim_wasm.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/generated/mmd_anim_wasm.js",
+      "sha384": "323MEQNjrM52eXysnhS07h7cBYR8my520bw29dszMIfnKMvOWTcjPWJeXX0SBfCA",
+      "bytes": 88894
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/generated/mmd_anim_wasm_bg.wasm": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/generated/mmd_anim_wasm_bg.wasm",
+      "sha384": "n9EDMAlK5/lkkc2vZMQg4HvdD+epoPFNqRopsmL803iPQ5x0eTPiV964ObX5V1uZ",
+      "bytes": 1773642
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/index.js",
+      "sha384": "hxdAcazqdmoHclGeXPZF4I98cI3Gs/yrvm65cx6wrN+WpugcaEOoiFYadQXNk8W0",
+      "bytes": 1861
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/modelMetadata.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/parser/wasm/modelMetadata.js",
+      "sha384": "AfDJf3woVF8BHeE3xHIhnYyqohLpKI6qUXBtaJ/2mAU2rp9dvvArPOyeMJrnHPdQ",
+      "bytes": 357
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/physics/customBulletMmd.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/physics/customBulletMmd.js",
+      "sha384": "qiOHNvyZDuqV0CVy2wk9i6CzFWjYSbt/qEg9eV5vsXgoOuDikTf9lTUPiOoP21M7",
+      "bytes": 3315
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/physics/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/physics/index.js",
+      "sha384": "t8KiRIhUk4KtKgSkTj53wMDtlcTzD7UvLpGk35AfBnoNvkKnqJWLjfg9p+5CKeWX",
+      "bytes": 21591
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/physics/legacyPhysicsBridge.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/physics/legacyPhysicsBridge.js",
+      "sha384": "v04s0r8JeUWLcBjYEmx+Bj2e5/t4t9AZH2v0nrUv+sezL0tHl4c5BzGRJvqOXnee",
+      "bytes": 3966
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/physics/mmdAnimBullet.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/physics/mmdAnimBullet.js",
+      "sha384": "4kfJvI9ZwgYp/jpGmZiZDy4NqZJPwk5ZpfwA+y+GRV3EC63mHdzKn2rbBZhekMFc",
+      "bytes": 21474
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/animation.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/animation.js",
+      "sha384": "9NZAptR8uH/Kpr4vgSRnzCQexwojRb+aEJptV4rWhEzREA1jWE71k/xuxtSM5qb2",
+      "bytes": 22737
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/append.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/append.js",
+      "sha384": "6yokXYrjzsbt+NWCliyzYBuvtS2QGYL2u4cyepV3C2Q3QleR1LfSZR6IKkgMa5Bx",
+      "bytes": 6014
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/core.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/core.js",
+      "sha384": "GziCD6p80TTTtVYszzp1D7m3Q7+NUm/qwZpuBzBsoiif5PqG7iOahA8wSyVzWU11",
+      "bytes": 31130
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/hostRigPhysics.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/hostRigPhysics.js",
+      "sha384": "I9xYKCsWSDacCd+dOgnBw0kzF7Wp6m55Jq0ncnT6p9CsjJx18SkhQutfYlqnTuVU",
+      "bytes": 6282
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik-bridge.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik-bridge.js",
+      "sha384": "JC2AxS3ehHTeS30MLoxJBEQWBmZymA8myBWXq9mOWGt5ISmIG3S5O2FAVe37rdbF",
+      "bytes": 3261
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik/CcdIkSolver.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik/CcdIkSolver.js",
+      "sha384": "kLOzEyQnBFkica8NAS7g6PCN0W8O976+R1YAGGsC4Tvo2jqntVdEPV19BLIIbcm8",
+      "bytes": 43599
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik/MmdIkChain.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik/MmdIkChain.js",
+      "sha384": "UAT/In3jAb0Ig89tTNW8HmFi6hPFTAWnS/eUn9/Wb9pTOPXn+sku/9ytY+o6DnsA",
+      "bytes": 860
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/ik/index.js",
+      "sha384": "Ll+BjrWpCXzvrxvVesuBFCcuHLQ5RJjeUVdfhwx3x83mdz/f7IgpQF1lUUaPVsA3",
+      "bytes": 138
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/index.js",
+      "sha384": "PiZhvZBhdVOHxi4nx74pqWwaEZxgiYXlLzBcUwXlfyEiCHDIbMWjlQKN7xpBdwFT",
+      "bytes": 710
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/math.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/math.js",
+      "sha384": "MiFzlaMi67gZ5HAx7fmA1/V0NzQBBY4mJFhPIG4xyHsWB5NtSdV8X29AjAj9OdlZ",
+      "bytes": 6667
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/mmdAnimRuntime.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/mmdAnimRuntime.js",
+      "sha384": "tVDq38AzTdQqqX1a6kcRaF5ErBaN4HeRaAlAZVVjdD3I+SKXd6auGmXrDPxlA7VL",
+      "bytes": 36482
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/mmdAnimWasmParser.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/mmdAnimWasmParser.js",
+      "sha384": "1mBGsz9Qd3yCBJ/1ubYS2zLoDLZbpTcxtUd873sG4gf6wckEzNGwJVxAzmW8XO57",
+      "bytes": 7583
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/morphOverrides.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/morphOverrides.js",
+      "sha384": "VCJzjQxq5z5pn5up7Kvek8DF5VAY57DNEuON7S65tIG5GV412UXyuCkdt1XYoMJ7",
+      "bytes": 952
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/morphSplitSync.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/morphSplitSync.js",
+      "sha384": "TMSIdp6RARXN4ngG8YYMaHhzJmPpnXqEzddoW9uCTHgtKqk56Ssd3dqVWULkp8Bh",
+      "bytes": 1145
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/physics.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/physics.js",
+      "sha384": "NQU7J8z/gzL3GHcRILK+4fSkv5bluVpsfKQlzm6zMThD/A7kwPJLDOMnS4XaFdkI",
+      "bytes": 23592
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/runtime/userData.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/runtime/userData.js",
+      "sha384": "2GjMwUeiMjompzzwIspLXNaD12XL5cO/PnQn9WI5RkVEd/qsZvpyvcHxBJp/xPj5",
+      "bytes": 147
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets.js",
+      "sha384": "25JY3N3Lf8yCWgDAuA3yllHO/oUnbfwpiQ1eqPKE9ZR1+dDwW2GNNC4b7JEhBwmt",
+      "bytes": 2173
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon01.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon01.bmp",
+      "sha384": "2qOrpnRL4K2tp5Ep5F+L+8glE7jhuVF1TAktQqsIMLdwIh3SmKHLk0jMy22wazvI",
+      "bytes": 3128
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon02.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon02.bmp",
+      "sha384": "wwsIV2WvVTAJJn/iJbtFLCMANDVJBdJN5DwR0p+FUTQk2tCE7myk+SGbSHiyUNav",
+      "bytes": 3128
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon03.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon03.bmp",
+      "sha384": "T+rv7+9PWMixtgolXdjBHYzxUoC45IPbK5gLCX5zoIEo1HxIxEX8URbCjQ9+SvcE",
+      "bytes": 3128
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon04.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon04.bmp",
+      "sha384": "wfZsoY7YAZUk1eJMxMKIaFs2F5q1BiKhderW9j/Wpa7FIZ0MRIg6+t4Gnj09zMSW",
+      "bytes": 3128
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon05.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon05.bmp",
+      "sha384": "wSRWXIuh4bkzTtXmdKhBD0cIw+shxLAsW30VDc+jdZbD30WMG14VcmS0V31Heoiz",
+      "bytes": 3126
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon06.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon06.bmp",
+      "sha384": "bv7nFXWYNh6jNhXNw3mUB9/umWyW4gmkpRMKI/sbA8x3tqqOMVyOjKIlDq5ntSM1",
+      "bytes": 3126
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon07.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon07.bmp",
+      "sha384": "/4iqqsf7u4i9iy/l0tLmz6ho6XUS5yHddgL9dbJC1sbKwupanFP/xI/InGkcrGM+",
+      "bytes": 3126
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon08.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon08.bmp",
+      "sha384": "/4iqqsf7u4i9iy/l0tLmz6ho6XUS5yHddgL9dbJC1sbKwupanFP/xI/InGkcrGM+",
+      "bytes": 3126
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon09.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon09.bmp",
+      "sha384": "/4iqqsf7u4i9iy/l0tLmz6ho6XUS5yHddgL9dbJC1sbKwupanFP/xI/InGkcrGM+",
+      "bytes": 3126
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon10.bmp": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/assets/mmd/toon10.bmp",
+      "sha384": "/4iqqsf7u4i9iy/l0tLmz6ho6XUS5yHddgL9dbJC1sbKwupanFP/xI/InGkcrGM+",
+      "bytes": 3126
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/camera.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/camera.js",
+      "sha384": "hFcbAykeDyrjRtDW+xFA1iIERpl/V2Ep1QnXXyJI8PswnnLS64whmLXZEGypQh7B",
+      "bytes": 2799
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/dispose.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/dispose.js",
+      "sha384": "EQ7QSJX0wrONwlB54dtU+1bV5T+5gNHeOCuFcR12Xs7z7liI0ZSsH7ulsAsvilpJ",
+      "bytes": 3828
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/folder.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/folder.js",
+      "sha384": "sVeuCh4J8f+cN4/dvY3cNXbAiJQ78w96iIYLNI5XGiSkZmXwj0j+8uO2PKZRHj4J",
+      "bytes": 2164
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/geometry.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/geometry.js",
+      "sha384": "1O9i8QDS776nNb0c27zEY3KsbUFs/VYF48bwF9GVLkV8RT0JPTru8rqUYgEEIJci",
+      "bytes": 30015
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/index.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/index.js",
+      "sha384": "hjipyLKZj6OF4eDnfErrEQpUO1wOolvLEM6uPPLvf5AbT2qmeOguK0lx5E5slsm+",
+      "bytes": 40954
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/internal-morph-source.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/internal-morph-source.js",
+      "sha384": "qJZb/yrJEp2vsDLEp0qEDmlg4g6jcs6vGCwfftjhhPCwluj1sfvavRWxFOgZnI/G",
+      "bytes": 298
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/internalModelData.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/internalModelData.js",
+      "sha384": "FdCqEshUFv85Nfj7FQDqs/GYbVYhUvhXn6qnzYUdwP1lMdtmuGDeAzkk1AvT/mCG",
+      "bytes": 9293
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/light.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/light.js",
+      "sha384": "xbiWRWFvHinPeRAHihEzmqsA9+sF67BWq06MXJ7DIwXpAvf/ArRvUCX9qq+7y3hQ",
+      "bytes": 981
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-metadata.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-metadata.js",
+      "sha384": "1oPfBmXxb/U7HYntwtkuP2Oc1lOiUuoAtUrRDBYQkdGOWWto8tgCTH5QRKlQE2uq",
+      "bytes": 6213
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-qdef.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-qdef.js",
+      "sha384": "YcdgIZr7ZmU7fbDkvWXk2Wva4pAcnAvesf2o9suQ9ctwUBogG1uLC6slFLZbj89p",
+      "bytes": 5058
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-sdef.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-sdef.js",
+      "sha384": "nYueRlE4JGKmJp6elJItRvEAuuCVWd284JRWVuFDmOI4gBsZX/LlSh2oXrP8Jy0Z",
+      "bytes": 14578
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-shader-hooks.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-shader-hooks.js",
+      "sha384": "vPTIJmuy7tP0A30zDrFiDurSokojRnTHF8j1FEIdxe234tVIy8H37Ql58KDmrbou",
+      "bytes": 18595
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-shadow.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-shadow.js",
+      "sha384": "erM1wWeyL5lTeORLVHQpmyUZCXlGUTlbk6D9Y7fCdZGK0COftpQnvyevy4b5mRbE",
+      "bytes": 954
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-sync.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-sync.js",
+      "sha384": "4THN+Z4wRL88WvLvnYEQrAIsqatIhH8h+tm7B0bvIhgEXL7JhcbRRruIgLzP6Lnw",
+      "bytes": 7649
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-texture-set.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/material/material-texture-set.js",
+      "sha384": "u/TnwO6cunoaE/xGqIDFuHK0uf/yn+un46zUF7ZPwBc9DtBUJduMk8VGWZ89BdPe",
+      "bytes": 6974
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/materials.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/materials.js",
+      "sha384": "ckI9Q9qWEw1/EnwMoy4emO1nm55Q4aWflA/JBnkfrjLrKhCuT9YwKR9rSpOR7t8Z",
+      "bytes": 4544
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/modelAssembly.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/modelAssembly.js",
+      "sha384": "YOhg8yHGQvMyeghr/K7nuMD12n0vVCtV18FqKgu4vNbitjImt2h3CGz0Y5j1T8lC",
+      "bytes": 4108
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/modelSource.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/modelSource.js",
+      "sha384": "yHmIapI/S2rFRKgdPTcUcLGa7F9NsqpfAANmn/fZ63PWDr8dpttQZ+mK/CrLlIWW",
+      "bytes": 2626
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/outline.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/outline.js",
+      "sha384": "ti0VTgxcw1UYAXYUzjngySAb56pi+3EtIMw6KIdAwlKwX3TMlOv2N9nfGfQ60b6J",
+      "bytes": 16752
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/performance.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/performance.js",
+      "sha384": "LG9tN4zw8be091nExwbkrKn+rhnQzMKM/IJp6TgcoQwsIRCD8YvC3xL/6o7Fu6DK",
+      "bytes": 1807
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/runtime-sync.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/runtime-sync.js",
+      "sha384": "8OlroWzygOp0w3SOswd8tbC0dHGGdLb6N/4HYtUEhXBHwP7Bs/R/cHFpqZfVS+nx",
+      "bytes": 5897
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/shadow.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/shadow.js",
+      "sha384": "ySS7CUivfg2I5FrO5cZTS0z7qmYa2zkLT4aLeT6BWB2iWKJW2Oj6XIfPCwVHdp5N",
+      "bytes": 7766
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/skeleton.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/skeleton.js",
+      "sha384": "oTVIcqJSJeif81A9ehu2k91zAoZ48zwMRPVTNY1aiJMBiQUmFs0TeVjKQdKeBmpK",
+      "bytes": 2622
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/textures.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/textures.js",
+      "sha384": "4pTOdlGfF9DbjiVC0X8BPlKyhiEpz5cmLfoIm50F6EznO8gxJ6NXyWmjb5UnUdhD",
+      "bytes": 40973
+    },
+    "https://cdn.jsdelivr.net/npm/@yohawing/three-mmd-loader@0.8.4/dist/three/utils.js": {
+      "local": "assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/three/utils.js",
+      "sha384": "Q8fKv9FMTizAcXZ9VRGMmsUcQysf+yUxKzdnYmD0RkVBOqoMcVmRp6BVzmcuQ2Rm",
+      "bytes": 141
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/LICENSE": {
+      "local": "assets/vendor/three@0.180.0/LICENSE",
+      "sha384": "YNsuLyd5utIGRg8x+dm9fQ6K3pcK5dQ3GooSZrlFnCUO8O/1hYiAjathJ56yE3HN",
+      "bytes": 1081
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.core.js": {
+      "local": "assets/vendor/three@0.180.0/build/three.core.js",
+      "sha384": "r1q8Si7xFBrvMv3Q4yjQkKhkYZ2lp+wn/bPPzNZTsc8DY4uPJmm2vheuz1Yn+8m8",
+      "bytes": 1403455
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js": {
+      "local": "assets/vendor/three@0.180.0/build/three.module.js",
+      "sha384": "wyxAlyAVVsyc7KN24a4+m1tMTC2BwrjQyLgLStDaUBDmwK+gWUMULWHSS0NRoZKv",
+      "bytes": 603113
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js": {
+      "local": "assets/vendor/three@0.180.0/examples/jsm/loaders/GLTFLoader.js",
+      "sha384": "s7nILfbc478eUC319/oD77M04rFg5QqywtMJEVMtUrlMIoGoUDSJ0gPPnLlw+bBy",
+      "bytes": 114739
+    },
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/utils/BufferGeometryUtils.js": {
+      "local": "assets/vendor/three@0.180.0/examples/jsm/utils/BufferGeometryUtils.js",
+      "sha384": "Qy9m6qi71cTFsL476nB1aK+wPxxPgU6H6pn/++8gOgy4/vTtkDuFBfPo22hBhx36",
+      "bytes": 35539
+    }
+  }
+}

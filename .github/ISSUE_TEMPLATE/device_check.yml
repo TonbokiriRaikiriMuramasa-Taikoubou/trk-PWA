@@ -1,0 +1,96 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: 📱 実機確認の記録 / Real-device check
+description: 実機で確認したら、端末・日付・確認した項目を残すためのフォームです。docs/HANDOFF.md §7 の未完了項目を確認するときに使います。 / Record a real-device check (device, date, items).
+title: "[実機確認] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        実機で確認した結果を残すためのフォームです。確認できた項目にだけチェックを入れてください。
+        詳しい手順と背景は `docs/HANDOFF.md` の §7（実機確認の未完了項目）を見てください。
+        個人情報（メールアドレス・アカウント名など）と、自分の音源ファイルは書き込まないでください。
+        This form records a real-device check. Tick only what you actually confirmed. Do not include personal data or your own audio files.
+  - type: input
+    id: device
+    attributes:
+      label: 端末の名前・機種 / Device model
+      description: 例：Pixel 8、iPhone 15、Windows 11 のノートPC / e.g. Pixel 8, iPhone 15, Windows 11 laptop
+      placeholder: Pixel 8
+    validations:
+      required: true
+  - type: input
+    id: os_browser
+    attributes:
+      label: OS とブラウザのバージョン / OS and browser version
+      description: 例：Android 15 / Chrome 141。確認したブラウザの「バージョン」の画面に出る番号を書いてください。 / e.g. Android 15 / Chrome 141
+      placeholder: Android 15 / Chrome 141
+    validations:
+      required: true
+  - type: dropdown
+    id: run_mode
+    attributes:
+      label: 実行の形態 / How the app was run
+      options:
+        - ブラウザのタブ（ふつうのWebページ） / Browser tab
+        - PWA（ホーム画面に追加して開いた） / PWA (added to home screen)
+        - APK（Android アプリ） / Android app (APK)
+        - その他（備考に書く） / Other (describe in notes)
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: 確認した日付 / Date checked
+      description: 西暦で書いてください（例：2026-10-08）。 / Use YYYY-MM-DD.
+      placeholder: 2026-10-08
+    validations:
+      required: true
+  - type: input
+    id: build
+    attributes:
+      label: 確認したバージョン（任意）/ Version or commit (optional)
+      description: 画面の下のほうや、リポジトリの commit 名（例：bb8c3c5）など、分かる範囲で。 / A commit hash or version label if you know it.
+      placeholder: bb8c3c5
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 確認した項目 / Checklist
+      description: 確認して問題がなかったものにチェックを入れてください。 / Tick each item you confirmed without problems.
+      options:
+        - label: "Service Worker：ハッシュ固定の vendor が、オフラインでも MMD／VRM で動く（trk74）"
+        - label: "Service Worker：開発者ツールで中身を書き換えると、次の読み込みで取り直される（trk74）"
+        - label: "MMD／VRM：Console にモジュールの読み込みエラーがなく、モデルが表示される（最優先）"
+        - label: "長押しの代わり：タブ帯の ⚙、スキンの「⚙ くわしい設定」、曲リストの「📚 書斎を開く」が開く（trk73）"
+        - label: "表示の並び・開発者表示：棚スキンの並びがすぐ変わる。かんたんと全部で一覧の数が同じ（trk72）"
+        - label: "入口の整理：曲の行の 🎶 が押せる。テレビの「くわしく」の中の ▶ メディアプレーヤーが押せる（trk71）"
+        - label: "Music・プレイリスト：フォルダの選択・再スキャン・公式 wish の表示（灰色→所持後に黒い行）"
+        - label: "カタログ曲リンク：wish 行から公式ページ（または作品ページ）が開く"
+        - label: "FIRST SPARK：30秒デモの初級・中級・上級を遊べ、ノーツが音に合う"
+        - label: "軽量化：自動判定でスマホは ON、PC は OFF。20／30fps の操作感・発熱・電池に問題がない（設定 → 🪶 軽量化）"
+        - label: "軽量化：「最大節約」「ゲーム優先」「バランス」を選ぶと、すぐ効いて表示が「ON」になる"
+        - label: "IndexedDB：既存の pack が入った端末で、読み込み・保存・複数タブの動作に問題がない"
+        - label: "書斎：テーマ・縦書き・4言語の切り替えで、文字と背景が読める"
+        - label: "本棚操作：フォルダ作成・ドラッグでの移動・手動順序が再起動後も残る"
+        - label: "テキスト編集・書き出し：入力・自動保存・同名ファイルの上書きがない"
+        - label: "媒体操作：ゲームパッド／TV リモコン、バナーの短押し・長押しが動く"
+        - label: "譜面生成（新方式・既定）：曲ごとに譜面が自然。旧方式へ切り替えると従来の譜面が出る"
+        - label: "長い曲（20分超）：「解析を省略」の表示が出て、BPM グリッドの譜面になる"
+        - label: "名前空間の回帰：✔（公認パック）の表示、アドオンの曲パック取り込みと一覧表示が動く"
+  - type: textarea
+    id: problems
+    attributes:
+      label: 問題があった項目と内容 / Problems found
+      description: チェックを入れなかった項目と、起きたことを書いてください。Console のエラー（F12 → Console の赤い文字）があれば貼ってください。 / Describe any item that failed, and paste red console errors if any.
+      render: text
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: 備考（発熱・電池・端末の状態など）/ Notes
+      description: 数分遊んだときの発熱や電池の減り方、通信の状況（オフラインで試したか）など、気づいたことを自由に。 / Heat, battery drain, offline test, anything else.
+    validations:
+      required: false

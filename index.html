@@ -1,0 +1,1997 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>trk! — AGRG</title>
+<!-- 検索結果に出る説明文。og:description（SNSカード）と同じ文面に揃える（trk132） -->
+<meta name="description" content="万能なブラウザ再生プレイヤー。完全無料。手持ちの音楽、画像、漫画、小説、そして音ゲーを楽しめます。データは、端末の中だけ。">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/study-room.css">
+<!-- SNSで共有したときのカード（画像は https:// から始まる完全なURLにする）。
+     ⚠ 同じ名前のmeta・linkは1回だけ書く（trk129：同じ名前が2回あり、SNSが先の方の説明文を拾っていた）
+     ※ 配布ZIP用ビルドでは og:url／og:image を外すが、GitHub Pages版は公開URLがあるので残す -->
+<meta property="og:title" content="trk! — AGRG">
+<meta property="og:description" content="万能なブラウザ再生プレイヤー。完全無料。手持ちの音楽、画像、漫画、小説、そして音ゲーを楽しめます。データは、端末の中だけ。">
+<meta property="og:url" content="https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/">
+<meta property="og:image" content="https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/docs/og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ttrk143">
+
+<!-- アイコン・ホーム画面に追加 -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#07080d">
+
+<!-- VRMを使うときだけ読み込む3Dの部品（three-vrm 3.5.5 は three 0.180 に対応） -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./assets/vendor/three@0.180.0/build/three.module.js",
+    "three/addons/": "./assets/vendor/three@0.180.0/examples/jsm/",
+    "@pixiv/three-vrm": "./assets/vendor/@pixiv/three-vrm@3.5.5/lib/three-vrm.module.min.js",
+    "@pixiv/three-vrm-animation": "./assets/vendor/@pixiv/three-vrm-animation@3.5.5/lib/three-vrm-animation.module.js",
+    "three/": "./assets/vendor/three@0.180.0/",
+    "@yohawing/three-mmd-loader": "./assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/index.js",
+    "@yohawing/three-mmd-loader/": "./assets/vendor/@yohawing/three-mmd-loader@0.8.4/dist/"
+  }
+}
+</script>
+</head>
+
+<body>
+<!-- 💬 trk191: アドオン引き出しの置き場所（slot "drawer"・API v2）。中身が無いときは非表示で、クリックも妨げない -->
+<div id="addonDrawerHost" class="addonDrawerHost"></div>
+<div id="stage" data-layout="classic" data-phase="title">
+  <canvas id="view" width="1920" height="1080"></canvas>
+  <canvas id="fx" width="1920" height="1080"></canvas>
+  <canvas id="vrmCanvas" hidden></canvas>
+  <canvas id="mmdCanvas" hidden></canvas>
+
+  <!-- ===== プレイ中の表示 ===== -->
+  <div class="topline">
+    <div><strong>trk!</strong><span id="songTitle"></span></div>
+    <div id="clock">0:00</div>
+  </div>
+
+  <div id="hud">
+    <span data-i18n="score">SCORE</span><b id="scoreVal">0</b>
+    <span data-i18n="combo">COMBO</span><b id="comboVal">0</b>
+    <span data-i18n="accuracy">ACC</span><b id="accVal">100.00%</b>
+  </div>
+
+  <div id="judge"><span id="judgeText"></span><small id="judgeSub"></small></div>
+  <div id="progress"></div>
+  <input id="seekBar" type="range" min="0" max="1000" value="0" aria-label="Seek">
+
+  <div id="touchKeys">
+    <button type="button" data-slot="0"><span></span></button>
+    <button type="button" data-slot="1"><span></span></button>
+  </div>
+
+  <div id="controls">
+    <button id="pauseBtn" type="button" data-i18n="pause">Ⅱ Pause</button>
+    <button id="fullBtn" type="button" data-i18n="fullscreen">⛶ Fullscreen</button>
+    <label class="vol">
+      <span data-i18n="musicVolume">Music</span>
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="0.7">
+    </label>
+  </div>
+
+  <!-- ===== 選曲画面 ===== -->
+  <section id="selectScreen" class="screen">
+    <div class="card wide">
+      <header class="head">
+        <div class="brand">
+          <h1>trk<span>!</span></h1>
+          <p data-i18n="tagline"></p>
+        </div>
+        <div class="headTools">
+          <label class="field">
+            <span data-i18n="language">Language</span>
+            <select id="language">
+              <option value="ja">日本語</option>
+              <option value="en">English</option>
+              <option value="zh">简体中文</option>
+              <option value="ko">한국어</option>
+            </select>
+          </label>
+          <button id="openSettingsBtn" type="button" data-i18n="openSettings"></button>
+          <button id="fullBtnTitle" type="button" aria-label="Fullscreen">⛶</button>
+        </div>
+      </header>
+
+      <section id="quickGuide" class="panel quickGuide" aria-labelledby="guideTitleText">
+        <div class="guideBar">
+          <b id="guideTitleText" class="guideBarTitle" data-i18n="guideTitle"></b>
+          <span id="guideProgress" class="guideProgress"></span>
+          <span id="guideNote" class="guideNote" role="status" aria-live="polite" hidden></span>
+          <span class="guideBarActions">
+            <button id="guideStartBtn" class="guideStart" type="button" aria-expanded="false" aria-controls="guideSteps" data-i18n="guideStart"></button>
+            <button id="guideSkip" class="guideSkip" type="button" data-i18n="guideSkip"></button>
+          </span>
+        </div>
+        <div id="guideSteps" class="guideSteps" hidden>
+          <p class="hint" data-i18n="guideHint"></p>
+          <div class="guideGrid">
+            <div class="guideStep" data-mission="play"><i class="guideStamp"></i><b data-i18n="guidePlayTitle"></b><span data-i18n="guidePlay"></span></div>
+            <div class="guideStep" data-mission="look"><i class="guideStamp"></i><b data-i18n="guideLookTitle"></b><span data-i18n="guideLook"></span></div>
+            <div class="guideStep" data-mission="safe"><i class="guideStamp"></i><b data-i18n="guideSafeTitle"></b><span data-i18n="guideSafe"></span></div>
+            <div class="guideStep" data-mission="back"><i class="guideStamp"></i><b data-i18n="guideBackTitle"></b><span data-i18n="guideBack"></span></div>
+            <div class="guideStep" data-mission="amp"><i class="guideStamp"></i><b data-i18n="guideAmpTitle"></b><span data-i18n="guideAmp"></span></div>
+            <div class="guideStep" data-mission="study"><i class="guideStamp"></i><b data-i18n="guideStudyTitle"></b><span data-i18n="guideStudy"></span></div>
+            <div class="guideStep" data-mission="studyBack"><i class="guideStamp"></i><b data-i18n="guideStudyBackTitle"></b><span data-i18n="guideStudyBack"></span></div>
+            <div class="guideStep" data-mission="seed"><i class="guideStamp"></i><b data-i18n="guideSeedTitle"></b><span data-i18n="guideSeed"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <div id="welcomeBox" class="welcomeBox" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
+        <div class="welcomeCard">
+          <h2 id="welcomeTitle" data-i18n="welcomeTitle"></h2>
+          <p class="welcomeLead" data-i18n="welcomeLead"></p>
+          <ul class="welcomeList">
+            <li data-i18n="welcomeMusic"></li>
+            <li data-i18n="welcomePlayer"></li>
+            <li data-i18n="welcomeVideo"></li>
+            <li data-i18n="welcomeBook"></li>
+            <li data-i18n="welcomeOffline"></li>
+          </ul>
+          <p class="welcomeHint" data-i18n="welcomeHint"></p>
+          <div class="welcomeActions">
+            <button type="button" id="welcomeGuideBtn" class="welcomeBtn" data-i18n="welcomeGuide"></button>
+            <button type="button" id="welcomeCloseBtn" class="welcomeBtn primary" data-i18n="welcomeClose"></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="guideCelebrate" hidden>
+        <div class="guideCelebCard"><b id="guideCelebTitle"></b><span id="guideCelebMsg"></span></div>
+      </div>
+
+      <div class="selectGrid">
+        <!-- 左：曲リスト -->
+        <div class="songCol">
+          <section class="panel" id="libPanel">
+            <div class="libHead">
+              <h2 class="libTitle"><button type="button" class="study-launch-title" data-i18n="libTitle" aria-haspopup="dialog"></button></h2>
+              <span class="libHeadRight">
+                <span id="libCount" class="hint"></span>
+                <!-- 🎥 基地：メディアプレーヤーへの常時入口（trk186。TV電源長押しも従来どおり使える） -->
+                <button id="mediaOpenBtn" class="libSkinBtn studyHeadBtn" type="button" aria-haspopup="dialog" aria-controls="mediaPlayerMode" data-i18n="mediaOpenBtn"></button>
+                <button id="studyOpenBtn" class="libSkinBtn studyHeadBtn" type="button" aria-haspopup="dialog"></button>
+                <button id="libSkinBtn" class="libSkinBtn" type="button" hidden></button>
+              </span>
+            </div>
+            <div class="miniActions">
+              <button id="libOpenBtn" type="button" data-i18n="libOpen"></button>
+              <!-- 📤 共有：端末に1回だけ許可して、ミュージックフォルダの中身を一気に取り込む（library.js） -->
+              <button id="libShareBtn" type="button" data-i18n="libShare"></button>
+              <button id="libReconnectBtn" type="button" hidden></button>
+              <button id="libRescanBtn" type="button" hidden data-i18n="libRescan"></button>
+              <label class="fileBtn small">
+                <input id="mediaFile" type="file" accept="video/*,audio/*,.mid,.midi,.mkv,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
+                <span data-i18n="libAddFile"></span>
+              </label>
+              <!-- 🎬 動画を読み込む：最初のフレームまで確かめて「映像つき」として記録し、そのまま全画面で流す -->
+              <label class="fileBtn small" id="libVideoLabel">
+                <input id="videoFile" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.mkv,.avi,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
+                <span data-i18n="libAddVideo"></span>
+              </label>
+              <label class="fileBtn small">
+                <input id="songPackFile" type="file" accept=".stpack,.zip" hidden>
+                <span data-i18n="libAddPack"></span>
+              </label>
+            </div>
+            <div class="hint" data-i18n="libOpenShareHint"></div>
+            <input id="libDirInput" type="file" webkitdirectory multiple hidden>
+            <div class="libTools">
+              <input id="libSearch" type="search" autocomplete="off" data-i18n-aria="libSearch">
+              <select id="libSort" data-i18n-aria="libSortLabel">
+                <option value="name" data-i18n="sortName"></option>
+                <option value="plays" data-i18n="sortPlays"></option>
+                <option value="recent" data-i18n="sortRecent"></option>
+                <option value="best" data-i18n="sortBest"></option>
+              </select>
+              <!-- 📈 進捗フィルター（trk174）：未聴/継続/完了で曲リストを絞る（表示層だけ） -->
+              <select id="libProgress" data-i18n-aria="libProgressLabel">
+                <option value="all" data-i18n="progAll"></option>
+                <option value="new" data-i18n="progNew"></option>
+                <option value="progress" data-i18n="progProgress"></option>
+                <option value="done" data-i18n="progDone"></option>
+              </select>
+              <button id="libRandomBtn" type="button" data-i18n="libRandom"></button>
+            </div>
+            <div id="libSkinBar" class="libSkinBar" hidden></div>
+            <div id="libSkinNote" class="hint libSkinNote" hidden></div>
+            <div id="libTabs" class="libTabs" hidden></div>
+            <div id="libList"></div>
+            <div id="libStatus" class="hint status"></div>
+            <div class="hint" data-i18n="dropHint"></div>
+          </section>
+        </div>
+
+        <!-- 右：選択中の曲 -->
+        <div class="detailCol">
+          <section id="songBanner" class="banner">
+            <div class="bannerText">
+              <div id="songTitleBig" class="bannerTitle"></div>
+              <div id="songSub" class="bannerSub"></div>
+              <div id="loadStatus" class="hint status"></div>
+              <div id="mediaKeepCurrentActions" class="miniActions" hidden>
+                <button id="mediaKeepCurrentBtn" type="button"></button>
+              </div>
+            </div>
+          </section>
+          <!-- verified.js がここに「✔公認・譜面作者・BPM・💬 作者のことば」の欄を追加します -->
+
+          <section class="panel">
+            <div class="fields">
+              <label class="field">
+                <span data-i18n="bpm">BPM</span>
+                <input id="bpm" type="number" min="60" max="300" step="0.1">
+              </label>
+              <label class="field">
+                <span data-i18n="offset">Offset</span>
+                <input id="offset" type="number" step="10">
+              </label>
+              <label class="field">
+                <span data-i18n="seed">Seed</span>
+                <input id="seed" type="text" maxlength="32" autocomplete="off">
+              </label>
+            </div>
+            <div id="songPrefsStatus" class="hint"></div>
+            <!-- library.js がここに「🎲 シードを引く」と最近のシードを追加します -->
+            <div id="eggStatus" class="hint"></div>
+          </section>
+
+          <section class="panel">
+            <h3 data-i18n="playStyle"></h3>
+            <div class="seg" id="modePicker">
+              <button type="button" data-playmode="manual" data-i18n="manual">MANUAL</button>
+              <button type="button" data-playmode="truck" data-i18n="truck">TRUCK</button>
+              <button type="button" data-playmode="orbit" data-i18n="orbit">ORBIT</button>
+              <button type="button" data-playmode="stage" data-i18n="stage">STAGE</button>
+              <button type="button" data-playmode="catch" data-i18n="catch">CATCH</button>
+            </div>
+            <!-- library.js がここに「▶ AUTO」と「📻 ラジオ」の切り替えを追加します -->
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+              <h3 data-i18n="difficulty" style="margin:0"></h3>
+              <button type="button" id="expertDiffToggle" class="miniBtn" title="🔥 MASTER・2000 RUSH" aria-label="MASTER・2000 RUSH" style="padding:2px 8px;font-size:12px;cursor:pointer;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#ffb000;font-weight:700">🔥 MASTER</button>
+            </div>
+            <div class="seg" id="difficultyPicker">
+              <button type="button" data-mode="easy" data-i18n="easy">Easy</button>
+              <button type="button" data-mode="normal" data-i18n="normal">Normal</button>
+              <button type="button" data-mode="hard" data-i18n="hard">Hard</button>
+              <button type="button" data-mode="master" data-i18n="master" hidden>MASTER</button>
+              <button type="button" data-mode="rush" data-i18n="rush" hidden>2000 RUSH</button>
+            </div>
+            <div id="chartStatus" class="hint status"></div>
+            <div id="modsLine" class="hint status"></div>
+          </section>
+
+          <button id="playBtn" class="primary" type="button" disabled data-i18n="playStart">▶ PLAY</button>
+          <!-- speed.js（⏩ 速度パネル）・fx.js（🎛 エフェクトのメニュー）がここに入ります -->
+
+          <div class="actions">
+            <button id="importChartBtn" type="button" disabled data-i18n="importChart"></button>
+            <button id="regenerateChartBtn" type="button" hidden data-i18n="regenerate"></button>
+            <button id="exportSelectBtn" type="button" disabled data-i18n="export"></button>
+          </div>
+          <div id="importStatus" class="hint status center"></div>
+
+          <section class="panel" id="recPanel" hidden>
+            <h3 data-i18n="recTitle"></h3>
+            <div id="recSummary"></div>
+            <details class="subPanel">
+              <summary data-i18n="recHistory"></summary>
+              <div id="recHistory"></div>
+            </details>
+            <div class="miniActions">
+              <button id="recExportBtn" type="button" data-i18n="recExport"></button>
+              <label class="fileBtn small">
+                <input id="recImportFile" type="file" accept="application/json,.json" hidden>
+                <span data-i18n="recImport"></span>
+              </label>
+              <button id="recResetBtn" type="button" data-i18n="recReset"></button>
+            </div>
+            <div id="recStatus" class="hint status"></div>
+          </section>
+
+          <details class="panel" id="songPackBuilder" hidden>
+            <summary data-i18n="spTitle"></summary>
+            <div class="hint" data-i18n="spHint"></div>
+            <div class="fields2">
+              <label class="field">
+                <span data-i18n="spArtist"></span>
+                <input id="spArtist" type="text" maxlength="60">
+              </label>
+              <label class="field">
+                <span data-i18n="spCharter"></span>
+                <input id="spCharter" type="text" maxlength="40">
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="spLicense"></span>
+              <input id="spLicense" type="text" maxlength="400">
+            </label>
+            <!-- verified.js がここに「💬 作者のことば」（280まで）を追加します -->
+            <label class="field">
+              <span data-i18n="spBg"></span>
+              <input id="spBg" type="file" accept="image/png,image/webp,image/jpeg">
+            </label>
+            <label class="check"><input id="spIncGenerated" type="checkbox" checked><span data-i18n="spIncGenerated"></span></label>
+            <label class="check"><input id="spIncCurrent" type="checkbox" checked><span data-i18n="spIncCurrent"></span></label>
+            <label class="check"><input id="spRightsOk" type="checkbox"><span data-i18n="spRightsOk"></span></label>
+            <label class="check"><input id="spCreditCard" type="checkbox" checked><span data-i18n="spCreditCard"></span></label>
+            <button id="spBuildBtn" type="button" class="primary slim" data-i18n="spBuildBtn"></button>
+            <div id="spStatus" class="hint status"></div>
+          </details>
+
+          <div class="hint center" data-i18n="controlsHint"></div>
+          <div class="hint center" data-i18n="quickRetryHint"></div>
+          <div class="hint center contactLine">
+            <span data-i18n="feedbackLabel"></span>
+            <a href="https://x.com/ttrk143" target="_blank" rel="noopener noreferrer">X @ttrk143</a> ／
+            <a href="https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a> ／
+            <a href="privacy.html">Privacy / プライバシー</a> ／
+            <a href="credits.html">Credits / 権利</a>
+          </div>
+          <div class="hint pclCredit center" hidden></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 設定画面 ===== -->
+  <section id="settingsScreen" class="screen" hidden>
+    <div class="card wide">
+      <header class="head">
+        <h2 class="setTitle" data-i18n="settingsTitle"></h2>
+        <button id="closeSettingsBtn" type="button" class="primary slim" data-i18n="closeSettings"></button>
+      </header>
+
+      <!-- 🔍 trk198：設定を言葉で絞り込む（欄が104個まで増えたので、探さずに届くように） -->
+      <div class="setSearch">
+        <input id="settingsSearch" type="search" autocomplete="off" spellcheck="false"
+               data-i18n-placeholder="settingsSearchPlaceholder" data-i18n-aria="settingsSearchPlaceholder">
+        <span id="settingsSearchStatus" class="hint" role="status" aria-live="polite"></span>
+      </div>
+
+      <div class="grid">
+        <!-- 左：見た目 -->
+        <div class="col">
+          <details class="panel" open>
+            <summary data-i18n="secDisplay"></summary>
+            <div><label><span data-i18n="displayModeLabel"></span> <select id="displayMode"><option value="simple" data-i18n="displaySimple"></option><option value="full" data-i18n="displayFull"></option></select></label></div>
+            <p class="hint" data-i18n="displayModeHint"></p>
+            <label class="check"><input id="devView" type="checkbox"><span data-i18n="devViewLabel"></span></label>
+            <h3 data-i18n="skin"></h3>
+            <div id="skinNow"></div>
+            <details id="skinShelf" class="subPanel" open>
+              <summary><span data-i18n="skinShelf"></span> <span id="skinShelfCount"></span></summary>
+              <div id="skinChips"></div>
+              <div id="skinGrid"></div>
+            </details>
+
+            <details id="skinMaker" class="subPanel devOnly">
+              <summary data-i18n="addSkin"></summary>
+              <div class="hint" data-i18n="makerHint"></div>
+              <label class="field">
+                <span data-i18n="skinName"></span>
+                <input id="makerName" type="text" maxlength="24" autocomplete="off">
+              </label>
+              <div class="colorGrid">
+                <label><input id="makerColor_bg" type="color"><span data-i18n="cBg"></span></label>
+                <label><input id="makerColor_bg2" type="color"><span data-i18n="cBg2"></span></label>
+                <label><input id="makerColor_panel" type="color"><span data-i18n="cPanel"></span></label>
+                <label><input id="makerColor_text" type="color"><span data-i18n="cText"></span></label>
+                <label><input id="makerColor_accent" type="color"><span data-i18n="cAccent"></span></label>
+                <label><input id="makerColor_gold" type="color"><span data-i18n="cGold"></span></label>
+              </div>
+              <div class="makerRow">
+                <label class="field">
+                  <span data-i18n="skinFont"></span>
+                  <select id="makerFont">
+                    <option value="default" data-i18n="fontDefault"></option>
+                    <option value="mono" data-i18n="fontMono"></option>
+                    <option value="rounded" data-i18n="fontRounded"></option>
+                    <option value="serif" data-i18n="fontSerif"></option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span data-i18n="skinVideo"></span>
+                  <select id="makerVideo">
+                    <option value="mono" data-i18n="vfMono"></option>
+                    <option value="color" data-i18n="vfColor"></option>
+                    <option value="dim" data-i18n="vfDim"></option>
+                    <option value="warm" data-i18n="vfWarm"></option>
+                    <option value="cool" data-i18n="vfCool"></option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span data-i18n="skinMascot"></span>
+                  <!-- キャラクターの選択肢は js/characters/*.js が自動で追加します -->
+                  <select id="makerMascot">
+                    <option value="none" data-i18n="mascotNone"></option>
+                    <option value="buddy" data-i18n="mascotBuddy"></option>
+                    <option value="vrm" data-i18n="mascotVrm"></option>
+              <option value="mmd" data-i18n="mascotMmd"></option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span data-i18n="gradDir"></span>
+                  <select id="makerGradDir">
+                    <option value="none" data-i18n="gradNone"></option>
+                    <option value="down" data-i18n="gradDown"></option>
+                    <option value="up" data-i18n="gradUp"></option>
+                    <option value="left" data-i18n="gradLeft"></option>
+                    <option value="right" data-i18n="gradRight"></option>
+                  </select>
+                </label>
+              </div>
+              <label class="check"><input id="makerGlow" type="checkbox"><span data-i18n="skinGlow"></span></label>
+              <label class="check"><input id="makerScan" type="checkbox"><span data-i18n="skinScan"></span></label>
+              <div class="miniActions">
+                <button id="makerLoadBtn" type="button" data-i18n="loadCurrent"></button>
+                <button id="makerSaveNewBtn" type="button" data-i18n="saveNewSkin"></button>
+                <button id="makerOverwriteBtn" type="button" data-i18n="overwriteSkin"></button>
+                <button id="makerExportBtn" type="button" data-i18n="exportSkin"></button>
+                <label class="fileBtn small">
+                  <input id="makerImportFile" type="file" accept="application/json,.json" hidden>
+                  <span data-i18n="importSkin"></span>
+                </label>
+                <button id="makerDeleteBtn" type="button" data-i18n="deleteSkin"></button>
+              </div>
+              <div id="makerStatus" class="hint status"></div>
+            </details>
+
+            <!-- 🪶 軽量化（スマホ・タブレット・アプリ向け）: 配線は js/lite.js が行います -->
+            <details class="subPanel" id="litePanel">
+              <summary data-i18n="secLite"></summary>
+              <div class="hint" data-i18n="liteHint"></div>
+              <label class="field">
+                <span data-i18n="litePreset"></span>
+                <select id="litePreset">
+                  <option value="balanced" data-i18n="litePresetBalanced"></option>
+                  <option value="game" data-i18n="litePresetGame"></option>
+                  <option value="max" data-i18n="litePresetMax"></option>
+                  <option value="off" data-i18n="litePresetOff"></option>
+                  <option value="custom" data-i18n="litePresetCustom"></option>
+                </select>
+              </label>
+              <label class="check"><input id="liteGameFull" type="checkbox"><span data-i18n="liteGameFull"></span></label>
+              <div class="hint" data-i18n="liteGameFullNote"></div>
+              <label class="field">
+                <span data-i18n="liteMode"></span>
+                <select id="liteMode">
+                  <option value="auto" data-i18n="liteModeAuto"></option>
+                  <option value="on" data-i18n="liteModeOn"></option>
+                  <option value="off" data-i18n="liteModeOff"></option>
+                </select>
+              </label>
+              <div class="fields2">
+                <label class="field">
+                  <span data-i18n="liteFps"></span>
+                  <select id="liteFps">
+                    <option value="60" data-i18n="liteFps60"></option>
+                    <option value="30" data-i18n="liteFps30"></option>
+                    <option value="20" data-i18n="liteFps20"></option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span data-i18n="liteMascot"></span>
+                  <select id="liteMascot">
+                    <option value="60" data-i18n="liteMascot60"></option>
+                    <option value="30" data-i18n="liteMascot30"></option>
+                    <option value="15" data-i18n="liteMascot15"></option>
+                    <option value="off" data-i18n="liteMascotOff"></option>
+                  </select>
+                </label>
+              </div>
+              <label class="field">
+                <span data-i18n="liteScale"></span>
+                <select id="liteScale">
+                  <option value="device" data-i18n="liteScaleDevice"></option>
+                  <option value="1.5" data-i18n="liteScale15"></option>
+                  <option value="1" data-i18n="liteScale10"></option>
+                </select>
+              </label>
+              <label class="check"><input id="liteSpecOff" type="checkbox"><span data-i18n="liteSpecOff"></span></label>
+              <label class="check"><input id="liteFx" type="checkbox"><span data-i18n="liteFx"></span></label>
+              <label class="check"><input id="liteBlur" type="checkbox"><span data-i18n="liteBlur"></span></label>
+              <label class="check"><input id="liteDecor" type="checkbox"><span data-i18n="liteDecor"></span></label>
+              <label class="field">
+                <span data-i18n="liteLibRows"></span>
+                <select id="liteLibRows">
+                  <option value="device" data-i18n="liteLibRowsDevice"></option>
+                  <option value="150" data-i18n="liteLibRows150"></option>
+                  <option value="60" data-i18n="liteLibRows60"></option>
+                </select>
+              </label>
+              <label class="check"><input id="liteNoAnalyze" type="checkbox"><span data-i18n="liteNoAnalyze"></span></label>
+              <label class="check"><input id="liteMascotNoLoad" type="checkbox"><span data-i18n="liteMascotNoLoad"></span></label>
+              <div class="hint" data-i18n="liteLeanNote"></div>
+              <div class="hint" data-i18n="liteMascotOffNote"></div>
+              <div id="liteState" class="hint liteState"></div>
+              <div id="liteDevice" class="hint"></div>
+              <div class="miniActions">
+                <button id="liteRecheckBtn" type="button" data-i18n="liteRecheck"></button>
+              </div>
+              <div class="hint" data-i18n="liteNote"></div>
+            </details>
+
+            <!-- 🩷 MMDマスコット（ミクモード・モデル追加） -->
+            <details id="mmdPanel" class="subPanel">
+              <summary data-i18n="mmdTitle"></summary>
+              <div class="hint" data-i18n="mmdHint"></div>
+              <label class="check"><input id="mmdAgree" type="checkbox"><span data-i18n="mmdAgree"></span></label>
+              <div class="miniActions" id="mmdPresetRow" hidden></div>
+              <div class="hint" id="mmdPresetHint" data-i18n="mmdPresetHint" hidden></div>
+              <label class="check" id="mmdQuickUIRow"><input id="mmdQuickUI" type="checkbox"><span data-i18n="mmdQuickUILabel"></span></label>
+              <h3 data-i18n="mmdModelHead"></h3>
+              <div class="miniActions">
+                <label class="fileBtn small disabled" id="mmdModelFileLabel">
+                  <input id="mmdModelFile" type="file" accept=".pmx,.pmd" hidden disabled>
+                  <span data-i18n="mmdChooseModel"></span>
+                </label>
+                <label class="fileBtn small disabled" id="mmdFolderFileLabel">
+                  <input id="mmdFolderFile" type="file" webkitdirectory multiple hidden disabled>
+                  <span data-i18n="mmdChooseFolder"></span>
+                </label>
+                <button id="mmdClearModel" type="button" data-i18n="mmdClearModel"></button>
+              </div>
+              <label class="check"><input id="mmdRemember" type="checkbox"><span data-i18n="mmdRemember"></span></label>
+              <h3 id="mmdMotionHeadLabel" data-i18n="mmdMotionHead"></h3>
+              <div class="miniActions">
+                <select id="mmdMotionSelect" aria-labelledby="mmdMotionHeadLabel"></select>
+                <label class="fileBtn small disabled" id="mmdMotionFileLabel">
+                  <input id="mmdMotionFile" type="file" accept=".vmd" hidden disabled>
+                  <span data-i18n="mmdChooseMotion"></span>
+                </label>
+                <button id="mmdClearMotion" type="button" data-i18n="mmdClearMotion"></button>
+              </div>
+              <div class="hint" data-i18n="mmdBuiltinNote"></div>
+              <label class="field">
+                <span data-i18n="mmdBpm"></span>
+                <input id="mmdBpm" type="number" min="0" max="300" step="1">
+              </label>
+              <h3 data-i18n="mmdFitHead"></h3>
+              <div class="makerRow two">
+                <label class="field">
+                  <span data-i18n="mmdSize"></span>
+                  <span class="inline tight">
+                    <input id="mmdSize" type="range" min="0.5" max="1.8" step="0.05">
+                    <span id="mmdSizeVal" class="mono"></span>
+                  </span>
+                </label>
+                <label class="field">
+                  <span data-i18n="mmdTurn"></span>
+                  <span class="inline tight">
+                    <input id="mmdTurn" type="range" min="-60" max="60" step="5">
+                    <span id="mmdTurnVal" class="mono"></span>
+                  </span>
+                </label>
+              </div>
+              <label class="field">
+                <span data-i18n="mmdCreditLabel"></span>
+                <input id="mmdCredit" type="text" maxlength="120" autocomplete="off">
+              </label>
+              <div class="vrmRow">
+                <canvas id="mmdPreview" width="360" height="240"></canvas>
+                <div id="mmdInfo" class="hint vrmInfo"></div>
+              </div>
+              <div class="miniActions" style="margin-top:10px">
+                <button id="mmdCheckBtn" type="button" data-i18n="mmdCheck"></button>
+                <button id="mmdCopyBtn" type="button" data-i18n="mmdCopy"></button>
+              </div>
+              <div class="hint" data-i18n="mmdCheckHint"></div>
+              <div id="mmdCheckOut" class="hint mono" hidden></div>
+              <div id="mmdStatus" class="hint status"></div>
+            </details>
+
+            <h3 data-i18n="gameLayout"></h3>
+            <div class="seg" id="layoutPicker">
+              <button type="button" data-layout="classic" data-i18n="layoutClassic"></button>
+              <button type="button" data-layout="vertical" data-i18n="layoutVertical"></button>
+              <button type="button" data-layout="center" data-i18n="layoutCenter"></button>
+              <button type="button" data-layout="commentary" data-i18n="layoutCommentary"></button>
+            </div>
+
+            <div class="fields2">
+              <label class="field">
+                <span data-i18n="videoStyle"></span>
+                <select id="videoStyle">
+                  <option value="skin" data-i18n="videoSkin"></option>
+                  <option value="color" data-i18n="videoColor"></option>
+                  <option value="mono" data-i18n="videoMono"></option>
+                  <option value="dim" data-i18n="videoDim"></option>
+                  <option value="off" data-i18n="videoOff"></option>
+                </select>
+              </label>
+              <label class="field">
+                <span data-i18n="videoZoom"></span>
+                <span class="inline tight">
+                  <input id="videoZoom" type="range" min="0.5" max="3" step="0.1">
+                  <span id="videoZoomVal" class="mono"></span>
+                </span>
+              </label>
+              <label class="field">
+                <span data-i18n="videoMaxWheelStep"></span>
+                <select id="videoMaxWheelStep">
+                  <option value="2">2%</option>
+                  <option value="5">5%</option>
+                  <option value="10">10%</option>
+                </select>
+              </label>
+              <label class="field">
+                <span data-i18n="scrollSpeed"></span>
+                <span class="inline tight">
+                  <input id="scroll" type="range" min="0.5" max="2.5" step="0.1">
+                  <span id="scrollVal" class="mono"></span>
+                </span>
+              </label>
+            </div>
+            <!-- extras.js がここに「背景の暗さ・ぼかし」を追加します -->
+
+            <div class="inline">
+              <span data-i18n="fxPower" id="fxPowerLabel"></span>
+              <input id="fxPower" type="range" min="0" max="3" step="0.1" aria-labelledby="fxPowerLabel">
+              <span id="fxPowerVal" class="mono"></span>
+            </div>
+            <label class="field">
+              <span data-i18n="gameFxMode"></span>
+              <select id="gameFxMode">
+                <option value="full" data-i18n="gameFxFull"></option>
+                <option value="soft" data-i18n="gameFxSoft"></option>
+                <option value="off" data-i18n="gameFxOff"></option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="gameFxHint"></div>
+            <label class="check"><input id="hideGameplayUI" type="checkbox"><span data-i18n="hideUI"></span></label>
+            <label class="check"><input id="errorMeter" type="checkbox"><span data-i18n="errorMeter"></span></label>
+            <!-- extras.js がここに「👻 ゴースト」を追加します -->
+            <label class="check"><input id="playerMode" type="checkbox"><span data-i18n="playerMode"></span></label>
+            <div class="hint" data-i18n="hideHint"></div>
+
+            <h3 data-i18n="swayTitle"></h3>
+            <div class="hint" data-i18n="swayModeHint"></div>
+            <label class="check"><input id="swayBeat" type="checkbox"><span data-i18n="swayBeat"></span></label>
+            <label class="check"><input id="swayHit" type="checkbox"><span data-i18n="swayHit"></span></label>
+            <div class="inline">
+              <span data-i18n="swayPower" id="swayPowerLabel"></span>
+              <input id="swayPower" type="range" min="0.2" max="2" step="0.1" aria-labelledby="swayPowerLabel">
+              <span id="swayPowerVal" class="mono"></span>
+            </div>
+            <div id="swayReducedNote" class="hint" data-i18n="swayReduced" hidden></div>
+
+            <!-- 🚚🪐🎪 各モードの専用設定（TRUCK・ORBIT・STAGE） -->
+            <details id="modeViewPanel" class="subPanel">
+              <summary data-i18n="secModes"></summary>
+              <h3 data-i18n="secTruck"></h3>
+              <div class="hint" data-i18n="truckHint"></div>
+              <div class="inline">
+                <span data-i18n="laneTint" id="laneTintLabel"></span>
+                <input id="laneTint" type="range" min="0" max="0.5" step="0.01" aria-labelledby="laneTintLabel">
+                <span id="laneTintVal" class="mono"></span>
+              </div>
+              <label class="check"><input id="truckBounce" type="checkbox"><span data-i18n="truckBounce"></span></label>
+              <label class="check"><input id="swayTruck" type="checkbox"><span data-i18n="swayTruck"></span></label>
+
+              <!-- modes.js（🪐 ORBIT）の挿入位置 -->
+              <div id="orbitSettingsAnchor"></div>
+
+              <!-- stage.js（🎪 STAGE）・stagefx.js（🎭 演出）の挿入位置 -->
+              <div id="stageSettingsAnchor"></div>
+            </details>
+
+            <!-- tv-dock.js が扱う：🎨 カスタムTVスキンのエディタ -->
+            <details id="tvMaker" class="subPanel">
+              <summary data-i18n="tvmTitle"></summary>
+              <div class="hint" data-i18n="tvmHint"></div>
+              <div class="tvMakerGrid">
+                <div>
+                  <label class="field">
+                    <span data-i18n="tvmName"></span>
+                    <input id="tvmName" type="text" maxlength="24" autocomplete="off">
+                  </label>
+                  <h3 data-i18n="tvmColorHead"></h3>
+                  <div class="colorGrid">
+                    <label><input id="tvmColor_body" type="color"><span data-i18n="tvmColorBody"></span></label>
+                    <label><input id="tvmColor_bezel" type="color"><span data-i18n="tvmColorBezel"></span></label>
+                    <label><input id="tvmColor_screen" type="color"><span data-i18n="tvmColorScreen"></span></label>
+                    <label><input id="tvmColor_button" type="color"><span data-i18n="tvmColorButton"></span></label>
+                    <label><input id="tvmColor_accent" type="color"><span data-i18n="tvmColorAccent"></span></label>
+                    <label><input id="tvmColor_text" type="color"><span data-i18n="tvmColorText"></span></label>
+                  </div>
+                  <h3 data-i18n="tvmShape"></h3>
+                  <div class="inline tight">
+                    <span data-i18n="tvmButtons" id="tvmNLabel"></span>
+                    <input id="tvmN" type="range" min="3" max="8" step="1" aria-labelledby="tvmNLabel">
+                    <span id="tvmNVal" class="mono"></span>
+                  </div>
+                  <div class="inline tight">
+                    <span data-i18n="tvmCols" id="tvmColsLabel"></span>
+                    <input id="tvmCols" type="range" min="1" max="4" step="1" aria-labelledby="tvmColsLabel">
+                    <span id="tvmColsVal" class="mono"></span>
+                  </div>
+                  <div class="inline tight">
+                    <span data-i18n="tvmRadius" id="tvmRadiusLabel"></span>
+                    <input id="tvmRadius" type="range" min="0" max="40" step="1" aria-labelledby="tvmRadiusLabel">
+                    <span id="tvmRadiusVal" class="mono"></span>
+                  </div>
+                  <div class="inline tight">
+                    <span data-i18n="tvmBezelW" id="tvmBezelLabel"></span>
+                    <input id="tvmBezel" type="range" min="0" max="16" step="1" aria-labelledby="tvmBezelLabel">
+                    <span id="tvmBezelVal" class="mono"></span>
+                  </div>
+                  <div class="makerRow two">
+                    <label class="field">
+                      <span data-i18n="tvmDeco"></span>
+                      <select id="tvmDeco"></select>
+                    </label>
+                    <label class="field">
+                      <span data-i18n="tvmPreset"></span>
+                      <select id="tvmPreset"></select>
+                    </label>
+                  </div>
+                  <h3 data-i18n="tvmTex"></h3>
+                  <label class="check"><input id="tvmGlow" type="checkbox"><span data-i18n="tvmGlow"></span></label>
+                  <label class="check"><input id="tvmGlare" type="checkbox"><span data-i18n="tvmGlare"></span></label>
+                  <label class="check"><input id="tvmScan" type="checkbox"><span data-i18n="tvmScan"></span></label>
+                </div>
+                <div>
+                  <div class="hint" data-i18n="tvmPreview"></div>
+                  <div class="tvPreviewWrap"><div id="tvmPreview"></div></div>
+                </div>
+              </div>
+              <div class="miniActions">
+                <button id="tvmLoadBtn" type="button" data-i18n="loadCurrent"></button>
+                <button id="tvmSaveNewBtn" type="button" data-i18n="saveNewSkin"></button>
+                <button id="tvmOverwriteBtn" type="button" data-i18n="overwriteSkin"></button>
+                <button id="tvmExportBtn" type="button" data-i18n="exportSkin"></button>
+                <label class="fileBtn small">
+                  <input id="tvmImportFile" type="file" accept="application/json,.json" hidden>
+                  <span data-i18n="importSkin"></span>
+                </label>
+                <button id="tvmDeleteBtn" type="button" data-i18n="deleteSkin"></button>
+              </div>
+              <div id="tvmStatus" class="hint status"></div>
+            </details>
+
+            <h3 id="libSkinHeadLabel" data-i18n="libSkinHead"></h3>
+            <select id="libSkinSelect" aria-labelledby="libSkinHeadLabel"></select>
+            <label class="check"><input id="libSkinQuickChk" type="checkbox" checked><span data-i18n="libSkinQuick"></span></label>
+            <div class="hint" data-i18n="libSkinHint"></div>
+
+            <h3 id="mascotSelLabel" data-i18n="mascotSel"></h3>
+            <!-- キャラクターの選択肢は js/characters/*.js が自動で追加します -->
+            <select id="mascotSelect" class="mascotSelect" aria-labelledby="mascotSelLabel">
+              <option value="skin" data-i18n="mascotSkin"></option>
+              <option value="none" data-i18n="mascotNone"></option>
+              <option value="buddy" data-i18n="mascotBuddy"></option>
+              <option value="vrm" data-i18n="mascotVrm"></option>
+              <option value="mmd" data-i18n="mascotMmd"></option>
+            </select>
+            <div class="hint" data-i18n="mascotHint"></div>
+
+            <!-- 🥁 ノーツの見た目（1行に格納可能な subPanel） -->
+            <details id="noteStylePanel" class="subPanel">
+              <summary data-i18n="noteStyle"></summary>
+              <div class="noteRows">
+                <span id="noteColorLabel" data-i18n="noteColorAria" style="display:none"></span>
+                <span id="noteShapeLabel" data-i18n="noteShapeAria" style="display:none"></span>
+                <div class="noteRow">
+                  <i id="notePrev0" class="dot big"></i>
+                  <strong id="noteKindLabel0" data-i18n="donNote"></strong>
+                  <input id="noteColor0" type="color" aria-labelledby="noteKindLabel0 noteColorLabel">
+                  <select id="noteShape0" aria-labelledby="noteKindLabel0 noteShapeLabel">
+                    <option value="circle" data-i18n="shapeCircle"></option>
+                    <option value="diamond" data-i18n="shapeDiamond"></option>
+                    <option value="square" data-i18n="shapeSquare"></option>
+                  </select>
+                </div>
+                <div class="noteRow">
+                  <i id="notePrev1" class="dot big"></i>
+                  <strong id="noteKindLabel1" data-i18n="kaNote"></strong>
+                  <input id="noteColor1" type="color" aria-labelledby="noteKindLabel1 noteColorLabel">
+                  <select id="noteShape1" aria-labelledby="noteKindLabel1 noteShapeLabel">
+                    <option value="circle" data-i18n="shapeCircle"></option>
+                    <option value="diamond" data-i18n="shapeDiamond"></option>
+                    <option value="square" data-i18n="shapeSquare"></option>
+                  </select>
+                </div>
+              </div>
+              <div class="seg" id="notePresets">
+                <button type="button" data-preset="classic" data-i18n="presetClassic"></button>
+                <button type="button" data-preset="clarity" data-i18n="presetClarity"></button>
+                <button type="button" data-preset="skin" data-i18n="presetSkin"></button>
+              </div>
+              <div class="hint" data-i18n="noteHint"></div>
+            </details>
+          </details>
+        </div>
+
+        <!-- 右：プレイオプション・操作・パック・VRM・サウンド・エフェクト -->
+        <div class="col">
+          <details class="panel" open>
+            <summary data-i18n="secOptions"></summary>
+
+            <h3 data-i18n="secLives"></h3>
+            <div class="seg" id="livesPicker">
+              <button type="button" data-lives="standard" data-i18n="livesStandard"></button>
+              <button type="button" data-lives="knight" data-i18n="livesKnight"></button>
+              <button type="button" data-lives="chicken" data-i18n="livesChicken"></button>
+              <button type="button" data-lives="none" data-i18n="livesNone"></button>
+            </div>
+            <div class="hint" data-i18n="livesHint"></div>
+            <label class="check"><input id="lifeNumber" type="checkbox"><span data-i18n="lifeNumber"></span></label>
+            <!-- modes.js がここに「体力の表示スタイル」を追加します -->
+
+            <label class="check"><input id="countdown" type="checkbox"><span data-i18n="countdown"></span></label>
+            <label class="check"><input id="countdownSE" type="checkbox"><span data-i18n="countdownSE"></span></label>
+            <label class="check"><input id="resumeCountdown" type="checkbox"><span data-i18n="resumeCountdown"></span></label>
+            <div class="inline">
+              <span data-i18n="shortMode" id="shortModeLabel"></span>
+              <select id="shortMode" aria-labelledby="shortModeLabel">
+                <option value="off" data-i18n="shortOff"></option>
+                <option value="90" data-i18n="short90"></option>
+                <option value="120" data-i18n="short120"></option>
+                <option value="180" data-i18n="short180"></option>
+              </select>
+            </div>
+            <div class="hint" data-i18n="shortHint"></div>
+            <div class="hint" data-i18n="countdownHint"></div>
+
+            <h3 data-i18n="judgeLevel"></h3>
+            <div class="seg" id="judgePicker">
+              <button type="button" data-judge="lenient" data-i18n="judgeLenient"></button>
+              <button type="button" data-judge="standard" data-i18n="judgeStandard"></button>
+              <button type="button" data-judge="strict" data-i18n="judgeStrict"></button>
+            </div>
+            <div class="hint" data-i18n="judgeHint"></div>
+
+            <div class="inline">
+              <span data-i18n="rate" id="rateLabel"></span>
+              <input id="rate" type="range" min="0.5" max="3" step="0.01" aria-labelledby="rateLabel">
+              <span id="rateVal" class="mono"></span>
+            </div>
+            <div class="hint" data-i18n="rateHint"></div>
+            <!-- speed.js がここに「速度パネルの表示」を追加します -->
+
+            <label class="check"><input id="optHidden" type="checkbox"><span data-i18n="hidden"></span></label>
+            <label class="check"><input id="optSudden" type="checkbox"><span data-i18n="sudden"></span></label>
+            <div class="inline">
+              <span data-i18n="coverAmount" id="coverLabel"></span>
+              <input id="cover" type="range" min="0.2" max="0.7" step="0.05" aria-labelledby="coverLabel">
+              <span id="coverVal" class="mono"></span>
+            </div>
+            <label class="check"><input id="optMirror" type="checkbox"><span data-i18n="modMirror"></span></label>
+            <label class="check"><input id="optRandom" type="checkbox"><span data-i18n="modRandom"></span></label>
+
+            <h3 data-i18n="secExpert"></h3>
+            <label class="check"><input id="showMasterDiff" type="checkbox"><span data-i18n="showMasterDiff"></span></label>
+            <div class="hint" data-i18n="showMasterDiffHint"></div>
+
+            <h3 data-i18n="secMystery"></h3>
+            <label class="check"><input id="swayAllModes" type="checkbox"><span data-i18n="swayAllModes"></span></label>
+            <div class="hint" data-i18n="swayAllModesHint"></div>
+            <label class="check"><input id="escNoReturn" type="checkbox"><span data-i18n="escNoReturn"></span></label>
+            <div class="hint" data-i18n="escNoReturnHint"></div>
+            <label class="check"><input id="judgeOrdered" type="checkbox"><span data-i18n="judgeOrdered"></span></label>
+            <div class="hint" data-i18n="judgeOrderedHint"></div>
+            <label class="check"><input id="favQuickUnfreeze" type="checkbox"><span data-i18n="favQuickUnfreeze"></span></label>
+            <div class="hint" data-i18n="favQuickUnfreezeHint"></div>
+            <label class="check"><input id="mediaReloadOnExit" type="checkbox"><span data-i18n="mediaReloadOnExit"></span></label>
+            <div class="hint" data-i18n="mediaReloadOnExitHint"></div>
+            <label class="check"><input id="artWallpaperBg" type="checkbox"><span data-i18n="artWallpaperBg"></span></label>
+            <div class="hint" data-i18n="artWallpaperBgHint"></div>
+            <label class="check"><input id="useStudyArtwork" type="checkbox"><span data-i18n="useStudyArtwork"></span></label>
+            <div class="hint" data-i18n="useStudyArtworkHint"></div>
+            <label class="check"><input id="hideArtworkDuringChart" type="checkbox"><span data-i18n="hideArtworkDuringChart"></span></label>
+            <div class="hint" data-i18n="hideArtworkDuringChartHint"></div>
+            <label class="field">
+              <span data-i18n="chartGen">🎼 譜面生成方式</span>
+              <select id="chartGen">
+                <option value="3" data-i18n="chartGen3">Aタイプ（方式3・従来）</option>
+                <option value="4" data-i18n="chartGen4">Bタイプ（標準・方式4）</option>
+                <option value="1" data-i18n="chartGen1">旧方式1</option>
+                <option value="2" data-i18n="chartGen2">旧方式2</option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="chartGenHint"></div>
+          </details>
+
+          <details class="panel" open>
+            <summary data-i18n="secControls"></summary>
+            <div class="keyRows">
+              <div class="keyRow">
+                <strong data-i18n="leftKey"></strong><span class="keyValue" id="keyValue0"></span>
+                <button type="button" data-bind="0" data-i18n="assign"></button>
+              </div>
+              <div class="keyRow">
+                <strong data-i18n="rightKey"></strong><span class="keyValue" id="keyValue1"></span>
+                <button type="button" data-bind="1" data-i18n="assign"></button>
+              </div>
+              <div class="keyRow">
+                <strong data-i18n="leftSub"></strong><span class="keyValue" id="keyValue2"></span>
+                <button type="button" data-bind="2" data-i18n="assign"></button>
+              </div>
+              <div class="keyRow">
+                <strong data-i18n="rightSub"></strong><span class="keyValue" id="keyValue3"></span>
+                <button type="button" data-bind="3" data-i18n="assign"></button>
+              </div>
+            </div>
+            <div class="seg" id="keyPresets" style="margin-top:10px">
+              <button type="button" data-keypreset="standard" data-i18n="keyPresetDefault"></button>
+              <button type="button" data-keypreset="taiko" data-i18n="keyPresetTaiko"></button>
+              <button type="button" data-keypreset="arcade" data-i18n="keyPresetArcade"></button>
+              <button type="button" data-keypreset="remote" data-i18n="keyPresetRemote"></button>
+            </div>
+            <label class="check"><input id="reverseHands" type="checkbox"><span data-i18n="reverseHands"></span></label>
+            <div id="keyPreview" class="hint"></div>
+            <div id="bindStatus" class="hint status"></div>
+
+            <div class="inline">
+              <span data-i18n="latency" id="latencyLabel"></span>
+              <input id="latency" class="numField" type="number" min="-300" max="500" step="5" aria-labelledby="latencyLabel">
+            </div>
+            <div class="hint" data-i18n="latencyHint"></div>
+            <!-- extras.js がここに「🎯 オフセットを測る」と自動微調整を追加します -->
+            <div class="hint" data-i18n="quickRetryHint"></div>
+            <!-- player.js がここに「⏯ 再生の操作」と区間リピートを追加します -->
+
+            <details id="navigationKeysPanel" class="subPanel">
+              <summary data-i18n="navKeysTitle"></summary>
+              <div class="keyRows">
+                <div class="keyRow">
+                  <strong data-i18n="menuReturnKey"></strong><span class="keyValue" id="menuReturnKeyValue"></span>
+                  <button id="menuReturnKeyAssign" type="button" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="mediaExitKey"></strong><span class="keyValue" id="mediaExitKeyValue"></span>
+                  <button id="mediaExitKeyAssign" type="button" data-i18n="assign"></button>
+                </div>
+              </div>
+              <label class="check"><input id="menuReturnConfirmCheck" type="checkbox"><span data-i18n="menuReturnConfirmToggle"></span></label>
+              <label class="check"><input id="mediaExitConfirmCheck" type="checkbox"><span data-i18n="mediaExitConfirmToggle"></span></label>
+              <div class="hint" data-i18n="navKeysHint"></div>
+            </details>
+
+            <label class="check"><input id="helpText" type="checkbox"><span data-i18n="helpText"></span></label>
+            <div class="hint" data-i18n="helpTextHint"></div>
+            <div class="hint"><button id="tutorialReplayBtn" type="button" data-i18n="tutorialReplay"></button></div>
+
+            <!-- 🚚🎪🚛 各モードの操作キー（TRUCK・STAGE・CATCH・速度） -->
+            <details id="modeControlsPanel" class="subPanel">
+              <summary data-i18n="modeKeysTitle"></summary>
+              <h3 data-i18n="truckCtlTitle"></h3>
+              <div class="seg" id="truckKeyPresets">
+                <button type="button" data-truckpreset="layout" data-i18n="truckPresetLayout"></button>
+                <button type="button" data-truckpreset="ud" data-i18n="truckPresetUD"></button>
+                <button type="button" data-truckpreset="lr" data-i18n="truckPresetLR"></button>
+              </div>
+              <div class="keyRows" style="margin-top:10px">
+                <div class="keyRow">
+                  <strong data-i18n="truckLane0"></strong><span class="keyValue" id="truckKeyValue0"></span>
+                  <button type="button" data-truckbind="0" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="truckLane1"></strong><span class="keyValue" id="truckKeyValue1"></span>
+                  <button type="button" data-truckbind="1" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="truckToggle"></strong><span class="keyValue" id="truckKeyValue2"></span>
+                  <button type="button" data-truckbind="2" data-i18n="assign"></button>
+                </div>
+              </div>
+              <label class="check"><input id="truckHitKeys" type="checkbox"><span data-i18n="truckHitKeys"></span></label>
+              <div id="truckKeyPreview" class="hint"></div>
+              <div id="truckBindStatus" class="hint status"></div>
+              <div class="hint" data-i18n="truckCtlHint"></div>
+              <!-- stage.js（🎪）・catch.js（🚛）・speed.js（⏩）のキー設定がここに入ります -->
+            </details>
+
+            <!-- 🎮 ゲームパッド・コントローラー・TVリモコン（js/pad.js） -->
+            <details id="padPanel" class="subPanel">
+              <summary data-i18n="padPanelTitle"></summary>
+              <div class="hint" data-i18n="padHint"></div>
+              <label class="check"><input id="padEnabled" type="checkbox"><span data-i18n="padEnable"></span></label>
+              <div id="padStatus" class="hint status"></div>
+              <div class="seg" id="padPresets">
+                <button type="button" data-padpreset="ab" data-i18n="padPresetAB"></button>
+                <button type="button" data-padpreset="dpad" data-i18n="padPresetDpad"></button>
+                <button type="button" data-padpreset="stick" data-i18n="padPresetStick"></button>
+              </div>
+              <div class="keyRows" style="margin-top:10px">
+                <div class="keyRow">
+                  <strong data-i18n="padActLeft"></strong><span class="keyValue" data-padvalue="left"></span>
+                  <button type="button" data-padbind="left" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="padActRight"></strong><span class="keyValue" data-padvalue="right"></span>
+                  <button type="button" data-padbind="right" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="padActConfirm"></strong><span class="keyValue" data-padvalue="confirm"></span>
+                  <button type="button" data-padbind="confirm" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="padActBack"></strong><span class="keyValue" data-padvalue="back"></span>
+                  <button type="button" data-padbind="back" data-i18n="assign"></button>
+                </div>
+                <div class="keyRow">
+                  <strong data-i18n="padActPause"></strong><span class="keyValue" data-padvalue="pause"></span>
+                  <button type="button" data-padbind="pause" data-i18n="assign"></button>
+                </div>
+              </div>
+              <label class="check"><input id="padMenuNav" type="checkbox"><span data-i18n="padMenuNav"></span></label>
+              <div class="hint" data-i18n="padMenuNavHint"></div>
+              <div class="hint" data-i18n="padRemoteHint"></div>
+            </details>
+          </details>
+
+          <details class="panel" id="packPanel">
+            <summary data-i18n="secPacks"></summary>
+            <div class="hint" data-i18n="packHint"></div>
+            <div class="miniActions">
+              <label class="fileBtn small">
+                <input id="packFile" type="file" accept=".stpack,.zip" hidden>
+                <span data-i18n="packChoose"></span>
+              </label>
+              <button id="packOffBtn" type="button" data-i18n="packOff"></button>
+            </div>
+            <!-- verified.js が各パックに「✔公認・指紋・📋 公認リスト用にコピー」を追加します -->
+            <div id="packList"></div>
+            <div id="packStatus" class="hint status"></div>
+
+            <details id="packBuilder" class="subPanel">
+              <summary data-i18n="packBuild"></summary>
+              <div class="hint" data-i18n="packBuildHint"></div>
+              <div class="fields2">
+                <label class="field"><span data-i18n="packName"></span><input id="packName" type="text" maxlength="40"></label>
+                <label class="field"><span data-i18n="packAuthor"></span><input id="packAuthor" type="text" maxlength="40"></label>
+              </div>
+              <label class="field"><span data-i18n="packRole"></span><input id="packRole" type="text" maxlength="80"></label>
+              <label class="field"><span data-i18n="packDesc"></span><input id="packDesc" type="text" maxlength="200"></label>
+              <label class="field"><span data-i18n="packLicense"></span><input id="packLicense" type="text" maxlength="400"></label>
+              <label class="field"><span data-i18n="packRights"></span><input id="packRights" type="text" maxlength="240"></label>
+              <label class="field"><span data-i18n="packUrl"></span><input id="packUrl" type="url" maxlength="200" placeholder="https://"></label>
+              <label class="check"><input id="packCreditCard" type="checkbox" checked><span data-i18n="packCreditCard"></span></label>
+              <div class="incList">
+                <label class="check"><input id="incSkin" type="checkbox" checked><span data-i18n="incSkin"></span></label>
+                <label class="check"><input id="incNotes" type="checkbox" checked><span data-i18n="incNotes"></span></label>
+                <label class="check"><input id="incSounds" type="checkbox"><span data-i18n="incSounds"></span></label>
+                <label class="check"><input id="incVrm" type="checkbox"><span data-i18n="incVrm"></span></label>
+                <label class="check"><input id="incMotion" type="checkbox"><span data-i18n="incMotion"></span></label>
+                <label class="check"><input id="incCaptions" type="checkbox"><span data-i18n="incCaptions"></span></label>
+              </div>
+              <div class="fields2">
+                <label class="field"><span data-i18n="noteImgDon"></span><input id="packDonImg" type="file" accept="image/png,image/webp,image/jpeg"></label>
+                <label class="field"><span data-i18n="noteImgKa"></span><input id="packKaImg" type="file" accept="image/png,image/webp,image/jpeg"></label>
+              </div>
+              <label class="field"><span data-i18n="capStartTxt"></span><input id="capStartTxt" type="text" maxlength="60"></label>
+              <label class="field"><span data-i18n="capComboTxt"></span><input id="capComboTxt" type="text" maxlength="60"></label>
+              <label class="field"><span data-i18n="capBreakTxt"></span><input id="capBreakTxt" type="text" maxlength="60"></label>
+              <label class="check"><input id="packVrmOk" type="checkbox"><span data-i18n="packVrmOk"></span></label>
+              <label class="check"><input id="packInstallToo" type="checkbox" checked><span data-i18n="packInstallToo"></span></label>
+              <button id="packBuildBtn" type="button" class="primary slim" data-i18n="packBuildBtn"></button>
+            </details>
+          </details>
+
+          <!-- 💾 端末の保存（trk136）。書斎・パック・記録の保存を、ブラウザに消されにくい状態へ固定する -->
+          <details class="panel" id="storagePanel">
+            <summary data-i18n="secStorage"></summary>
+            <div class="hint" data-i18n="storagePersistHint"></div>
+            <div id="storagePersistState" class="hint status" role="status" aria-live="polite"></div>
+            <div class="miniActions">
+              <button id="storagePersistBtn" type="button" data-i18n="storagePersistBtn" hidden></button>
+            </div>
+            <label class="check"><input id="ignoreLimitsChk" type="checkbox"><span data-i18n="ignoreLimits"></span></label>
+            <div class="hint" data-i18n="ignoreLimitsHint"></div>
+          </details>
+
+          <!-- 🎵 明示的に保存した曲・動画だけを IndexedDB の仮想棚へ置く（trk1.0.4候補） -->
+          <details class="panel" id="mediaKeepPanel">
+            <summary data-i18n="mediaKeepTitle"></summary>
+            <div class="hint" data-i18n="mediaKeepHint"></div>
+            <label class="field">
+              <span data-i18n="mediaKeepLimitLabel"></span>
+              <select id="mediaKeepLimit">
+                <option value="1g" data-i18n="mediaKeepLimit1"></option>
+                <option value="5g" data-i18n="mediaKeepLimit5"></option>
+                <option value="unlimited" data-i18n="mediaKeepLimitUnlimited"></option>
+              </select>
+            </label>
+            <div id="mediaKeepLimitWarning" class="hint" data-i18n="mediaKeepUnlimitedWarning" hidden></div>
+            <div id="mediaKeepStats" class="hint status" role="status" aria-live="polite"></div>
+            <div id="mediaKeepQuota" class="hint"></div>
+            <div class="miniActions">
+              <button id="mediaKeepReviewBtn" type="button" data-i18n="mediaKeepReview" disabled></button>
+              <button id="mediaKeepClearBtn" type="button" data-i18n="mediaKeepClear" disabled></button>
+            </div>
+            <div id="mediaKeepStatus" class="hint status" role="status" aria-live="polite"></div>
+          </details>
+
+          <!-- 📄 参照のみの保存（1.0.6） — 本体がなくても“あったこと”を残す -->
+          <details class="panel" id="ghostPanel">
+            <summary data-i18n="ghostPanelTitle"></summary>
+            <div class="hint" data-i18n="ghostHint"></div>
+            <div id="ghostStats" class="hint"></div>
+            <div class="miniActions">
+              <button id="ghostRelinkBtn" type="button" data-i18n="ghostRelinkAll"></button>
+              <button id="ghostClearBtn" type="button" data-i18n="ghostClear"></button>
+            </div>
+            <div id="ghostStatus" class="hint status" role="status" aria-live="polite"></div>
+          </details>
+
+          <!-- 📦 まるごとバックアップ（trk137）。書き出しと復元は js/backup.js。含める項目は選べる -->
+          <details class="panel" id="backupPanel">
+            <summary data-i18n="backupPanelTitle"></summary>
+            <div class="hint" data-i18n="backupHint"></div>
+            <label class="check"><input id="backupAreaStudy" type="checkbox" checked><span data-i18n="backupAreaStudy"></span></label>
+            <label class="check"><input id="backupAreaPacks" type="checkbox" checked><span data-i18n="backupAreaPacks"></span></label>
+            <label class="check"><input id="backupAreaMedia" type="checkbox"><span data-i18n="backupAreaMedia"></span></label>
+            <div class="miniActions">
+              <button id="backupMakeBtn" type="button" data-i18n="backupMake"></button>
+              <label class="fileBtn small">
+                <input id="backupRestoreFile" type="file" accept=".zip,application/zip" hidden>
+                <span data-i18n="backupRestorePick"></span>
+              </label>
+            </div>
+            <div id="backupStatus" class="hint status" role="status" aria-live="polite"></div>
+          </details>
+
+          <!-- 📤 ミュージックフォルダの共有（配線は library.js。許可は1回だけ・中身を一気に取り込む） -->
+          <details class="panel" id="libSharePanel">
+            <summary data-i18n="secShare"></summary>
+            <div class="hint" data-i18n="libShareHint"></div>
+            <div class="miniActions">
+              <button id="libShareSettingsBtn" type="button" data-i18n="libShare"></button>
+              <!-- 🎬 trk208：動画フォルダーも同じやり方で共有（startIn:"videos"） -->
+              <button id="libShareVideoBtn" type="button" data-i18n="libShareVideo"></button>
+              <button id="libShareStopBtn" type="button" data-i18n="libShareStop" hidden></button>
+            </div>
+            <!-- 📤 trk208：覚えている共有フォルダーの一覧（フォルダーごとの曲数と × を library.js が作ります） -->
+            <div id="libSharedFolderList" class="libSharedFolders" role="list" hidden></div>
+            <label class="check"><input id="libKeepSharedChk" type="checkbox"><span data-i18n="libKeepShared"></span></label>
+            <!-- 上限の数字を入れるので、このヒントだけ library.js が tr(…, {max, mb}) で書き換えます -->
+            <div id="libKeepSharedHint" class="hint"></div>
+            <!-- 🔓 trk194：覚えたフォルダーを起動したら自動で読み取る（許可が生きていればクリック不要） -->
+            <label class="check"><input id="folderAutoReadChk" type="checkbox"><span data-i18n="folderAutoRead"></span></label>
+            <div id="folderAutoReadHint" class="hint" data-i18n="folderAutoReadHint"></div>
+            <div class="miniActions">
+              <button id="folderAutoNowBtn" type="button" data-i18n="folderAutoNow"></button>
+            </div>
+            <div id="folderPermState" class="hint" role="status" aria-live="polite"></div>
+            <div id="libShareState" class="hint"></div>
+            <div id="libShareStatus" class="hint status"></div>
+          </details>
+
+          <!-- 🐔 trk's playlist（ゲーム音楽の紹介。右端のタブ。🎻 trk classic もこの中に収納） -->
+          <details class="panel" id="trkPanel">
+            <summary data-i18n="trkPanelTitle"></summary>
+            <div class="hint" data-i18n="trkPanelHint"></div>
+            <div class="hint" data-i18n="trkPlaylistHint"></div>
+
+            <!-- 🐔 trk217：カタログから選んだリストだけを追加（起動時に一括作成しない・trk-apk の新基準） -->
+            <div id="trkPick" class="trkPick">
+              <div class="hint" id="trkPickHint" data-i18n="trkPickHint"></div>
+              <label class="field"><span data-i18n="trkPickLabel"></span>
+                <select id="trkPickSelect" data-i18n-aria="trkPickLabel"></select>
+              </label>
+              <div class="miniActions"><button id="trkPickAdd" type="button" data-i18n="trkPickAdd"></button></div>
+              <div id="trkPickStatus" class="hint status" role="status" aria-live="polite"></div>
+            </div>
+
+            <label class="check"><input id="trkPlaylistChk" type="checkbox"><span data-i18n="trkPlaylistToggle"></span></label>
+            <div class="hint" data-i18n="trkPlaylistNote"></div>
+            <div class="hint" data-i18n="trkMusicFolderHint"></div>
+            <div class="miniActions">
+              <button id="trkMusicFolderBtn" type="button" data-i18n="trkMusicFolderBtn"></button>
+              <button id="trkOpenBtn" type="button" data-i18n="trkOpen"></button>
+              <button id="trkHideBtn" type="button" data-i18n="trkHide"></button>
+            </div>
+            <div id="trkStatus" class="hint status"></div>
+
+            <!-- 🐔 タブの表示名（3種類）。アイコンは固定で、名前と色は編集できません -->
+            <label class="field">
+              <span data-i18n="trkTabNameLabel"></span>
+              <select id="trkTabNameSel" data-i18n-aria="trkTabNameLabel">
+                <option value="full" data-i18n="trkTabNameFull"></option>
+                <option value="short" data-i18n="trkTabNameShort"></option>
+                <option value="icon" data-i18n="trkTabNameIcon"></option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="trkTabNameNote"></div>
+
+            <!-- 🔤 並び順（trk's playlist の階層に入れた Vol ぜんぶ） -->
+            <div class="plSep"></div>
+            <label class="check"><input id="trkSortAbcChk" type="checkbox"><span data-i18n="trkSortAbc"></span></label>
+            <div class="hint" data-i18n="trkSortAbcHint"></div>
+            <div id="trkOrderList" class="miniActions" style="flex-direction:column;align-items:stretch;gap:6px"></div>
+            <!-- 🗑 消した trk の自動リストは作り直さない。戻すときだけここから（消したものが無いときは隠す） -->
+            <div class="hint" data-i18n="trkRestoreHint"></div>
+            <div class="miniActions"><button id="trkRestoreBtn" type="button" hidden></button></div>
+
+            <!-- 🎻 trk classic（ゲームとは別枠・クラシック名盤100選）＝ 🐔 trk's playlist の中に収納 -->
+            <details class="subPanel" id="trkClassicPanel">
+              <summary data-i18n="trkClassicPanelTitle"></summary>
+              <div class="hint" data-i18n="trkClassicPanelHint"></div>
+              <div class="hint" data-i18n="trkClassicHint"></div>
+              <label class="check"><input id="trkClassicChk" type="checkbox"><span data-i18n="trkClassicToggle"></span></label>
+              <div class="hint" data-i18n="trkClassicNote"></div>
+              <div class="miniActions">
+                <button id="trkClassicOpenBtn" type="button" data-i18n="trkClassicBtn"></button>
+                <button id="trkClassicHideBtn" type="button" data-i18n="trkClassicHide"></button>
+              </div>
+              <div id="trkClassicStatus" class="hint status"></div>
+            </details>
+          </details>
+
+          <details class="panel" id="vrmPanel">
+            <summary data-i18n="vrmTitle"></summary>
+            <div class="hint" data-i18n="vrmHint"></div>
+            <label class="check"><input id="vrmAgree" type="checkbox"><span data-i18n="vrmAgree"></span></label>
+            <div class="miniActions">
+              <label class="fileBtn small disabled" id="vrmFileLabel">
+                <input id="vrmFile" type="file" accept=".vrm" hidden disabled>
+                <span data-i18n="vrmChoose"></span>
+              </label>
+              <button id="vrmClearBtn" type="button" data-i18n="vrmClear"></button>
+            </div>
+            <label class="check"><input id="vrmRemember" type="checkbox"><span data-i18n="vrmRemember"></span></label>
+            <div class="makerRow two">
+              <label class="field">
+                <span data-i18n="vrmFrame"></span>
+                <select id="vrmFrame">
+                  <option value="full" data-i18n="frameFull"></option>
+                  <option value="upper" data-i18n="frameUpper"></option>
+                  <option value="face" data-i18n="frameFace"></option>
+                </select>
+              </label>
+              <label class="field">
+                <span data-i18n="vrmTurn"></span>
+                <span class="inline tight">
+                  <input id="vrmTurn" type="range" min="-60" max="60" step="5">
+                  <span id="vrmTurnVal" class="mono"></span>
+                </span>
+              </label>
+            </div>
+            <h3 data-i18n="vrmMotion"></h3>
+            <div class="miniActions">
+              <label class="fileBtn small">
+                <input id="vrmaFile" type="file" accept=".vrma" hidden>
+                <span data-i18n="vrmMotionChoose"></span>
+              </label>
+              <button id="vrmaClearBtn" type="button" data-i18n="vrmMotionClear"></button>
+            </div>
+            <label class="field">
+              <span data-i18n="vrmMotionBpm"></span>
+              <input id="vrmMotionBpm" type="number" min="40" max="300" step="0.1" placeholder="120">
+            </label>
+            <div class="vrmBox">
+              <canvas id="vrmPreview" width="240" height="320"></canvas>
+              <div id="vrmInfo" class="hint"></div>
+            </div>
+            <div id="vrmStatus" class="hint status"></div>
+          </details>
+
+          <details class="panel">
+            <summary data-i18n="secSound"></summary>
+            <details id="midiSoundPanel" class="subPanel">
+              <summary data-i18n="midiSoundTitle"></summary>
+              <label class="field">
+                <span id="midiSoundProfileLabel" data-i18n="midiSoundLabel"></span>
+                <select id="midiSoundProfile" aria-labelledby="midiSoundProfileLabel"></select>
+              </label>
+              <div class="hint" data-i18n="midiSoundHint"></div>
+            </details>
+            <label class="check"><input id="seEnabled" type="checkbox"><span data-i18n="enableSE"></span></label>
+            <div class="inline">
+              <span data-i18n="seVolume" id="seVolumeLabel"></span>
+              <input id="seVolume" type="range" min="0" max="1" step="0.01" aria-labelledby="seVolumeLabel">
+            </div>
+            <div class="seButtons">
+              <label class="fileBtn small">📁 <input id="donSeFile" type="file" accept="audio/*" hidden><span data-i18n="donSE"></span></label>
+              <button id="previewDonBtn" type="button" data-i18n="previewDon"></button>
+              <label class="fileBtn small">📁 <input id="kaSeFile" type="file" accept="audio/*" hidden><span data-i18n="kaSE"></span></label>
+              <button id="previewKaBtn" type="button" data-i18n="previewKa"></button>
+            </div>
+            <div id="seStatus" class="hint status"></div>
+            <label class="check"><input id="previewEnabled" type="checkbox"><span data-i18n="previewEnabled"></span></label>
+            <!-- ⏮ trk193：常に最初から再生する（プレビュー＋メディアプレーヤーの続きから）。メディアプレーヤーと曲名タブの長押しバーにも同じものがある -->
+            <label class="check"><input id="mediaStartFromZero" type="checkbox"><span data-i18n="mediaStartFromZero"></span></label>
+            <div id="mediaStartFromZeroHint" class="hint" data-i18n="mediaStartFromZeroHint"></div>
+            <!-- 📖 trk196：再生できる形式の説明（形式で迷ったとき、ここを見れば分かるように） -->
+            <details id="formatHelpPanel" class="subPanel">
+              <summary data-i18n="formatHelpTitle"></summary>
+              <div class="hint" data-i18n="formatHelpMusic"></div>
+              <div class="hint" data-i18n="formatHelpMidi"></div>
+              <div class="hint" data-i18n="formatHelpVideo"></div>
+              <div class="hint" data-i18n="formatHelpAudio"></div>
+              <div class="hint" data-i18n="formatHelpUnplayable"></div>
+              <div class="hint" data-i18n="formatHelpConvert"></div>
+            </details>
+            <label class="check"><input id="bannerPause" type="checkbox"><span data-i18n="bannerPause"></span></label>
+            <label class="check"><input id="bannerSongBtns" type="checkbox"><span data-i18n="bannerSongBtns"></span></label>
+            <label class="check"><input id="bannerRandomBtn" type="checkbox"><span data-i18n="bannerRandomBtn"></span></label>
+            <label class="check"><input id="bannerRandomTap" type="checkbox"><span data-i18n="bannerRandomTap"></span></label>
+            <label class="check"><input id="showMoreBtns" type="checkbox"><span data-i18n="showMoreBtns"></span></label>
+          </details>
+          <!-- fx.js がここに「🎛 サウンドエフェクト」の欄を追加します -->
+          <!-- ⭐ お気に入りのフォルダ管理（中身は js/favs.js が作ります） -->
+          <details class="panel" id="favPanel">
+            <summary id="favPanelSummary">⭐ お気に入り</summary>
+            <div id="favPanelBody"></div>
+          </details>
+
+          <details class="panel" id="emergencyPanel">
+            <summary>🛟 緊急復旧 / Emergency Recovery</summary>
+            <div class="hint">
+              画面が真っ暗・触れなくなった時はURLに <code>?safe=1</code> や <code>?reset=tv</code> を付けて開き直すと復旧できます。<br>
+              If the screen becomes unusable, add <code>?safe=1</code> or <code>?reset=tv</code> to the URL and reload.
+            </div>
+            <div class="miniActions" style="margin-top:10px">
+              <button id="emergencySafeBtn" type="button" class="primary slim">🛟 セーフモード (映像OFF)</button>
+              <button id="emergencyTvResetBtn" type="button">📺 映像・TVリセット</button>
+              <button id="emergencyAudioResetBtn" type="button">🔊 音リセット</button>
+              <button id="emergencyWelcomeBtn" type="button" data-i18n="welcomeReplay">👋 ようこそをもう一度</button>
+            </div>
+            <div class="miniActions">
+              <button id="emergencyExportNotesBtn" type="button">🎨 ノーツ設定を書き出し</button>
+              <button id="emergencyExportAllBtn" type="button">💾 全設定を書き出し</button>
+              <label class="fileBtn small">
+                <input id="emergencyImportFile" type="file" accept="application/json,.json" hidden>
+                <span>📥 設定を読み込み</span>
+              </label>
+            </div>
+            <div class="hint" style="margin-top:8px">
+              <details>
+                <summary>URLコマンド一覧</summary>
+                <ul style="text-align:left;margin:8px 0 0 16px;line-height:1.6">
+                  <li><code>?safe=1</code> / <code>#safe</code> — セーフモード：映像OFF・ぼかし0・TV初期化</li>
+                  <li><code>?reset=tv</code> / <code>?reset=video</code> — 映像・TV・ぼかし・TVスキンをデフォルトに（ノーツは保持）</li>
+                  <li><code>?reset=audio</code> — 音量・SEをデフォルトに</li>
+                  <li><code>?reset=notes</code> — ノーツ色・形をデフォルトに</li>
+                  <li><code>?reset=lite</code> — 🪶 軽量化の設定をデフォルトに</li>
+                  <li><code>?reset=all</code> / <code>?factory</code> — 全設定を工場出荷状態に</li>
+                  <li><code>?export=notes</code> / <code>?export=all</code> — 設定をJSONでダウンロード</li>
+                  <li>コンソール: <code>trkReset('tv')</code>, <code>trkExport('notes')</code></li>
+                </ul>
+              </details>
+            </div>
+            <div id="emergencyStatus" class="hint status"></div>
+          </details>
+        </div>
+      </div>
+
+      <!-- 🧩 アドオン：js/addons.js が、ここに一覧と説明を描きます -->
+      <details class="panel addonPanel" id="addonPanel">
+        <summary data-i18n="addonTitle"></summary>
+        <div class="hint" data-i18n="addonHint"></div>
+        <div class="miniActions addonActions">
+          <label class="fileBtn small">
+            <input id="addonInstallFile" type="file" accept=".js,.json,.trkaddon,.trk-addon,text/javascript,application/json" hidden>
+            <span data-i18n="addonInstall"></span>
+          </label>
+          <button id="addonSampleBtn" type="button" data-i18n="addonSample"></button>
+          <a class="fileBtn small" id="addonDocsLink" href="docs/ADDONS.md" target="_blank" rel="noopener noreferrer" data-i18n="addonDocs"></a>
+          <button id="addonReloadBtn" type="button" class="primary slim" hidden data-i18n="addonReload"></button>
+        </div>
+        <div id="addonList" class="addonList"></div>
+        <div id="addonSlots" class="addonSlots"></div>
+        <div id="addonStatus" class="hint status"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===== 一時停止 ===== -->
+  <section id="pauseScreen" class="screen dim" hidden>
+    <div class="card small">
+      <h2 data-i18n="paused"></h2>
+      <p data-i18n="pauseText"></p>
+      <!-- speed.js（速度）・player.js（区間リピート）の表示がここに入ります -->
+      <div class="actions">
+        <button id="resumeBtn" type="button" data-i18n="resume"></button>
+        <button id="retryBtn" type="button" data-i18n="retry"></button>
+        <button id="exportPauseBtn" type="button" data-i18n="export"></button>
+        <button id="returnTitleBtn" type="button" data-i18n="title"></button>
+      </div>
+      <div id="pauseStatus" class="hint status"></div>
+    </div>
+  </section>
+
+  <!-- ===== リザルト ===== -->
+  <section id="endScreen" class="screen dim" hidden>
+    <div class="card small">
+      <h2 data-i18n="finished"></h2>
+      <div id="result"></div>
+      <div class="actions">
+        <button id="replayBtn" type="button" data-i18n="replay"></button>
+        <button id="exportEndBtn" type="button" data-i18n="export"></button>
+        <button id="endTitleBtn" type="button" data-i18n="title"></button>
+      </div>
+      <div id="endStatus" class="hint status"></div>
+      <!-- verified.js が公認曲のとき「✔公認・💬 作者のことば」をクレジットの先頭に入れます -->
+      <div id="credits"></div>
+      <div class="hint pclCredit" hidden></div>
+      <div class="hint center contactLine" style="margin-top:14px">
+        <a href="https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk/issues/new?template=feedback.yml" target="_blank" rel="noopener noreferrer" data-i18n="feedbackLink"></a> ／
+        <a href="https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk/issues/new?template=chart_feedback.yml" target="_blank" rel="noopener noreferrer" data-i18n="chartFeedbackLink"></a> ／
+        <a href="privacy.html">Privacy / プライバシー</a> ／
+        <a href="credits.html">Credits / 権利</a>
+      </div>
+    </div>
+  </section>
+
+  <input id="chartImportFile" type="file" accept="application/json,.json" hidden>
+</div>
+
+<!-- ===== 📚 書斎（端末内の画像・文章リーダー） ===== -->
+<section id="studyRoom" class="study-room" hidden role="dialog" aria-modal="true" aria-labelledby="studyRoomTitle">
+  <div class="study-shell">
+    <header class="study-header">
+      <div class="study-brand">
+        <h2 id="studyRoomTitle" data-i18n="studyTitle">📚 書斎</h2>
+        <div id="studyStatus" class="study-status" aria-live="polite"></div>
+      </div>
+      <div class="study-import-actions">
+        <button id="studyShowShelfBtn" type="button" class="study-file-btn study-show-shelf" aria-controls="studyShelf" hidden data-i18n="studyShowShelf">📚 本棚を表示</button>
+        <label class="study-file-btn">
+          <input id="studyImageFolderInput" type="file" webkitdirectory multiple accept="image/*" hidden>
+          <span data-i18n="studyImportImages">🖼 画像フォルダを取り込む</span>
+        </label>
+        <!-- 📂 trk208：フォルダーを共有して「フォルダのまま読む」（端末へコピーしない＝大量の画像でも容量を食わない） -->
+        <button id="studyShareFolderBtn" type="button" class="study-file-btn" data-i18n="studyShareFolder">📂 フォルダを共有して読む</button>
+        <label class="study-file-btn">
+          <input id="studyTextFilesInput" type="file" multiple accept=".txt,.md,.markdown,.json,.csv,.log,.html,.htm,.xml,.yaml,.yml,.ini,.css,.js,.ts,text/plain,application/json" hidden>
+          <span data-i18n="studyImportTextFiles">＋ テキストを追加</span>
+        </label>
+        <label class="study-file-btn">
+          <input id="studyTextFolderInput" type="file" webkitdirectory multiple accept=".txt,.md,.markdown,.json,.csv,.log,.html,.htm,.xml,.yaml,.yml,.ini,.css,.js,.ts,text/plain,application/json" hidden>
+          <span data-i18n="studyImportTextFolder">📄 テキストフォルダを取り込む</span>
+        </label>
+        <label class="study-file-btn">
+          <input id="studyArchiveInput" type="file" multiple accept=".cbz,.zip,application/zip,application/x-cbz,application/vnd.comicbook+zip" hidden>
+          <span data-i18n="studyImportArchives">🗜 CBZ/ZIPを取り込む</span>
+        </label>
+        <button id="studyHeaderSettingsBtn" type="button" class="study-file-btn" aria-haspopup="dialog" aria-controls="studySettings" data-i18n="studySettings">⚙ 設定</button>
+        <button id="studyHelpBtn" type="button" class="study-close-btn" data-i18n="studyHelp">❓ キーの説明</button>
+        <button id="studyCloseBtn" type="button" class="study-close-btn" data-i18n="studyClose">✕ 書斎を閉じる</button>
+      </div>
+    </header>
+
+    <div class="study-workspace">
+      <aside id="studyShelf" class="study-shelf" aria-label="Study shelf">
+        <div class="study-shelf-heading">
+          <button id="studyShelfCreateFolder" type="button" class="study-shelf-title" data-i18n="studyShelf">本棚</button>
+          <div class="study-shelf-btns">
+            <button id="studyBookmarksBtn" type="button" class="study-icon-btn" aria-pressed="false" data-i18n="studyBookmarks">🔖 栞一覧</button>
+            <span id="studyBookmarkCount" class="study-badge" hidden>0</span>
+            <span id="studyBookCount" class="study-count"></span>
+          </div>
+        </div>
+        <input id="studySearch" class="study-search" type="search" autocomplete="off" placeholder="タイトル・フォルダを検索…" data-i18n-aria="studySearch">
+        <div class="study-shelf-filter">
+          <label for="studyShelfSort" data-i18n="studySortLabel">並べ替え</label>
+          <select id="studyShelfSort">
+            <option value="updated" data-i18n="studySortUpdated">更新が新しい順</option>
+            <option value="added" data-i18n="studySortAdded">追加が古い順</option>
+            <option value="title" data-i18n="studySortTitle">名前順</option>
+            <option value="type" data-i18n="studySortType">種類別（画像→テキスト）</option>
+            <option value="size" data-i18n="studySortSize">大きい順</option>
+          </select>
+        </div>
+        <button id="studyShelfSettingsBtn" type="button" class="study-icon-btn study-shelf-settings" aria-haspopup="dialog" aria-controls="studySettings" data-i18n="studySettings">⚙ 設定</button>
+        <p id="studyShelfDragHelp" class="study-shelf-draghint" data-i18n="studyShelfDragHint" hidden></p>
+        <div id="studyShelfList" class="study-shelf-list"></div>
+        <div id="studyBookmarkPanel" class="study-bookmark-list" hidden></div>
+        <div id="studyImportWrap" class="study-import-wrap" hidden>
+          <div class="study-import-row">
+            <span id="studyImportLabel"></span>
+            <button id="studyImportCancelBtn" type="button" class="study-import-cancel" data-i18n="studyImportCancel">中止</button>
+          </div>
+          <div class="study-import-track"><i id="studyImportFill" class="study-import-fill"></i></div>
+        </div>
+        <div id="studyShelfFoot" class="study-shelf-foot"></div>
+      </aside>
+
+      <main class="study-main">
+        <div id="studyWelcome" class="study-welcome">
+          <div class="study-welcome-mark" aria-hidden="true">♫</div>
+          <h3 data-i18n="studyWelcomeTitle">読みたいものを選ぶ</h3>
+          <p data-i18n="studyWelcomeHint">画像はフォルダ単位、テキストはファイルごとに端末内へ保存します。外へアップロードしません。</p>
+          <p class="study-supported" data-i18n="studySupported">画像: JPG / PNG / WebP / GIF / AVIF / BMP · 文章: TXT / MD / JSON / CSV など</p>
+          <p class="study-shortcuts" data-i18n="studyTapHint">画像: 左側／←で次へ、右側／→で前へ。Space / Enterで次へ、Enter長押しで栞、Space長押しでページ移動、Escで終了。</p>
+          <p class="study-shortcuts" data-i18n="studyWelcomeHelp">操作が分からなくなったら、右上の「❓ キーの説明」を開いてください。</p>
+        </div>
+
+        <section id="studyBookView" class="study-book-view" hidden>
+          <header class="study-book-heading">
+            <button id="studyBackBtn" type="button" class="study-small-btn" data-i18n="studyBack">← 本棚</button>
+            <div class="study-book-heading-text">
+              <h3 id="studyCurrentTitle"></h3>
+              <div id="studyCurrentMeta" class="study-current-meta"></div>
+            </div>
+            <button id="studySettingsBtn" type="button" class="study-small-btn" aria-haspopup="dialog" aria-controls="studySettings" data-i18n="studySettings">⚙ 設定</button>
+            <button id="studyFullscreenBtn" type="button" class="study-small-btn" data-i18n="studyFullscreen">⛶ 画像を全画面化</button>
+          </header>
+
+          <div class="study-toolbar">
+            <label id="studyImageModeRow" class="study-option">
+              <span data-i18n="studyModeLabel">画像の並べ方</span>
+              <select id="studyImageMode">
+                <option value="single" data-i18n="studyModeSingle">一枚ずつ（中央）</option>
+                <option value="spread" data-i18n="studyModeSpread">見開き（右が1ページ目）</option>
+                <option value="vertical" data-i18n="studyModeVertical">縦読み漫画</option>
+              </select>
+            </label>
+            <label id="studyImageOrderRow" class="study-option">
+              <span data-i18n="studyImageOrderLabel">ページの順序</span>
+              <select id="studyImageOrder">
+                <option value="natural" data-i18n="studyImageOrderNatural">ファイル名順</option>
+                <option value="reverse" data-i18n="studyImageOrderReverse">逆順（右綴じ向け）</option>
+              </select>
+            </label>
+            <label id="studyAmericanRow" class="study-check-option">
+              <input id="studyAmerican" type="checkbox">
+              <span data-i18n="studyAmerican">🇺🇸 アメリカン（左右・順序反転）</span>
+            </label>
+            <span id="studyZoomGroup" class="study-zoom-group" role="group" aria-label="Zoom">
+              <button id="studyZoomOut" type="button" class="study-small-btn" aria-label="Zoom out">−</button>
+              <span id="studyZoomLabel" class="study-zoom-label">100%</span>
+              <button id="studyZoomIn" type="button" class="study-small-btn" aria-label="Zoom in">＋</button>
+              <button id="studyZoomFit" type="button" class="study-small-btn" data-i18n="studyZoomFit">フィット</button>
+            </span>
+            <button id="studyAutoScrollBtn" type="button" class="study-small-btn study-auto-scroll-btn" aria-pressed="false" data-i18n="studyAutoScrollStart" hidden>⏩ 自動スクロール</button>
+            <label id="studyThemeRow" class="study-option">
+              <span data-i18n="studyThemeLabel">文字のスキン</span>
+              <select id="studyTheme">
+                <optgroup data-i18n="studyThemeGroupWriter" label="✍ 文筆・読書">
+                  <option value="plain" data-i18n="studyThemePlain">普通のテキスト</option>
+                  <option value="paper" data-i18n="studyThemePaper">和紙</option>
+                  <option value="warm" data-i18n="studyThemeWarm">クリーム</option>
+                  <option value="lined" data-i18n="studyThemeLined">ルーズリーフ</option>
+                  <option value="genko" data-i18n="studyThemeGenko">作文用紙（縦書き・右から）</option>
+                  <option value="sepia" data-i18n="studyThemeSepia">古書</option>
+                  <option value="sticky" data-i18n="studyThemeSticky">付箋（黄色い紙）</option>
+                  <option value="letter" data-i18n="studyThemeLetter">便箋</option>
+                  <option value="diary" data-i18n="studyThemeDiary">日記帳</option>
+                  <option value="haiku" data-i18n="studyThemeHaiku">俳句の短冊</option>
+                  <option value="newspaper" data-i18n="studyThemeNewspaper">新聞の紙面（段の罫線）</option>
+                </optgroup>
+                <optgroup data-i18n="studyThemeGroupCode" label="⌨ コーディング">
+                  <option value="dark" data-i18n="studyThemeDark">ダークモード</option>
+                  <option value="midnight" data-i18n="studyThemeMidnight">ミッドナイト</option>
+                  <option value="terminal" data-i18n="studyThemeTerminal">ターミナル</option>
+                  <option value="graphite" data-i18n="studyThemeGraphite">グラファイト</option>
+                  <option value="blueprint" data-i18n="studyThemeBlueprint">設計図</option>
+                  <option value="contrast" data-i18n="studyThemeContrast">高コントラスト</option>
+                </optgroup>
+                <optgroup data-i18n="studyThemeGroupAi" label="◈ AI・プロンプト風（見た目のみ）">
+                  <option value="prompt" data-i18n="studyThemePrompt">プロンプト・ラボ</option>
+                  <option value="neural" data-i18n="studyThemeNeural">ニューラル</option>
+                  <option value="latent" data-i18n="studyThemeLatent">潜在空間</option>
+                  <option value="matrix" data-i18n="studyThemeMatrix">トークン・マトリクス</option>
+                  <option value="synth" data-i18n="studyThemeSynth">シンセシス</option>
+                </optgroup>
+                <optgroup data-i18n="studyThemeGroupFree" label="✦ 自由な発想">
+                  <option value="neon" data-i18n="studyThemeNeon">ネオン</option>
+                  <option value="aurora" data-i18n="studyThemeAurora">オーロラ</option>
+                  <option value="sunset" data-i18n="studyThemeSunset">サンセット</option>
+                  <option value="ocean" data-i18n="studyThemeOcean">深海</option>
+                  <option value="mint" data-i18n="studyThemeMint">ミント</option>
+                  <option value="dream" data-i18n="studyThemeDream">ドリーム</option>
+                  <option value="prism" data-i18n="studyThemePrism">プリズム</option>
+                  <option value="staff" data-i18n="studyThemeStaff">楽譜の余白（五線）</option>
+                </optgroup>
+              </select>
+            </label>
+            <span id="studyTextTuneRow" class="study-option">
+              <span data-i18n="studyTextTuneLabel">文字</span>
+              <select id="studyTextSize" aria-label="Text size">
+                <option value="small" data-i18n="studyTextSizeSmall">小</option>
+                <option value="normal" data-i18n="studyTextSizeNormal">普通</option>
+                <option value="large" data-i18n="studyTextSizeLarge">大</option>
+                <option value="huge" data-i18n="studyTextSizeHuge">特大</option>
+              </select>
+              <select id="studyTextSpacing" aria-label="Line spacing">
+                <option value="tight" data-i18n="studyTextSpacingTight">詰める</option>
+                <option value="normal" data-i18n="studyTextSpacingNormal">行間ふつう</option>
+                <option value="loose" data-i18n="studyTextSpacingLoose">行間広め</option>
+              </select>
+              <select id="studyTextWidth" aria-label="Margins">
+                <option value="narrow" data-i18n="studyTextWidthNarrow">余白せまい</option>
+                <option value="normal" data-i18n="studyTextWidthNormal">余白ふつう</option>
+                <option value="wide" data-i18n="studyTextWidthWide">余白広い</option>
+              </select>
+            </span>
+            <label class="study-check-option study-tv-check">
+              <input id="studyTvCheck" type="checkbox">
+              <span data-i18n="studyTvToggle">TVを流し見する</span>
+            </label>
+            <label class="study-option">
+              <span data-i18n="studyTvPosLabel">TVの位置</span>
+              <select id="studyTvPosition">
+                <option value="top" data-i18n="studyTvTop">上</option>
+                <option value="bottom" data-i18n="studyTvBottom">下</option>
+                <option value="off" data-i18n="studyTvHidden">表示しない</option>
+              </select>
+            </label>
+            <label class="study-option">
+              <span data-i18n="studyTvLookLabel">TVの見た目</span>
+              <select id="studyTvLook">
+                <option value="plain" data-i18n="studyTvLookPlain">素の画面</option>
+                <option value="crt" data-i18n="studyTvLookCrt">ブラウン管</option>
+                <option value="wood" data-i18n="studyTvLookWood">木枠</option>
+                <option value="arcade" data-i18n="studyTvLookArcade">アーケード</option>
+                <option value="projector" data-i18n="studyTvLookProjector">プロジェクター</option>
+                <option value="aquarium" data-i18n="studyTvLookAquarium">水槽</option>
+              </select>
+            </label>
+            <label class="study-option">
+              <span data-i18n="studyTvSizeLabel">大きさ</span>
+              <select id="studyTvSize">
+                <option value="small" data-i18n="studyTvSizeSmall">小</option>
+                <option value="medium" data-i18n="studyTvSizeMedium">中</option>
+                <option value="large" data-i18n="studyTvSizeLarge">大</option>
+              </select>
+            </label>
+            <label class="study-option">
+              <span data-i18n="studyTvRatioLabel">画面比</span>
+              <select id="studyTvRatio">
+                <option value="16:9" data-i18n="studyTvRatio169">16:9</option>
+                <option value="4:3" data-i18n="studyTvRatio43">4:3</option>
+                <option value="21:9" data-i18n="studyTvRatio219">21:9</option>
+              </select>
+            </label>
+            <label class="study-check-option">
+              <input id="studyTvLabelOn" type="checkbox">
+              <span data-i18n="studyTvNameToggle">曲名を表示</span>
+            </label>
+            <button id="studyBookmarkBtn" type="button" class="study-small-btn" data-i18n="studyBookmark">🔖 栞を挟む</button>
+          </div>
+
+          <div id="studyFindRow" class="study-find-row" hidden>
+            <input id="studyFindInput" class="study-find" type="search" autocomplete="off" placeholder="本文を検索…" data-i18n-aria="studyBookSearchPlaceholder">
+            <span id="studyFindCount" class="study-find-count"></span>
+            <button id="studyFindPrev" type="button" class="study-small-btn" title="前の一致">▲</button>
+            <button id="studyFindNext" type="button" class="study-small-btn" title="次の一致">▼</button>
+            <button id="studyFindClear" type="button" class="study-small-btn" data-i18n="studyBookSearchClear">✕ 検索を終了</button>
+          </div>
+
+          <div id="studyPanels" class="study-panels">
+            <section id="studyTvPane" class="study-tv-pane" hidden aria-label="TV">
+              <div id="studyTvScreen" class="study-tv-screen">
+                <img id="studyTvArt" class="study-tv-art" alt="" hidden>
+                <div id="studyTvEmpty" class="study-tv-empty" data-i18n="studyTvEmpty">動画または曲のジャケットがここに表示されます。</div>
+                <div id="studyTvLabel" class="study-tv-label"></div>
+              </div>
+              <div class="study-tv-caption">
+                <span data-i18n="studyTvCaption">今の曲・動画を表示します。別の音声を重ねて再生しません。</span>
+                <span class="study-tv-hint" data-i18n="studyTvHint">（画像を長押しすると、この曲のジャケットにできます）</span>
+              </div>
+            </section>
+            <section id="studyContentPane" class="study-content-pane">
+              <div id="studyImageStage" class="study-image-stage" role="region" tabindex="0" aria-label="Image reader" hidden data-mode="single">
+                <div id="studySingleWrap" class="study-single-wrap">
+                  <img id="studyPageSingle" class="study-page-image study-page-single" alt="" draggable="false" hidden>
+                </div>
+                <div id="studySpreadWrap" class="study-spread-wrap" hidden>
+                  <div class="study-spread-page study-spread-left"><img id="studyPageLeft" class="study-page-image" alt="" draggable="false" hidden></div>
+                  <div class="study-spread-page study-spread-right"><img id="studyPageRight" class="study-page-image" alt="" draggable="false" hidden></div>
+                </div>
+                <div id="studyVerticalPages" class="study-vertical-pages" hidden></div>
+                <div class="study-hit study-hit-left" aria-hidden="true"><span>‹</span></div>
+                <div class="study-hit study-hit-right" aria-hidden="true"><span>›</span></div>
+                <div id="studyZoomChip" class="study-zoom-chip"></div>
+                <div id="studyImageHint" class="study-image-hint" data-i18n="studyTapHint">左側／←で次へ · 右側／→で前へ · Space / Enterで次へ</div>
+              </div>
+              <div id="studyTextStage" class="study-text-stage" hidden>
+                <div id="studyEditorNotice" class="study-editor-notice" hidden>
+                  <div class="study-editor-notice-copy">
+                    <label id="studyEditorLabel" for="studyMemoEditor" data-i18n="studyEditorLabel">テキスト編集</label>
+                    <p id="studyEditorSafetyText" data-i18n="studyEditorSafety">書斎内のコピーを編集します。元ファイルは変更せず、JS / HTMLも文字として扱い実行しません。</p>
+                  </div>
+                  <div class="study-editor-meta">
+                    <span id="studyEditorStats" class="study-editor-stats"></span>
+                    <span id="studyEditorSaveStatus" class="study-editor-save-status" data-state="studyEditorSaved" role="status" aria-live="polite">書斎に保存済み</span>
+                  </div>
+                </div>
+                <article id="studyTextPage" class="study-text-page" tabindex="0" data-search=""></article>
+                <textarea id="studyMemoEditor" class="study-memo-editor" aria-labelledby="studyEditorLabel" aria-describedby="studyEditorSafetyText" maxlength="12582912" spellcheck="false" hidden></textarea>
+              </div>
+            </section>
+          </div>
+
+          <footer class="study-reader-footer">
+            <button id="studyNextBtn" type="button" class="study-small-btn" data-i18n="studyNext">◀ 次へ</button>
+            <div id="studyProgressWrap" class="study-progress-wrap" hidden>
+              <input id="studyProgress" type="range" min="0" max="0" step="1" aria-label="Page">
+              <span id="studyPageCount" class="study-page-count"></span>
+              <button id="studyProgressDoneBtn" type="button" class="study-progress-done" data-i18n="studyProgressDone">完了</button>
+            </div>
+            <span id="studyTextProgress" class="study-page-count" hidden></span>
+            <span id="studyTextStats" class="study-text-stats" hidden></span>
+            <button id="studyPrevBtn" type="button" class="study-small-btn" data-i18n="studyPrevious">前へ ▶</button>
+            <button id="studyAssignCoverBtn" type="button" class="study-small-btn" data-i18n="studyAssignCover" hidden>🖼 このページを曲のジャケットに</button>
+            <button id="studyClearCoverBtn" type="button" class="study-small-btn study-danger-btn" data-i18n="studyClearCover" hidden>🗑 ジャケットを外す</button>
+            <button id="studyMemoBtn" type="button" class="study-small-btn" hidden data-i18n="studyMemoEdit">✎ メモ帳で編集</button>
+            <button id="studyMemoExportBtn" type="button" class="study-small-btn" hidden data-i18n="studyExportText">⇩ テキストを書き出す</button>
+          </footer>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="studySettings" class="study-help" hidden role="dialog" aria-modal="true" aria-labelledby="studySettingsTitle">
+    <div class="study-help-card study-settings-card">
+      <div class="study-settings-heading">
+        <h3 id="studySettingsTitle" data-i18n="studySettings">⚙ 設定</h3>
+        <button id="studySettingsCloseBtn" type="button" class="study-small-btn" data-i18n="studyHelpClose">閉じる</button>
+      </div>
+      <div class="study-settings-options">
+          <label class="study-check-option">
+            <input id="studyFullscreenFit" type="checkbox" aria-describedby="studyFullscreenFitHint">
+            <span data-i18n="studyFullscreenFit">全画面時に強制的に画面にフィットにする</span>
+          </label>
+          <p id="studyFullscreenFitHint" class="study-advanced-hint" data-i18n="studyFullscreenFitHint">初期オフ。オンにすると全画面中は画像全体を縦横比を保って表示し、拡大・縮小操作を無効にします。見開きは左右それぞれ、縦読みは1枚ずつ画面に収めます。全画面を閉じると元の拡大率に戻ります。</p>
+          <label class="study-check-option">
+            <input id="studyShelfVisible" type="checkbox" checked>
+            <span data-i18n="studyKeepShelfVisible">全画面以外では本棚を表示する</span>
+          </label>
+          <p class="study-advanced-hint" data-i18n="studyShelfVisibilityHint">チェックを外しても、上の「本棚を表示」からいつでも戻せます。</p>
+          <label class="study-check-option">
+            <input id="studyManualShelfOrder" type="checkbox">
+            <span data-i18n="studyNoSort">並び替えを使わない。</span>
+          </label>
+          <p class="study-advanced-hint" data-i18n="studyManualOrderHint">自動並び替えを止め、ドラッグでフォルダや本を自由に配置します。</p>
+          <label class="study-check-option">
+            <input id="studyFoldersFirst" type="checkbox">
+            <span data-i18n="studyFoldersFirst">フォルダを上に表示する。</span>
+          </label>
+          <label class="study-check-option">
+            <input id="studySkipDeleteConfirm" type="checkbox">
+            <span data-i18n="studyNoDeleteConfirm">削除の時、確認をしない。</span>
+          </label>
+          <div class="study-advanced-row study-key-row">
+            <span id="studyNextKeyLabel" data-i18n="studyNextKeyLabel">次へ</span>
+            <button id="studyNextKeyBtn" type="button" class="study-key-capture" aria-pressed="false">
+              <kbd id="studyNextKeyValue">→</kbd><span id="studyNextKeyAction" data-i18n="studyKeyChange">変更</span>
+            </button>
+          </div>
+          <div class="study-advanced-row study-key-row">
+            <span id="studyPreviousKeyLabel" data-i18n="studyPreviousKeyLabel">前へ</span>
+            <button id="studyPreviousKeyBtn" type="button" class="study-key-capture" aria-pressed="false">
+              <kbd id="studyPreviousKeyValue">←</kbd><span id="studyPreviousKeyAction" data-i18n="studyKeyChange">変更</span>
+            </button>
+          </div>
+          <label class="study-check-option">
+            <input id="studyVerticalImageKeys" type="checkbox">
+            <span data-i18n="studyVerticalImageKeys">画像ページを↑ / ↓で移動する</span>
+          </label>
+          <p class="study-advanced-hint" data-i18n="studyKeyAssignmentHint">ボタンを押してから使いたいキーを押します。設定済みのショートカットは選べません。</p>
+          <div class="study-advanced-row">
+            <span id="studyZoomStepLabel" data-i18n="studyZoomStepLabel">拡大の送り幅</span>
+            <select id="studyZoomPercentStep" aria-labelledby="studyZoomStepLabel" aria-describedby="studyZoomStepHint">
+              <option value="1">1%</option>
+              <option value="2">2%</option>
+              <option value="5">5%</option>
+              <option value="10">10%</option>
+              <option value="25">25%</option>
+            </select>
+          </div>
+          <p id="studyZoomStepHint" class="study-advanced-hint" data-i18n="studyZoomStepHint">−／＋・Ctrl+ホイール・ピンチの1回ぶんです（初期値5%＝100%→200%が20回）。</p>
+          <div class="study-advanced-row">
+            <span id="studyAutoScrollSpeedLabel" data-i18n="studyAutoScrollSpeedLabel">自動スクロールの速度</span>
+            <select id="studyAutoScrollSpeed" aria-labelledby="studyAutoScrollSpeedLabel" aria-describedby="studyAutoScrollSpeedHint">
+              <option value="20" data-i18n="studyAutoSpeedSlowest">いちばん遅い</option>
+              <option value="45" data-i18n="studyAutoSpeedSlow">遅い</option>
+              <option value="75" data-i18n="studyAutoSpeedNormal">普通</option>
+              <option value="120" data-i18n="studyAutoSpeedFast">速い</option>
+              <option value="180" data-i18n="studyAutoSpeedFastest">いちばん速い</option>
+            </select>
+          </div>
+          <p id="studyAutoScrollSpeedHint" class="study-advanced-hint" data-i18n="studyAutoScrollSpeedHint">縦読みモードの「⏩ 自動スクロール」の速さ（1秒あたりのピクセル）。動いている最中の変更もすぐ効きます。タップや移動キー（↑↓・Space・PageUp / PageDown など）で止まります。</p>
+          <div class="study-advanced-row study-read-filter-row">
+            <span id="studyReadBrightnessLabel" data-i18n="studyReadBrightnessLabel">明るさ（読書）</span>
+            <input id="studyReadBrightness" type="range" min="50" max="150" step="5" value="100" aria-labelledby="studyReadBrightnessLabel" aria-describedby="studyReadFilterHint">
+            <span id="studyReadBrightnessValue" class="study-read-filter-value">100%</span>
+          </div>
+          <div class="study-advanced-row study-read-filter-row">
+            <span id="studyReadContrastLabel" data-i18n="studyReadContrastLabel">コントラスト（読書）</span>
+            <input id="studyReadContrast" type="range" min="50" max="150" step="5" value="100" aria-labelledby="studyReadContrastLabel" aria-describedby="studyReadFilterHint">
+            <span id="studyReadContrastValue" class="study-read-filter-value">100%</span>
+          </div>
+          <div class="study-advanced-row">
+            <span id="studyReadSpecialLabel" data-i18n="studyReadSpecialLabel">特殊フィルタ（読書）</span>
+            <select id="studyReadSpecial" aria-labelledby="studyReadSpecialLabel" aria-describedby="studyReadFilterHint">
+              <option value="none" data-i18n="studyReadSpecialNone">なし</option>
+              <option value="invert" data-i18n="studyReadSpecialInvert">反転</option>
+              <option value="grayscale" data-i18n="studyReadSpecialGrayscale">グレースケール</option>
+              <option value="sepia" data-i18n="studyReadSpecialSepia">セピア</option>
+            </select>
+          </div>
+          <p id="studyReadFilterHint" class="study-advanced-hint" data-i18n="studyReadFilterHint">読書面（画像と文章）だけに CSS filter を当てます。全画面フィットや拡大率とは独立で、本棚やメニューは変わりません。初期値は 100% / 100% / なし。</p>
+          <label class="study-check-option">
+            <input id="studyPageKeysTurnPages" type="checkbox">
+            <span data-i18n="studyPageKeysTurnPages">PageUP、PageDownをページ動作にする</span>
+          </label>
+          <p class="study-advanced-hint" data-i18n="studyPageKeysTurnPagesHint">オフ（初期値）では、倍率に関係なく、はみ出した画像の上端／下端へ移動します。端で押し直すと前／次のページを続きの端から開き、本の端では全画面を終了して本棚へ戻ります（最後のページで閉じるかは下の設定で変更できます）。オンでは直接ページを送ります。縦読み・テキスト・画面に収まる画像は従来どおりです。</p>
+          <label class="study-check-option">
+            <input id="studyCloseOnLastPageDown" type="checkbox" checked aria-describedby="studyCloseOnLastPageDownHint">
+            <span data-i18n="studyCloseOnLastPageDown">最後のページ時PageDownで本を閉じる</span>
+          </label>
+          <p id="studyCloseOnLastPageDownHint" class="study-advanced-hint" data-i18n="studyCloseOnLastPageDownHint">画像の端へ移動する操作で、最後のページの下端からもう一度PageDownを押すと、本を閉じて全画面を終了します（初期オン）。オフなら下端で止まります。先頭ページでのPageUp・中クリックの設定は変更しません。</p>
+          <label class="study-check-option">
+            <input id="studyMouseClickPages" type="checkbox">
+            <span data-i18n="studyMouseClickPages">PCの簡易操作：左右クリックでページを送る</span>
+          </label>
+          <p class="study-advanced-hint" data-i18n="studyMouseClickPagesHint">左クリックで次のページ、右クリックで前のページ。画像の本のときだけ働きます（ページ上の位置は選びません）。</p>
+          <label class="study-check-option">
+            <input id="studyMouseClickFlip" type="checkbox">
+            <span data-i18n="studyMouseClickFlip">左右を反転（右クリックで進む・左クリックで戻る）</span>
+          </label>
+          <p class="study-advanced-hint" data-i18n="studyMouseClickFlipHint">トラックボールや左利きの人向け。上の「左右クリックでページを送る」がオンのときだけ選べます。</p>
+          <div class="study-advanced-row">
+            <span id="studyMiddleClickLabel" data-i18n="studyMiddleClickLabel">マウスの中クリック</span>
+            <select id="studyMiddleClickAction" aria-labelledby="studyMiddleClickLabel" aria-describedby="studyMiddleClickHint">
+              <option value="none" data-i18n="studyMiddleClickNone">何もしない</option>
+              <option value="next" data-i18n="studyMiddleClickNext">次のページへ</option>
+              <option value="close" data-i18n="studyMiddleClickClose">閉じて本棚へ（全画面を終了）</option>
+            </select>
+          </div>
+          <p id="studyMiddleClickHint" class="study-advanced-hint" data-i18n="studyMiddleClickNextHint">画像の本のときだけ働きます（ブラウザの自動スクロールは止めます）。</p>
+          <div class="study-advanced-row">
+            <span data-i18n="studyAlbumNestingLabel" id="studyAlbumNestingLabel">アルバムの分け方</span>
+            <select id="studyAlbumNesting" aria-labelledby="studyAlbumNestingLabel">
+              <option value="split" data-i18n="studyAlbumNestingSplit">サブフォルダごとに1冊</option>
+              <option value="flat" data-i18n="studyAlbumNestingFlat">フォルダ全体で1冊</option>
+            </select>
+          </div>
+          <p class="study-advanced-hint" data-i18n="studyAlbumNestingHint">次の取り込みから反映します。</p>
+          <div class="study-advanced-row study-edited-text-folder-row">
+            <span id="studyEditedTextFolderLabel" data-i18n="studyEditedTextFolderLabel">編集した文章の本棚フォルダ</span>
+            <select id="studyEditedTextFolder" aria-labelledby="studyEditedTextFolderLabel" aria-describedby="studyEditedTextFolderHint">
+              <option value="" data-i18n="studyEditedTextFolderKeep">自動で移動しない（今の場所）</option>
+            </select>
+          </div>
+          <p id="studyEditedTextFolderHint" class="study-advanced-hint" data-i18n="studyEditedTextFolderHint">選ぶと、編集内容を保存した本をこのフォルダへ整理します。本文は端末内の書斎に保存し、元ファイルは変更しません。</p>
+          <div class="study-advanced-row study-export-folder-row">
+            <span id="studyExportFolderLabel" data-i18n="studyExportFolderLabel">書き出し先（端末）</span>
+            <div class="study-export-folder-controls">
+              <button id="studyChooseExportFolderBtn" type="button" class="study-small-btn" aria-describedby="studyExportFolderHint" data-i18n="studyChooseExportFolder">書き出しフォルダを選ぶ</button>
+              <button id="studyClearExportFolderBtn" type="button" class="study-small-btn" data-i18n="studyClearExportFolder" hidden>解除</button>
+            </div>
+          </div>
+          <p id="studyExportFolderName" class="study-export-folder-name" role="status" aria-live="polite">未選択（ブラウザの通常ダウンロード先）</p>
+          <p id="studyExportFolderHint" class="study-advanced-hint" data-i18n="studyExportFolderHint">選んだフォルダに新しいファイルを作成します。同名があれば別名にし、既存ファイルは上書きしません。未対応ブラウザでは通常のダウンロードを使います。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="studyHelp" class="study-help" hidden role="dialog" aria-modal="true" aria-labelledby="studyHelpTitle">
+    <div class="study-help-card">
+      <h3 id="studyHelpTitle" data-i18n="studyHelpTitle">書斎のキー操作</h3>
+      <dl class="study-help-list">
+        <dt>← → ／ 画面タップ</dt><dd data-i18n="studyHelpNav"></dd>
+        <dt>Space / Enter</dt><dd data-i18n="studyHelpSpace"></dd>
+        <dt>PageUp / PageDown</dt><dd data-i18n="studyHelpPg"></dd>
+        <dt>＋ − 0</dt><dd data-i18n="studyHelpZoom"></dd>
+        <dt>/ または Ctrl+F</dt><dd data-i18n="studyHelpSearch"></dd>
+        <dt>B ／ M</dt><dd data-i18n="studyHelpBookmark"></dd>
+        <dt>T ／ F</dt><dd data-i18n="studyHelpTv"></dd>
+        <dt>A</dt><dd data-i18n="studyHelpAuto"></dd>
+        <dt>? ／ Esc</dt><dd data-i18n="studyHelpEsc"></dd>
+      </dl>
+      <div class="study-help-foot">
+        <button id="studyHelpCloseBtn" type="button" class="study-small-btn" data-i18n="studyHelpClose">閉じる</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<button id="floatingSafeBtn" type="button" title="🛟 セーフモード (5回クリックで緊急復旧) / ?safe=1" style="position:fixed;right:8px;bottom:8px;z-index:99999;opacity:.15;width:36px;height:36px;border-radius:50%;background:#111;color:#fff;border:2px solid #0f0;font-size:18px;display:flex;align-items:center;justify-content:center;transition:opacity .2s, transform .2s;cursor:pointer">🛟</button>
+<script>
+  (function(){
+    const b = document.getElementById("floatingSafeBtn");
+    if (!b) return;
+    let over = false;
+    b.addEventListener("mouseenter", ()=>{ b.style.opacity="1"; over=true; });
+    b.addEventListener("mouseleave", ()=>{ if(!over) return; b.style.opacity=".15"; over=false; });
+    b.addEventListener("click", ()=>{
+      if (confirm("🛟 セーフモードに入りますか？\n映像OFF・ぼかし0・TV初期化で操作可能にします。\n\nURLに ?safe=1 を付けるのと同じ効果です。")) {
+        try { localStorage.setItem("trk_emergency_safe", "1"); } catch(_){}
+        const url = new URL(location.href);
+        url.searchParams.set("safe","1");
+        location.href = url.toString();
+      }
+    });
+    // 画面が真っ暗な時に目立つように、一定時間後に少しだけ光らせる
+    setTimeout(()=>{ b.style.opacity=".6"; b.style.transform="scale(1.1)"; setTimeout(()=>{ b.style.opacity=".15"; b.style.transform="scale(1)"; }, 1200); }, 3000);
+  })();
+</script>
+<video id="video" playsinline preload="auto"></video>
+
+<!-- ===== 文章 ===== -->
+<script src="js/i18n.js"></script>
+<script src="js/i18n-options.js"></script>
+<!-- ===== データ ===== -->
+<script src="js/data.js"></script>
+<!-- ▼ キャラクター（data.js の後、core.js の前）
+     初音ミク：PCL（非営利・無償のみ）。商用の派生版では、この1行とファイルを削除してください。 -->
+<script src="js/characters/miku.js"></script>
+<script src="js/tv-presets.js"></script>
+<!-- ▲ 自作キャラのMODは、この下に <script src="js/characters/○○.js"></script> を足してください -->
+<!-- ===== 土台 ===== -->
+<script src="js/core.js"></script>
+<!-- 🪶 軽量化（スマホ・低出力端末向け。描画する側より前に読みます） -->
+<script src="js/lite.js"></script>
+<!-- player.js：AUTO・練習中の再生操作。各モードより先にキーを受け取るため、core.js のすぐ後 -->
+<script src="js/player.js"></script>
+<script src="js/chart-gen.js"></script>
+<script src="js/midi-profiles.js"></script>
+<script src="js/midi-player.js"></script>
+<script src="js/midi-settings.js"></script>
+<script src="js/media.js"></script>
+<!-- 🔈 出力デバイスを切り替えても再生を止めない（trk219）。media.js のあと＝再生要素ができてから -->
+<script src="js/audio-keep.js"></script>
+<script src="js/audio-art.js"></script>
+<script src="js/lyrics.js"></script>
+<script src="js/subtitles.js"></script>
+<script src="js/judge-match.js"></script>
+<script src="js/game.js"></script>
+<script src="js/render.js"></script>
+<script src="js/custom.js"></script>
+<!-- ===== モード ===== -->
+<script src="js/truck.js"></script>
+<script src="js/modes.js"></script>
+<script src="js/stage.js"></script>
+<script src="js/stagefx.js"></script>
+<script src="js/catch.js"></script>
+<script src="js/extras.js"></script>
+<!-- ===== サウンドエフェクト（自作プリセットのMODは fx.js より前に読み込む） ===== -->
+<script src="js/fx-presets.js"></script>
+<script src="js/fx-dock.js"></script>
+<script src="js/tv-dock.js"></script>
+<script src="js/tv-rich.js"></script>
+<!-- 🖥 動画の全画面表示（TVドックの⛶とメディアプレーヤーの「全画面で表示」で使います） -->
+<script src="js/video-max.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/fx-synth.js"></script>
+<script src="js/favs.js"></script>
+<!-- ===== 選曲・公認・入力・起動 ===== -->
+<!-- ===== 🛒 公式カタログ（音源同梱なし・MODは catalog.js より前に読む） ===== -->
+<script src="js/touhou-theme-data.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/title-match.js"></script>
+<script src="js/shared-folders.js"></script>
+<script src="js/library.js"></script>
+<script src="js/verified.js"></script>
+<script src="js/lib-skins.js"></script>
+<script src="js/addons.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pad.js"></script>
+<script src="js/speed.js"></script>
+<script src="js/vrm.js"></script>
+<script src="js/mmd.js"></script>
+<!-- ===== 📊 スペクトラム → 🎹 シンセ演奏モード（TrkFX.tap() を使うため末尾） ===== -->
+<script src="js/spectrum.js"></script>
+<script src="js/synth-mode.js"></script>
+<!-- ✨ フレーム補完（動き補償・光学フロー／WebGL2） -->
+<script src="js/frame-interp.js"></script>
+<script src="js/media-player-mode.js"></script>
+<!-- 📚 端末内の画像・テキスト閲覧モード（外部ライブラリ／アップロードなし） -->
+<script src="js/study-room-utils.js"></script>
+<script src="js/study-room.js"></script>
+<!-- 📦 trk160：BlobストリームのZIP入出力（バックアップ／.stpack共用）。書斎・パック定義の後に読む -->
+<script src="js/zip-io.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/share-inbox.js"></script>
+</body>
+</html>

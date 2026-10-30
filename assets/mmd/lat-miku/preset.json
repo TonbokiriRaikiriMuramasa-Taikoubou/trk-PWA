@@ -1,0 +1,28 @@
+{
+  "label": "Lat式ミク",
+  "files": [
+    "LatMiku_Ver2.31_Normal.pmd",
+    "heltudofon.bmp",
+    "hoho.png",
+    "huku1.bmp",
+    "huku3.bmp",
+    "huku3w.bmp",
+    "kami.bmp",
+    "kami_ol.bmp",
+    "l.spa",
+    "l2.spa",
+    "me.bmp",
+    "sp_g.spa",
+    "sp_g.sph",
+    "sp_h.spa",
+    "sp_k.spa",
+    "toon_g.bmp",
+    "toon_hada.bmp",
+    "toon_huku.bmp",
+    "toon_kami.bmp"
+  ],
+  "credit": "Lat式ミク / Lat様",
+  "motion": "faceSing",
+  "bpm": 0,
+  "readme": "ReadMe.txt"
+}
