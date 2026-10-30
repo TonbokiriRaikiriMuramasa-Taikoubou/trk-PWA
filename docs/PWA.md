@@ -8,24 +8,42 @@ trk! を **PWA（Webアプリ）として配布する**ためのリポジトリ�
 
 - アプリ本体：上流 [`trk`](https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk) の **1.1.8（trk219）** をそのまま取り込み、このリポジトリで配信します。
 - 上流コミット：`06cef87`（2026-10-29）。
-- 公開URL（GitHub Pages）：**https://tonbokiriraikirimuramasa-taikoubou.github.io/trk-PWA/**
+- 試験用URL（GitHub Pages。**本番の住所は未決定**）：**https://tonbokiriraikirimuramasa-taikoubou.github.io/trk-PWA/**
   - 実際のURLは、デプロイ後に [Actions](https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA/actions) の `Deploy GitHub Pages` 実行結果でも確認できます。
 - 配布方針・iOSの制約・実機チェックリスト：[iPhone向け配布のブレインストーミング](IPHONE-PWA-BRAINSTORM-2026-10-30.md)
 - 作業の許可範囲：[作業権限の記録](PERMISSIONS.md)
 
-> ⚠ **URLはデータの住所です。** ホーム画面アプリの保存データはオリジン（URL）ごとに別です。後から独自ドメインへ変えると、利用者の曲・設定・記録は自動では移りません。Phase 1では「このPages URLを本番の住所にする」前提で進め、変えるなら利用者に移行手順を示してください。
+> ⚠ **データの住所は「ホスト」です。** Webの保存領域はオリジン（scheme + host + port）ごとに別で、**パスは関係ありません**。`...github.io/trk/` と `...github.io/trk-PWA/` は同じオリジンなので、保存データもキャッシュも共有します。ホスト（独自ドメイン等）を後から変えると別オリジンになり、利用者の曲・設定・記録は自動では移りません。
 
 ## 2. 現在地
 
 | フェーズ | 内容 | 状態 |
 | --- | --- | --- |
 | Phase 0 | 上流Pages版をiPhoneで触る（画面シェルの要否を判断） | **未実施（実機）** |
-| Phase 1 | 1.1.8の取り込み・Pages公開 | **取り込みとmainへのマージ済み／Pages有効化待ち** |
+| Phase 1 | 1.1.8の取り込み・Pages公開（試験URL） | **取り込みとmainへのマージ済み／Pages有効化待ち** |
 | Phase 2 | `trk-apk` のモバイル画面シェル移植 | 未着手 |
 | Phase 3 | iOS向けの調整（manifest・インストール案内・保存説明・取込・音・向き） | 未着手 |
 | Phase 4 | 配布の最終判断（独自ドメイン／ストア／ネイティブ） | 未着手 |
 
 **ビルドが通ったことと、iPhone実機で動いたことは別**です。実機の結果は日付・iOSバージョン・端末名とセットで記録してください。
+
+## 2.1 同一オリジンの注意（重要）
+
+GitHub Pagesのプロジェクトサイトは、**同じアカウントの `*.github.io` が1つのオリジン**です。`/trk/` と `/trk-PWA/` はパスが違うだけで、次のものを共有します。
+
+| 共有するもの | 影響 |
+| --- | --- |
+| `localStorage` / `IndexedDB` | 上流 `/trk/` と設定・曲・記録が同じ場所に入る。版が違うと設定の意味がずれることがある |
+| `CacheStorage` | `sw.js` は `trk-` で始まるキャッシュを版更新時に消す。**上流とPWAが互いのオフラインキャッシュを消し得る**（`CACHE_PREFIX = "trk-"`） |
+| 同じオリジンの他のリポジトリ | 同じアカウントの別プロジェクトサイトも同じ保存領域を読める。公開リポジトリのJS次第では、trk! の保存データに触れ得る |
+
+**このため、`/trk-PWA/` は「本番の住所」ではなく「試験用」と位置づけます。** 不特定多数に案内する前に、最終的なオリジンを決めてください。
+
+- **推奨：独自ドメイン**（例 `trk.example.com`）をGitHub Pagesに向ける。他のプロジェクトと保存領域が完全に分かれる。
+- **次点：trk! 専用のGitHub組織／アカウント**（例 `trk-agrg.github.io`）。無料だが、その組織内の他のリポジトリとは共有する。
+- パスの変更（`/trk/` → `/trk-PWA/`）では分離できません。
+
+オリジンを変えると保存データは移行されません。**利用者にホーム画面追加を案内する前に決める**のが安く済みます。
 
 ## 3. 上流との差分（意図的に持っているもの）
 
