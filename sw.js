@@ -7,8 +7,12 @@
    その index.html が読み込む CSS・JS・アイコン）を先にキャッシュします。これまでは
    「一度も開いていない画面は、オフラインだと 503」でした。殻だけを先に入れるので、
    未使用の 3D（assets/vendor）・同梱デモ音源・docs は、使ったときに初めて入ります。
-   殻の一覧は index.html から読むので、ファイルを足してもこのファイルの直しは要りません。 */
-const CACHE = "trk-v2026.10.30-trk220";
+   殻の一覧は index.html から読むので、ファイルを足してもこのファイルの直しは要りません。
+
+   🖥 trk221: PC でもスマホ型の画面（js/mobile-shell.js）と、画面の下の再生バー
+   （js/player-bar.js・css/player-bar.css）を足しました。どちらも index.html が読み込むので、
+   殻の先読みには自動で入ります（このファイルの一覧を手で直す必要はありません）。 */
+const CACHE = "trk-v2026.10.31-trk221";
 const CACHE_PREFIX = "trk-";
 const SCOPE = new URL(self.registration.scope);
 const VENDOR_PREFIX = "assets/vendor/";

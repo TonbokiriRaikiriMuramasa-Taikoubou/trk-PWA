@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="css/study-room.css">
 <!-- 📱 スマホ用の画面シェル（body.trk-mobile が付いたときだけ効きます。PCの見た目は変わりません） -->
 <link rel="stylesheet" href="css/mobile-shell.css">
+<!-- 🎵 画面の下に出す再生バー（js/player-bar.js）。出すかどうかは設定で選べます -->
+<link rel="stylesheet" href="css/player-bar.css">
 <!-- SNSで共有したときのカード（画像は https:// から始まる完全なURLにする）。
      ⚠ 同じ名前のmeta・linkは1回だけ書く（trk129：同じ名前が2回あり、SNSが先の方の説明文を拾っていた）
      ※ 配布ZIP用ビルドでは og:url／og:image を外すが、GitHub Pages版は公開URLがあるので残す -->
@@ -384,6 +386,30 @@
       <div class="grid">
         <!-- 左：見た目 -->
         <div class="col">
+          <!-- 🖥 画面の形と、下に出す再生バー（js/mobile-shell.js・js/player-bar.js。trk221）
+               「PCでも縦型のスタンドで使う」「大きいタブレットで広く使う」を行き来するための欄です -->
+          <details class="panel" id="uiPanel">
+            <summary data-i18n="secUi"></summary>
+            <label class="field">
+              <span data-i18n="uiModeLabel"></span>
+              <select id="uiMode">
+                <option value="auto" data-i18n="uiModeAuto"></option>
+                <option value="desktop" data-i18n="uiModeDesktop"></option>
+                <option value="mobile" data-i18n="uiModeMobile"></option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="uiModeHint"></div>
+            <label class="field">
+              <span data-i18n="playerBarLabel"></span>
+              <select id="playerBarMode">
+                <option value="on" data-i18n="playerBarOn"></option>
+                <option value="auto" data-i18n="playerBarAuto"></option>
+                <option value="off" data-i18n="playerBarOff"></option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="playerBarHint"></div>
+          </details>
+
           <details class="panel" open>
             <summary data-i18n="secDisplay"></summary>
             <div><label><span data-i18n="displayModeLabel"></span> <select id="displayMode"><option value="simple" data-i18n="displaySimple"></option><option value="full" data-i18n="displayFull"></option></select></label></div>
@@ -2028,6 +2054,8 @@
 <script src="js/mobile-shell.js"></script>
 <!-- ⚙ 設定で開いた欄を覚える（スマホのときだけ） -->
 <script src="js/mobile-settings-panels.js"></script>
+<!-- 🎵 画面の下に出す再生バー（曲名・再生・曲送り・位置・音量）。設定で on／auto／off -->
+<script src="js/player-bar.js"></script>
 <!-- 🍎 iPhone / iPad の調整（インストール案内・音のセッション）。ほかの端末では何もしません -->
 <script src="js/ios-pwa.js"></script>
 </body>

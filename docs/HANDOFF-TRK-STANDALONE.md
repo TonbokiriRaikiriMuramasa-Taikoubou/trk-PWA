@@ -27,7 +27,7 @@
 | 言語 | 日本語が既定。英語UIは既存のi18nに任せる |
 | ライセンス | GPL-3.0-or-later |
 
-## 3. 現在の状態（2026-10-30 夜）
+## 3. 現在の状態（2026-10-31）
 
 | 項目 | 状態 |
 | --- | --- |
@@ -36,7 +36,7 @@
 | 新リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone`（空。READMEのみ、Pages未設定。**まだ移していません**） |
 | 作業ブランチ | `arena/608b424c-trk-pwa`（Phase 2・3 の実装。PR を開く） |
 | main | `8d33db6`（PR #1 マージ済み）。PR #2（docs）はこのブランチに取り込み済み |
-| テスト | `npm run check` **794 pass / 0 fail**（2026-10-30、trk220 の47件を追加） |
+| テスト | `npm run check` **821 pass / 0 fail**（2026-10-31、trk220 の47件・trk221 の27件を追加） |
 | Pages | `trk-PWA` で有効化済み（Source: GitHub Actions）。初回デプロイは `Configure Pages` で失敗（**Pages 有効化より前の実行**が原因。APIは `Not Found`）。有効化後の `main` への push で再実行される |
 | iPhone実機 | **未検証**（このセッションには端末がない） |
 
@@ -50,11 +50,19 @@
   `apple-touch-icon` 180 と `apple-mobile-web-app-*`、⚙ の「🍎 iPhoneで使う」欄、
   `sw.js` の precache（trk220）。詳細は `docs/PWA.md` §9・§10。
 
+### Phase 4 で入れたもの（2026-10-31・trk221）
+
+- **画面の形の切り替え**：`settings.uiMode`（自動／PC型／スマホ型）。PC でもスマホ型にできるので、縦型のスタンドや小さい窓でも指の操作で使えます。大きいタブレットは PC型も選べます。入口は ⚙ の「🖥 画面と再生バー」と、選曲画面の右上の 📱／🖥。開き直さずにその場で切り替わります。
+- **下の再生バー**：`settings.playerBar`（つねに／曲を選んだら／出さない、既定は曲を選んだら）。`js/player-bar.js`・`css/player-bar.css`。曲名・ジャケット・⏮▶⏭・シーク線・音量・再生画面・✕。色はスキンに追従し、ゲーム中・再生画面・書斎・ほかの窓では引っ込みます。
+- 保存キーは増やしていません（`core.settings` のみ。`?reset=all` で既定へ）。
+- 詳しい設計・検証・未実施の項目は `docs/UI-MODE-AND-PLAYER-BAR.md`、要約は `docs/PWA.md` §9.1。
+
 ### まだ残っているもの
 
 - **iPhone実機の確認**：Phase 0。`docs/IPHONE-PWA-BRAINSTORM-2026-10-30.md` §6 の18項目。**未実施**。
+- **実ブラウザでの見た目**：trk221 の再生バーと画面の形の切り替え。jsdom の通し確認だけで、Chrome／Safari での見た目は**未実施**（`docs/UI-MODE-AND-PLAYER-BAR.md` §5・§6）。
 - **初回デプロイの成功**：`main` にマージしたあと、Actions の `Deploy GitHub Pages` を見る。
-- **オリジンの確定と移行**：§4・§5。0円で分離するなら組織 `trk-agrg`。**告知前に決める。**
+- **オリジンの移行作業**：§4.2・§5。URL は `.../trk/`（リポジトリ `trk`）に決まりました。**コードを `trk` へ移す作業と、告知の時期は所有者の判断**です。
 - **公開告知**：Phase 4。バックアップ導線（書き出し／読み戻し）の案内もここで詰める。
 
 ## 4. URLとオリジン（最重要）
@@ -68,25 +76,33 @@
 | `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/` | `https://tonbokiriraikirimuramasa-taikoubou.github.io` | 共有 |
 | `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk-PWA/` | 同上 | **同じ** |
 | `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk-Standalone/` | 同上 | **同じ** |
-| `https://trk-agrg.github.io/trk/` | `https://trk-agrg.github.io` | 別 |
+| `https://trk-company.github.io/trk/`（組織を作った場合の例） | `https://trk-company.github.io` | 別 |
 
 つまり、**`trk-Standalone` を同じ個人アカウントに作っただけでは、0円でも分離されません。** 上流 `/trk/` と設定・曲・記録・キャッシュを共有します。`sw.js` は `trk-` プレフィックスのキャッシュを消すため、互いのオフラインキャッシュを壊し得ます。
 
-### 4.2 0円で分離する方法：無料のGitHub組織
+### 4.2 決定：URL は `.../trk/`（リポジトリ `trk` を使う）
 
-2026-10-30時点の確認：
+**2026-10-31 決定（所有者）。** 配布URLは次のとおりです。
 
-- `trk-agrg` は**空き**（`api.github.com/users/trk-agrg` が404）。
-- `trk` は**他人が使用中**（`trk.github.io` は使えない）。
-- `trk-standalone` / `trk-game` / `trkstandalone` も空き。
+- URL：`https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/`
+- リポジトリ：`TonbokiriRaikiriMuramasa-Taikoubou/trk`（**フルバージョンの本体**。既に存在します）
 
-**推奨：組織 `trk-agrg` を作り、その中にリポジトリ `trk` を置く。**
+理由：**いちばん短く、覚えやすい**（`/trk/`）。`trk-Standalone` は名前のとおり
+**「通信を行わない」ことを守った完成系**として残します。
 
-- URL：`https://trk-agrg.github.io/trk/`
-- 「URLはtrkを使い」を満たしつつ、ホストが分かれる。
-- 最短URLにしたいなら、組織内に `trk-agrg.github.io` というリポジトリを作り、`https://trk-agrg.github.io/` で配信する（パスなし）。
+**事実（2026-10-31 時点）**
 
-**注意**：組織名はあとから変えられるが、URLは変わる。利用者に案内したあとの変更はデータ移行を伴わない。
+- `api.github.com/repos/TonbokiriRaikiriMuramasa-Taikoubou/trk` は **200**（リポジトリは存在する）。
+- `trk` 個人アカウントの `trk.github.io` は使えません（**別の人が使っている**ので、そのURLは取れません）。
+- このURLのホストは `tonbokiriraikirimuramasa-taikoubou.github.io` で、**同じアカウントの他のページと保存領域を共有します**（§4.1）。パスだけでは分離されません。
+
+**決めていないこと／保留**
+
+- 保存領域を分けたくなったときのための**GitHub組織**は、名前だけ決めています（**Trk Company**）。
+  slug の候補 `trk-company`・`trkcompany`・`trk-co` は 2026-10-31 の API で **404（空き）**、`trk-corp` は使用中でした。
+  **組織の作成は未実施**です。作ると URL が変わり（例 `https://trk-company.github.io/trk/`）、
+  保存データは移行されません。**告知の前に決める**という原則は変えません。
+- 旧 `trk-PWA` の扱い（アーカイブするか、`trk` へ集約するか）と、告知の時期。
 
 ### 4.3 現在の `trk-Standalone` の扱い
 
@@ -94,27 +110,30 @@
 - 組織を作ったら、`trk-Standalone` を組織へ**Transfer ownership**するか、組織に `trk` を作ってmirror pushする。空なので作り直しが早い。
 - 旧 `trk-PWA` はアーカイブし、READMEに移転先を書く。旧URLは案内ページだけ残す。
 
-## 5. 移行手順（組織 `trk-agrg` / リポジトリ `trk` の場合）
+## 5. 移行手順（リポジトリ `trk` へ。実行は所有者の判断）
 
-1. https://github.com/organizations/plan で無料の組織 `trk-agrg` を作る。
-2. 組織に空のリポジトリ `trk` を作る（public）。
+> 組織（Trk Company）を作る場合も、下の `TonbokiriRaikiriMuramasa-Taikoubou` を slug（例 `trk-company`）に読み替えるだけで同じ手順です。
+
+1. （組織にする場合だけ）https://github.com/organizations/plan で無料の組織を作る。
+2. リポジトリ `trk` を用意する（**個人アカウントの `trk` は既にあります**。組織にするなら組織に作る）。
 3. 手元でmirror cloneしてpushする。
 
    ```sh
    git clone --mirror https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA.git trk-PWA.git
    cd trk-PWA.git
-   git push https://github.com/trk-agrg/trk.git refs/heads/main:refs/heads/main
-   git push https://github.com/trk-agrg/trk.git --tags
+   # 個人アカウントの trk へ（組織にするなら https://github.com/trk-company/trk.git など）
+   git push https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk.git refs/heads/main:refs/heads/main
+   git push https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk.git --tags
    ```
 
    PR #2 のdocsを先にmainへマージしておく。マージ前なら、作業ブランチも参考用にpushする。
 
    ```sh
-   git push https://github.com/trk-agrg/trk.git refs/heads/arena/01a1ef52-trk-pwa:refs/heads/handoff/2026-10-30
+   git push https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk.git refs/heads/arena/608b424c-trk-pwa:refs/heads/handoff/2026-10-31
    ```
 
 4. 組織のリポジトリで **Settings → Pages → Source: GitHub Actions** を設定。
-5. 組織にArenaのGitHub Appをインストールし、**新しいセッションを `trk-agrg/trk` で開始**する。このセッションは `trk-PWA` に固定されているため、移行後の継続作業には使えない。
+5. （組織にする場合）組織にArenaのGitHub Appをインストールし、**新しいセッションを `trk-company/trk` などで開始**する。このセッションは `trk-PWA` に固定されているため、移行後の継続作業には使えない。個人アカウントの `trk` へ移す場合も、セッションは `trk` で開き直すのが確実です。
 6. `README.md`、`index.html` の `og:url` / `og:image`、`docs/PWA.md`、`docs/ORIGIN.md` のURLを新URLに更新。
 7. 旧 `trk-PWA` / `trk-Standalone` をアーカイブし、移転先を書く。
 8. iPhoneで「ホーム画面に追加」→ standalone起動→オフライン→データ保存を確認。
@@ -213,7 +232,7 @@ python3 -m http.server 8000 --bind 0.0.0.0
 
 ## 10. 未決事項
 
-1. 組織名は `trk-agrg` でよいか。リポジトリ名は `trk` か `trk-agrg.github.io` か。
+1. 組織を作るかどうか（名前は **Trk Company**、slug 例 `trk-company`）。作らないなら、リポジトリ `trk` の個人アカウントのまま進めます。
 2. 旧 `trk-PWA` / `trk-Standalone` をいつアーカイブするか。
 3. アイコンの方向性（現行ロゴを磨く／太鼓モチーフ／新規）。
 4. 公開告知の時期（Phase 0の後か、Phase 3の後か）。
@@ -223,7 +242,8 @@ python3 -m http.server 8000 --bind 0.0.0.0
 ## 11. 参照
 
 - `docs/PWA.md` — 配布・Pages・実機チェックの現在地
-- `docs/ORIGIN.md` — 組織／ドメインの比較と移行手順
+- `docs/ORIGIN.md` — オリジンの決定（`.../trk/`）と、組織／ドメインの比較・移行手順
+- `docs/UI-MODE-AND-PLAYER-BAR.md` — 画面の形の切り替えと下の再生バー（trk221）
 - `docs/IPHONE-PWA-BRAINSTORM-2026-10-30.md` — iPhone PWAの調査とPhase設計
 - `docs/PERMISSIONS.md` — 権限と人の操作が必要な箇所
 - `docs/HANDOFF-TRK.md` — 上流 `trk` 側の引き継ぎ

@@ -6,9 +6,14 @@
 
 - **アイコン（ホーム画面アプリ）は、どのオリジンでも作れます。** 組織に移すかどうかとは別の話です。決めるのは「保存領域をどこに置くか」＝**ホスト**です。
 - **不特定多数に案内するなら、個人アカウントの `tonbokiriraikirimuramasa-taikoubou.github.io` は使わない**。他のプロジェクトサイトと保存領域・キャッシュを共有します。
-- **2026-10-30 決定：0円。** したがって独自ドメインは取らず、**A. 専用GitHub組織**で進めます。
-- 選択肢は2つ。
-  - **A. trk! 専用のGitHub組織**（無料。`trk-agrg.github.io` など）
+- **2026-10-30 決定：0円。** したがって独自ドメインは取りません。
+- **2026-10-31 決定（所有者）：配布URLは `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/`。**
+  リポジトリ `TonbokiriRaikiriMuramasa-Taikoubou/trk`（既存・フルバージョンの本体）を使います。**いちばん短く、覚えやすい**ためです。
+  `trk-Standalone` は名前のとおり「**通信を行わない**ことを守った完成系」として残します。
+  このホストは個人アカウントの `github.io` なので、§1 のとおり同じアカウントの他のページと保存領域を共有します（承知のうえの決定）。
+- 分離が必要になったときの受け皿として、**GitHub組織は名前だけ決めています（Trk Company）**。作成は未実施です（§4.4）。
+- 選択肢は2つ（比較は §2）。
+  - **A. trk! 専用のGitHub組織**（無料。`trk-company.github.io` など）
   - **B. 独自ドメイン**（年1,000〜2,000円程度。`trk.example.com` など）
 - どちらも「PWAをホーム画面に追加して使う」形は同じ。違うのは**URLの覚えやすさ・信頼感・分離の強さ・移行の手間**です。
 - **利用者に案内する前に決める。** ホストを変えると別オリジンになり、保存データは移行されません。
@@ -21,7 +26,7 @@ Webの保存領域（`localStorage`・`IndexedDB`・`CacheStorage`）は、**オ
 | --- | --- | --- |
 | `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/` | `https://tonbokiriraikirimuramasa-taikoubou.github.io` | 共有 |
 | `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk-PWA/` | 同上 | **同じ** |
-| `https://trk-agrg.github.io/trk-PWA/` | `https://trk-agrg.github.io` | 別 |
+| `https://trk-company.github.io/trk-PWA/` | `https://trk-company.github.io` | 別 |
 | `https://trk.example.com/` | `https://trk.example.com` | 別 |
 
 現在の個人アカウントの `github.io` では、次が起きます。
@@ -35,7 +40,7 @@ Webの保存領域（`localStorage`・`IndexedDB`・`CacheStorage`）は、**オ
 | 観点 | A. 専用GitHub組織 | B. 独自ドメイン | C. 個人github.io（現状） |
 | --- | --- | --- | --- |
 | 費用 | **0円** | 年1,000〜2,000円程度＋DNS | 0円 |
-| URLの例 | `trk-agrg.github.io/trk-PWA/` | `trk.example.com` | `tonbokiri...github.io/trk-PWA/` |
+| URLの例 | `trk-company.github.io/trk-PWA/` | `trk.example.com` | `tonbokiri...github.io/trk-PWA/` |
 | 覚えやすさ・信頼感 | 中（github.ioが残る） | **高** | 低〜中 |
 | 他のプロジェクトとの分離 | **組織内だけ分離**（組織に他のリポジトリを置かなければ実質分離） | **完全に分離** | 分離なし |
 | 上流 `/trk/` とのキャッシュ競合 | なし | なし | **あり** |
@@ -74,14 +79,14 @@ Webの保存領域（`localStorage`・`IndexedDB`・`CacheStorage`）は、**オ
 
 ### 手順（案）
 
-1. GitHubで無料の組織を作る（例 `trk-agrg`）。個人アカウントと同じく2FAが必要な場合あり。
+1. GitHubで無料の組織を作る（例 `trk-company`）。個人アカウントと同じく2FAが必要な場合あり。
 2. 組織に空のリポジトリ `trk-PWA` を作る。
 3. 現在のリポジトリをmirrorで移す。
 
    ```sh
    git clone --mirror https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA.git trk-PWA.git
    cd trk-PWA.git
-   git push --mirror https://github.com/trk-agrg/trk-PWA.git
+   git push --mirror https://github.com/trk-company/trk-PWA.git
    ```
 
 4. 組織のリポジトリで **Settings → Pages → Source: GitHub Actions** を設定。
@@ -107,7 +112,7 @@ Webの保存領域（`localStorage`・`IndexedDB`・`CacheStorage`）は、**オ
 
 ### 手順（案）
 
-1. ドメインを取得（例 `trk-agrg.com`、`trk-game.jp`）。サブドメイン `trk.example.com` でも可。
+1. ドメインを取得（例 `trk-company.com`、`trk-game.jp`）。サブドメイン `trk.example.com` でも可。
 2. DNSで `trk` の **CNAME** を `tonbokiriraikirimuramasa-taikoubou.github.io` に向ける（apexドメインならAレコード4本）。
 3. GitHubの **Settings → Pages → Custom domain** にドメインを入力して Save。
 4. DNSチェックが通ったら **Enforce HTTPS** をオン。
@@ -115,25 +120,24 @@ Webの保存領域（`localStorage`・`IndexedDB`・`CacheStorage`）は、**オ
 6. `og:url` / `og:image` / README / docs を新URLに更新。
 7. iPhoneで「ホーム画面に追加」→ standalone起動→オフラインを確認。
 
-### 4.4 追加確認（2026-10-30）
+### 4.4 追加確認（2026-10-31）
 
-- `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone` が作成された（READMEのみ、Pages未設定）。ただし**同じ個人アカウント**なので、ホストは `tonbokiriraikirimuramasa-taikoubou.github.io` のまま。**オリジンは分離されない**（コード分割用）。
-- `trk-agrg` は空き（APIが404）。`trk` は他人が使用中。`trk-standalone` / `trk-game` / `trkstandalone` も空き。
-- 推奨：組織 `trk-agrg` を作り、その中にリポジトリ `trk` を置く → `https://trk-agrg.github.io/trk/`。最短にしたいなら `trk-agrg.github.io` リポジトリでルート配信。
-- この作業セッションは `trk-PWA` に固定されている。組織へ移したあとの継続作業は**新しいセッション**で行う（引き継ぎは `docs/HANDOFF-TRK-STANDALONE.md`）。
+- **リポジトリ `TonbokiriRaikiriMuramasa-Taikoubou/trk` は存在する**（`api.github.com/repos/...` が 200）。ここが配布URLの本体になります。
+- `trk` 個人アカウント（`https://trk.github.io/`）は**他人が使用中**なので、そのURLは取れません。
+- 組織の名前候補：`trk-company`・`trkcompany`・`trk-co` は **404（空き）**、`trk-corp` は使用中（いずれも 2026-10-31 の API 確認）。**組織の作成は未実施**。
+- `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone` は同じ個人アカウントなので、ホストは `tonbokiriraikirimuramasa-taikoubou.github.io` のままで、**オリジンは分離されない**（コード分割用）。
+- この作業セッションは `trk-PWA` に固定されている。`trk` へ移したあとの継続作業は**新しいセッション**で行う（引き継ぎは `docs/HANDOFF-TRK-STANDALONE.md`）。
 
-## 5. どちらを選ぶか（目安）
+## 5. 決定と、残っている選択
 
-- **無料を優先し、組織運用の手間を許容できる** → **A. 専用組織**。← **2026-10-30 の決定**。
-- **ブランド・信頼感・URLの短さを優先し、年1,000〜2,000円を許容できる** → **B. 独自ドメイン**。
-- **まず試験だけ** → 現在の `/trk-PWA/`。ただし一般案内はしない。
-
-どちらでも、**公開告知の前に決める**のが原則です。データはホストをまたいで移りません。
+- **決定（2026-10-31）**：URL は `https://tonbokiriraikirimuramasa-taikoubou.github.io/trk/`（リポジトリ `trk`）。0円。独自ドメインは取らない。
+- **保留**：保存領域を分けたくなったら、組織 **Trk Company**（slug の例 `trk-company`）へ移す。**移すとオリジンが変わり、保存データは移行されません。** 告知の前に決める、という原則は変えません。
+- **移行の手順**：`docs/HANDOFF-TRK-STANDALONE.md` §5。実行の時期は所有者の判断です。
 
 ## 6. まだ決めていないこと
 
-1. 組織名を `trk-agrg` にするか、別名にするか（2026-10-30時点で `trk-agrg` は空き）。
-2. リポジトリ名を `trk` にするか、`trk-agrg.github.io`（ルート配信）にするか。
-3. Arenaの接続を組織へ移してよいか（作業セッションが変わります）。
+1. 組織（Trk Company）を作るか、個人アカウントの `trk` のままで進めるか。作るなら slug をどれにするか（`trk-company` は 2026-10-31 時点で空き）。
+2. `trk` へコードを移す時期と、旧 `trk-PWA` / `trk-Standalone` をアーカイブする時期。
+3. Arenaの接続を移してよいか（作業セッションが変わります）。
 4. アイコンの方向性（現行の `trk!` ロゴを磨くか、新規に作るか）。
 5. 公開告知の時期（Phase 0の実機チェック前か後か）。

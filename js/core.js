@@ -239,6 +239,11 @@ const settings = {
   reverseHands: !!prefs.reverseHands,
   hideGameplayUI: !!prefs.hideGameplayUI,
   playerMode: !!prefs.playerMode,
+  /* 🖥 trk221：画面の形。auto＝端末に合わせる／desktop＝PC型／mobile＝スマホ型
+     （PCでも縦型のスタンドや小さい窓で使うときは mobile、大きいタブレットは desktop を選べる） */
+  uiMode: pick(prefs.uiMode, ["auto", "desktop", "mobile"], "auto"),
+  /* 🎵 trk221：下に出す再生バー。on＝つねに／auto＝曲を選んだら／off＝出さない */
+  playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "auto"),
   helpText: prefs.helpText !== false,
   tutorialDone: prefs.tutorialDone === true,
   welcomeSeen: prefs.welcomeSeen === true,   /* 👋 「trk!にようこそ！」を閉じた（一度だけ出す） */
@@ -642,6 +647,8 @@ function resetAllPrefs() {
   settings.mmdScale = 1; settings.mmdTurn = 0; settings.mmdMotionBpm = 0; settings.mmdMotionKind = "faceSing";
   settings.mmdQuickUI = true; settings.mmdMotionFavs = [];
   settings.skin = "shadow"; settings.layout = "classic";
+  /* 🖥 trk221：画面の形（自動）と下の再生バー（曲を選んだら表示）も工場出荷状態へ戻す */
+  settings.uiMode = "auto"; settings.playerBar = "auto";
 }
 function exportPrefs(kind) {
   const out = {};
