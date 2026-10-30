@@ -2,7 +2,7 @@
 
 > **最終更新：2026-10-31**（`trk-PWA` の **trk223**）。アプリ本体は trk223（trk222 レビューへの対応）、`npm run check` は **861 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk223`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
 >
-> 現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`../README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`../NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md)。**レビューと実機確認のお願いは [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)**、その指摘への対応は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)。
+> 現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`../README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`../NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md)。**レビューと実機確認のお願いは [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)**、その指摘への対応は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)、trk223 を実際の端末で見る手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
 
 ## 0. この文書の使い方
 
@@ -60,7 +60,7 @@
 | trk222 の設定 | `uiScale`（50/75/100/125）・`fixedIconSize`・`uiModeLock`・`fxInLibrary`・`playerBar`。**新しい保存キーは増やしていません** |
 | テスト | `npm run check` **861 pass / 0 fail**（trk220 の47件・trk221 の27件・trk222 の13件・trk223 の25件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning |
 | Service Worker | cache は **`trk-v2026.10.31-trk223@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
-| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。確認項目は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) にまとめています |
+| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。trk223 の確認項目は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) |
 | 移行 | 新リポジトリ `trk-Standalone` はまだ空。Pages の有効化と初回デプロイは未実施 |
 
 **この系統で変えてはいけないこと**：§3 の条件に加えて、**実行時に外部へ通信しない**（CDN・外部API・解析タグを足さない）、**端末内データだけ**、**GPL-3.0-or-later のクレジットを消さない**、**保存キーを変えるときは移行を書く**（[`MIGRATIONS.md`](MIGRATIONS.md)）。
@@ -398,7 +398,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 - **#61 trk222**：拡大率（50/75/100/125%）・アイコンの大きさ固定・PC型／スマホ型の2択・エフェクト欄のタブ分け。とくに **CSS の `zoom`（再生バーの拡大）はブラウザ差**が出やすい箇所です。
 - **#62 trk221**：PC でのスマホ型 UX・下の再生バー（スキン追従・音量・ゲーム中の引っ込み）。
 - **#63 trk220**：iPhone のホーム画面から起動・オフライン・縦向きの案内・設定の欄の記憶。
-- **#64 trk223**：trk222 レビューへの対応。エフェクトのタブの ▶ TV と欄の並び、拡大率 4 段でのカードと再生バーの間隔（125%）、背景と MMD/VRM の位置、ようこそを閉じたあとの再生バー。計算・vm では確かめたが、**実機の見た目は未確認**。対応の一覧は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)。
+- **#64 trk223**：trk222 レビューへの対応。エフェクトのタブの ▶ TV と欄の並び、拡大率 4 段でのカードと再生バーの間隔（125%）、背景と MMD/VRM の位置、ようこそを閉じたあとの再生バー。計算・vm では確かめたが、**実機の見た目は未確認**。対応の一覧は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)、実機での手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)（**まず §2 の4点**）。
 
 | # | 項目 | 状態 | 次の一手 |
 |---|---|---|---|
@@ -465,6 +465,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 61 | trk222：🔍 拡大率・アイコンの大きさ・PC型／スマホ型の2択・エフェクト欄のタブ分け | `tests/trk222-ui-zoom.test.mjs`（13件）＋jsdom の通し確認（37項目）＋`npm run check` **835 pass**。1280×800 等の 6画面×4拡大率でのはみ出しなしも確認。**実ブラウザ・実機は未確認** | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) §2-3 の順に実機で確認。とくに 125% の文字の大きさ、再生バーの `zoom`（Safari／Firefox）、縦型モニタでの見え方 |
 | 62 | trk221：📱 PC でもスマホ型の UX＋下の再生バー | `tests/trk221-ui-mode.test.mjs`（11件）・`tests/trk221-player-bar.test.mjs`（17件）＋jsdom の通し確認。**実機は未確認**（スキンごとの色・タッチの当たり・音の大きさ） | §2-2 の順に実機で確認。各スキンでバーの色が読めるか、下部ナビと重ならないか、ゲーム中・再生画面・書斎で引っ込むか |
 | 63 | trk220：📲 iPhone のホーム画面から使う standalone PWA | `tests/trk220-*.test.mjs`（47件）＋manifest／meta／SW の静的検査。**実機は未確認**（インストール・オフライン起動・セーフエリア） | §2-1 の順に実機で確認。ホーム画面から起動して URL バーが出ないこと、機内モードでも起動すること、ノッチ・ホームバーと重ならないこと |
+| 64 | trk223：🧭 trk222 レビューへの対応（①〜⑫） | `tests/trk223-review.test.mjs`（25件）＋`npm run check` **861 pass**。CSS は規則（カスケード）で、再生バーは 4段の拡大率で数値で確認。`sw.js` の掃除と設定のマージは vm。ZIP は vendor 100 件の照合。**実機の見た目は未確認** | [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md) の §2（①エフェクトのタブ・②125% の重なり・⑥拡大率と背景/MMD・⑦ようこそを閉じたあとのバー）から。④⑤ は `/trk/` 移設後に §4 |
 
 #### 実ブラウザsmoke／CIの容量（trk162調査）
 
@@ -579,21 +580,28 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | ▶ 下の再生バー（trk221） | `js/player-bar.js`（本物の再生要素を触るだけ・独自の再生状態を持たない）、`css/player-bar.css`（高さは `getBoundingClientRect` で測る）、`tests/trk221-player-bar.test.mjs` |
 | 🔍 拡大率・アイコンの大きさ（trk222） | `js/core.js`（`UI_SCALES`・`uiScaleValue`・`applyUiScale`・`fitStage`）、`js/ui-prefs.js`（設定の配線）、`css/style.css`（`--trk-ui-zoom`・`--trk-icon-zoom`）、`css/player-bar.css`、`tests/trk222-ui-zoom.test.mjs` |
 | 🎛 スマホ型のエフェクト欄のタブ分け（trk222） | `js/mobile-shell.js`（`fxSync`＝body の印だけ）、`css/mobile-shell.css`（`body[data-trk-view]`＋`body.trk-fx-in-library` で見せ分け。**DOM は動かさない**）、`js/core.js`（`fxInLibrary`） |
-| 📝 レビューと実機確認の依頼（2026-10-31） | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)（レビューしてほしいコード・実機で見てほしいこと・判断してほしいこと） |
+| 🧭 trk223：レビュー対応（配布ZIPの作り方） | `tools/pack-standalone.mjs`（**`git ls-files` から集める**・`vendor-lock.json` 全件と `index.html` の参照を照合・`--check-only` で一覧だけ確認）、`release/README-standalone.txt`（ZIP同梱の読み方） |
+| 🧭 trk223：キャッシュの持ち主と先読み | `sw.js`（`scopeTagOf`・`CACHE_NAME`／`VENDOR_CACHE`／`SHARE_CACHE_NAME`・`cacheIsOurs`・`matchOwned`・`fetchWithTimeout`・`PRECACHE_EXTRA`）、`js/share-inbox.js`（`shareScopeTag`・`shareScopePath`・`SHARE_CACHE_NAME`） |
+| 🧭 trk223：設定の保存（マージ） | `js/core.js`（`storedPrefsRaw`・`saveUserPrefs({fresh})`・`resetAllPrefs` の2経路は `fresh`）、`js/mobile-shell.js`（`uiMode()` が `uiModeLock === false` なら保存値を使わない・`syncUiControls` は実効値） |
+| 🧭 trk223：テストの道具 | `tests/helpers/css-rules.mjs`（CSS を規則として当てる）、`tests/helpers/player-bar-harness.mjs`（偽 DOM）、`tests/trk223-review.test.mjs`（25件） |
+| 📝 レビューと実機確認の依頼（2026-10-31） | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)（trk220〜trk222：レビューしてほしいコード・実機で見てほしいこと・判断してほしいこと）、[`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)（指摘ごとの対応）、[`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)（trk223 を実機で見る手順） |
 | 全体・安全検査 | `tools/check-repo.mjs`、`tools/check-security.mjs`、`tools/check-a11y.mjs`、`tools/check-lite.mjs` |
 
 ## 6. 直近の検証
 
-**trk220〜trk222（2026-10-30〜31・このリポジトリ）の確認**
+**trk220〜trk223（2026-10-30〜31・このリポジトリ）の確認**
 
 | 検査 | 結果 | 範囲・注意 |
 |---|---|---|
-| `npm run check` | **835 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の27件・trk222 の13件を足して 835。Static 0 failure・0 warning |
+| `npm run check` | **861 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の27件・trk222 の13件・trk223 の25件を足して 861。Static 0 failure・0 warning・Security 64/0 |
 | `node tools/check-repo.mjs` | **0 failure / 0 warning** | 文書・`sw.js` の cache 名・読み込み順・名前空間の検査を含む |
 | jsdom で実 `index.html` を通しで操作（trk221） | **OK** | PC→スマホ型の切り替え・保存・設定の欄の追随、曲を選んだときの再生バー表示、音量の反映、プレイ中に隠れる、PC型へ戻したときの後片付け、往復、設定中は下余白0 |
 | jsdom で実 `index.html` を通しで操作（trk222） | **OK（37項目）** | 既定値（100%／on／アイコン固定オン／謎設定オン）、125%・75%・50% の設計サイズと倍率、アイコン固定のオン／オフ、知らない値は100%、プレイ中は等倍、縦型 1080×1920 でのはみ出しなし、スマホ型はステージを拡大しない、エフェクト／ライブラリのタブで `display` が設計どおり、2択ボタンの往復と保存の有無 |
 | 画面サイズ×拡大率のはみ出し | **OK（24/24）** | 1920×1080・1440×900・1366×768・1080×1920・2560×1440・800×600 の6通り × 50・75・100・125% の4通り。ステージが画面からはみ出さない |
-| 実ブラウザ・実機で触る | **未確認** | この作業環境にブラウザも端末もない。とくに再生バーの拡大に使う CSS の `zoom` はブラウザ差が出やすい。手順は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) の §2 |
+| CSS を規則として検査（trk223） | **OK** | `tests/helpers/css-rules.mjs` が `@media` を除いた規則を要素に当て、カスケードで勝つ `display` / `max-height` / `padding-bottom` を出す。エフェクトのタブの ▶ TV、`.songCol` の `flex`＋`gap:14px`、カードの `max-height:100%` を確認 |
+| 再生バーとカードの重なり（trk223） | **OK（4/4）** | 1440×900・バー実寸 60px で、拡大率 50／75／100／125% のカードの下端 738.8／732.9／727.5／721.9px が、バーの上端 750px より上 |
+| 手渡し用ZIP（trk223） | **OK** | `tools/pack-standalone.mjs` が `git ls-files` から 264 ファイルを集め、`vendor-lock.json` の全 100 件（`three-mmd-loader@0.8.4/dist/` の 91 件を含む）と `index.html` の参照を照合。`unzip -t` 破損なし・`sha256 a6134a0c…36dbb` |
+| 実ブラウザ・実機で触る | **未確認** | この作業環境にブラウザも端末もない。とくに再生バーの拡大に使う CSS の `zoom` はブラウザ差が出やすい。trk223 の手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) §2 |
 
 **trk219（2026-10-29）の確認**
 
@@ -749,7 +757,9 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
   - **④ キャッシュの持ち主**：名前にスコープの印（`@trk`／`@trk-pwa`／`@root`）を付け、activate は自分のものだけ削除。共有の受け口（`js/share-inbox.js`）も同じ印。
   - **⑤ 設定の保存**：`saveUserPrefs()` は保存済みの生の値に重ねる（知らないキーを消さない）。工場出荷の2経路だけ `{fresh:true}`。❓謎設定がオフのときは保存値を使わず、その場の選択だけ。
   - **⑥〜⑫**：`#view`・`#fx` と MMD/VRM の拡大率のずれ、ようこそを閉じたあとの再生バー、先読みの `no-cache` と 3 秒の時間切れ、`verified.json`・`preset.json` の先読み、Pages の公開物から開発用を除外、`display_override` の先頭を `standalone`、テストを数値・規則で見る形（`tests/trk223-review.test.mjs` 25件）。
-  - `sw.js` の cache は **`trk-v2026.10.31-trk223@<スコープ>`**。**実ブラウザ・実機は未確認**（§4-64）。レビューの順序に従い、実機の確認が済むまで新しい配布物は配っていません。
+  - **手渡し用ZIP**：`node tools/pack-standalone.mjs`（`git ls-files`＋`vendor-lock.json` 全100件の照合）で作り、**264ファイル・7,515,649 bytes・`sha256 a6134a0c5d35c6a2fb2ebabd91c6559fee345b849391e789540ce9d83ee36dbb`**（`unzip -t` 破損なし。vendor 101エントリ＝`three-mmd-loader@0.8.4/dist/` の91件を含む）。
+  - **配布の扱い**：公開URLの配布物は差し替えていません。確認用のZIPを Drive の手渡しフォルダに置き（`trk-standalone-2026-10-31-trk223.zip`・`trk-handover-2026-10-31-trk223.zip`・`README-まず読む-2026-10-31-trk223.txt`）、前回の trk222 のZIPは名前の先頭に「【旧】」を付けています。
+  - `sw.js` の cache は **`trk-v2026.10.31-trk223@<スコープ>`**。**実ブラウザ・実機は未確認**（§4-64）。実機の手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
 - **🔍 trk222：拡大率・アイコンの大きさ・2択の画面切り替え・エフェクト欄のタブ分け（2026-10-31）**：実際に触っての要望5点。
   - **拡大率**（`settings.uiScale`＝50／75／100／125%、既定100%）：`fitStage()` がステージの設計サイズを `1/拡大率` に縮めて `min(iw/W, ih/H) × 拡大率` で描くので、文字とボタンが同じ比率で大きくなり、**画面からはみ出さない**。ゲーム中は100%（盤面を欠けさせない）、スマホ型は再生バーだけ `zoom` で拡大。
   - **アイコンの大きさは100%で固定**（`fixedIconSize`・既定オン）：アイコンだけ `1/拡大率` に割り戻す（`--trk-icon-zoom`）。
