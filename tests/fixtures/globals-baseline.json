@@ -1,0 +1,2659 @@
+{
+ "totals": {
+  "scripts": 53,
+  "windowProps": 282,
+  "duplicates": 1,
+  "declarations": 1439,
+  "private": 1229,
+  "public": 210,
+  "globalNames": 288
+ },
+ "files": [
+  {
+   "file": "index.html(inline)",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/i18n.js",
+   "decls": 3,
+   "private": 0,
+   "public": [
+    "TEXT",
+    "lang",
+    "tr"
+   ]
+  },
+  {
+   "file": "js/i18n-options.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/data.js",
+   "decls": 38,
+   "private": 33,
+   "public": [
+    "H",
+    "NOTE_PRESETS",
+    "TAU",
+    "W",
+    "has"
+   ]
+  },
+  {
+   "file": "js/characters/miku.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/tv-presets.js",
+   "decls": 1,
+   "private": 0,
+   "public": [
+    "TRK_TV_PRESETS"
+   ]
+  },
+  {
+   "file": "js/core.js",
+   "decls": 170,
+   "private": 127,
+   "public": [
+    "$",
+    "TRK_ENUM_VALUES",
+    "analysis",
+    "baseName",
+    "buildSkinGrid",
+    "buildSkinNow",
+    "chart",
+    "chartMeta",
+    "clock",
+    "closeSettings",
+    "ctx",
+    "downloadBlob",
+    "downloadJSON",
+    "el",
+    "emit",
+    "esc",
+    "fingerprint",
+    "fmtTime",
+    "fontFamily",
+    "fx",
+    "loadToken",
+    "nextIdx",
+    "num",
+    "on",
+    "openSettings",
+    "phase",
+    "pick",
+    "practice",
+    "prefs",
+    "safeLink",
+    "safeName",
+    "saveUserPrefs",
+    "screen",
+    "setStatus",
+    "settings",
+    "skin",
+    "stage",
+    "stats",
+    "takeAmpReset",
+    "vctx",
+    "video",
+    "videoReady",
+    "view"
+   ]
+  },
+  {
+   "file": "js/lite.js",
+   "decls": 42,
+   "private": 37,
+   "public": [
+    "liteActive",
+    "liteLibRows",
+    "liteMascotNoLoad",
+    "liteNoAnalyze",
+    "liteSyncUI"
+   ]
+  },
+  {
+   "file": "js/player.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/chart-gen.js",
+   "decls": 20,
+   "private": 20,
+   "public": []
+  },
+  {
+   "file": "js/midi-profiles.js",
+   "decls": 18,
+   "private": 3,
+   "public": [
+    "api",
+    "band",
+    "chorus",
+    "comp",
+    "delay",
+    "drive",
+    "eq",
+    "get",
+    "list",
+    "lofi",
+    "name",
+    "profiles",
+    "room",
+    "synth",
+    "width"
+   ]
+  },
+  {
+   "file": "js/midi-player.js",
+   "decls": 72,
+   "private": 69,
+   "public": [
+    "api",
+    "midiError",
+    "releaseVoice"
+   ]
+  },
+  {
+   "file": "js/midi-settings.js",
+   "decls": 5,
+   "private": 1,
+   "public": [
+    "api",
+    "core",
+    "render",
+    "select"
+   ]
+  },
+  {
+   "file": "js/media.js",
+   "decls": 37,
+   "private": 32,
+   "public": [
+    "applyChartData",
+    "audioCtx",
+    "chartToData",
+    "decodeAudio",
+    "getAC"
+   ]
+  },
+  {
+   "file": "js/audio-art.js",
+   "decls": 32,
+   "private": 31,
+   "public": [
+    "candidate"
+   ]
+  },
+  {
+   "file": "js/judge-match.js",
+   "decls": 4,
+   "private": 4,
+   "public": []
+  },
+  {
+   "file": "js/game.js",
+   "decls": 68,
+   "private": 41,
+   "public": [
+    "PLAY_KEYS",
+    "autoPlay",
+    "chartKeyOf",
+    "currentAcc",
+    "currentScore",
+    "endGame",
+    "gameTime",
+    "goAt",
+    "handleInput",
+    "judgeNote",
+    "leadIn",
+    "pauseGame",
+    "pausedInLeadIn",
+    "rateKey",
+    "records",
+    "renderRecords",
+    "resumeGame",
+    "runShort",
+    "runUnranked",
+    "saveRecords",
+    "seekTo",
+    "showJudge",
+    "songRec",
+    "startGame",
+    "sweepMisses",
+    "tickClock",
+    "toTitle"
+   ]
+  },
+  {
+   "file": "js/render.js",
+   "decls": 40,
+   "private": 33,
+   "public": [
+    "drawVideo",
+    "hitPos",
+    "layout",
+    "loop",
+    "rr",
+    "showToast",
+    "toast"
+   ]
+  },
+  {
+   "file": "js/custom.js",
+   "decls": 71,
+   "private": 66,
+   "public": [
+    "CRC_TABLE",
+    "crc32",
+    "noteImage",
+    "packRuntime",
+    "skinShelf"
+   ]
+  },
+  {
+   "file": "js/truck.js",
+   "decls": 24,
+   "private": 9,
+   "public": [
+    "drawLaneTint",
+    "drawTruck",
+    "isTruck",
+    "lanePivot",
+    "laneTilt",
+    "reduceMotion",
+    "resetTruck",
+    "steerTruck",
+    "syncTruckKeyUI",
+    "truckBinding",
+    "truckJudge",
+    "truckKeysLabel",
+    "truckPosKeys",
+    "truckRowY",
+    "truckState"
+   ]
+  },
+  {
+   "file": "js/modes.js",
+   "decls": 57,
+   "private": 38,
+   "public": [
+    "ORBIT_CX",
+    "ORBIT_CY",
+    "ORBIT_IGNORE",
+    "drawLives",
+    "drawOrbitField",
+    "failSound",
+    "hintEl",
+    "isOrbit",
+    "lifeAfterJudge",
+    "lifeState",
+    "makeCheck",
+    "makeColorRow",
+    "makeSeg",
+    "orbit",
+    "orbitHitPos",
+    "resetLives",
+    "resetOrbit",
+    "starPath",
+    "titleString"
+   ]
+  },
+  {
+   "file": "js/stage.js",
+   "decls": 24,
+   "private": 13,
+   "public": [
+    "STAGE",
+    "drawStageField",
+    "ensureStageMap",
+    "isStage",
+    "resetStage",
+    "stageBinding",
+    "stageHitPos",
+    "stageInput",
+    "stageKeys",
+    "stageMap",
+    "stagePress"
+   ]
+  },
+  {
+   "file": "js/stagefx.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/catch.js",
+   "decls": 30,
+   "private": 21,
+   "public": [
+    "CATCH",
+    "catchAllKeys",
+    "catchHitPos",
+    "catchJudge",
+    "catchState",
+    "drawCatchField",
+    "isBlast",
+    "isCatch",
+    "resetCatch"
+   ]
+  },
+  {
+   "file": "js/extras.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/fx-presets.js",
+   "decls": 1,
+   "private": 0,
+   "public": [
+    "TRK_FX_PRESETS"
+   ]
+  },
+  {
+   "file": "js/fx-dock.js",
+   "decls": 1,
+   "private": 1,
+   "public": []
+  },
+  {
+   "file": "js/tv-dock.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/tv-rich.js",
+   "decls": 10,
+   "private": 10,
+   "public": []
+  },
+  {
+   "file": "js/video-max.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/fx.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/fx-synth.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/favs.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/touhou-theme-data.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/catalog.js",
+   "decls": 1,
+   "private": 0,
+   "public": [
+    "TRK_CATALOG"
+   ]
+  },
+  {
+   "file": "js/title-match.js",
+   "decls": 4,
+   "private": 0,
+   "public": [
+    "plNormTitle",
+    "plSongMatchKeys",
+    "plTitleKeys",
+    "plWishTitleKeys"
+   ]
+  },
+  {
+   "file": "js/library.js",
+   "decls": 313,
+   "private": 295,
+   "public": [
+    "addonSongs",
+    "allSongs",
+    "bannerRandomBtn",
+    "bannerVolTip",
+    "ensureTrkDistributionPlaylists",
+    "lastUseStudyArtwork",
+    "nextSong",
+    "plToast",
+    "prevSong",
+    "previewStartFor",
+    "refreshPackSongs",
+    "renderLib",
+    "selectSong",
+    "setAddonSongs",
+    "songDisplayTitle",
+    "songInfo",
+    "srcLabel",
+    "startPreview"
+   ]
+  },
+  {
+   "file": "js/verified.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/lib-skins.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/addons.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/main.js",
+   "decls": 46,
+   "private": 41,
+   "public": [
+    "RESERVED",
+    "guideNote",
+    "idleTimer",
+    "poke",
+    "showFxPower"
+   ]
+  },
+  {
+   "file": "js/pad.js",
+   "decls": 36,
+   "private": 34,
+   "public": [
+    "padBack",
+    "updatePadUI"
+   ]
+  },
+  {
+   "file": "js/speed.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/vrm.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/mmd.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/spectrum.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/synth-mode.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/frame-interp.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/media-player-mode.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/study-room-utils.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/study-room.js",
+   "decls": 271,
+   "private": 270,
+   "public": [
+    "studyBooks"
+   ]
+  },
+  {
+   "file": "js/zip-io.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  },
+  {
+   "file": "js/backup.js",
+   "decls": 0,
+   "private": 0,
+   "public": []
+  }
+ ],
+ "windowCoupling": [
+  {
+   "name": "$",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "BEST_KEY",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "CAPTION_MS",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "CATCH",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "CHART_FILE_MAX",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "CUSTOM_SKIN_MAX",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "DIFFS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "DIFF_IDS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "EGG_KEYS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "EGG_WORDS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "FONT_DEFAULT",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "H",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "HEX",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "KEY_PRESETS",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "LAYOUTS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "LIB_SHOW",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "MASCOT_CAPTIONS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "MASCOT_DEFS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "MASCOT_FAMILY",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "MASCOT_IDS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "MASCOT_POS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "NOTE_PRESETS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "NOTE_SHAPES",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ORBIT_CX",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ORBIT_CY",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ORBIT_IGNORE",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "PAD_DEFAULTS",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "PLAY_KEYS",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "RESERVED",
+   "writers": [
+    "js/main.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "SKINS",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "SKIN_FORMAT",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "STAGE",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ShadowTaikoVRM",
+   "writers": [
+    "js/vrm.js"
+   ],
+   "readers": [
+    "js/custom.js"
+   ]
+  },
+  {
+   "name": "TAU",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "TRK_ENUM_VALUES",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "TV_PARAM_FAV_MAX",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "Trk",
+   "writers": [
+    "js/data.js",
+    "js/core.js",
+    "js/lite.js",
+    "js/chart-gen.js",
+    "js/midi-profiles.js",
+    "js/midi-player.js",
+    "js/media.js",
+    "js/audio-art.js",
+    "js/judge-match.js",
+    "js/render.js",
+    "js/custom.js",
+    "js/modes.js",
+    "js/catch.js",
+    "js/touhou-theme-data.js",
+    "js/library.js",
+    "js/main.js",
+    "js/pad.js",
+    "js/study-room.js",
+    "js/zip-io.js"
+   ],
+   "readers": [
+    "js/characters/miku.js",
+    "js/player.js",
+    "js/midi-settings.js",
+    "js/game.js",
+    "js/truck.js",
+    "js/stage.js",
+    "js/stagefx.js",
+    "js/extras.js",
+    "js/fx-dock.js",
+    "js/tv-dock.js",
+    "js/tv-rich.js",
+    "js/video-max.js",
+    "js/fx.js",
+    "js/fx-synth.js",
+    "js/favs.js",
+    "js/catalog.js",
+    "js/verified.js",
+    "js/lib-skins.js",
+    "js/addons.js",
+    "js/speed.js",
+    "js/vrm.js",
+    "js/mmd.js",
+    "js/spectrum.js",
+    "js/synth-mode.js",
+    "js/frame-interp.js",
+    "js/media-player-mode.js",
+    "js/backup.js"
+   ]
+  },
+  {
+   "name": "TrkAddons",
+   "writers": [
+    "js/addons.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "TrkClassicId",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": [
+    "js/main.js"
+   ]
+  },
+  {
+   "name": "TrkEnsureTrkClassicPlaylist",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": [
+    "js/main.js"
+   ]
+  },
+  {
+   "name": "TrkEnsureTrkPlaylist",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": [
+    "js/main.js"
+   ]
+  },
+  {
+   "name": "TrkFX",
+   "writers": [
+    "js/fx.js"
+   ],
+   "readers": [
+    "js/core.js",
+    "js/game.js",
+    "js/fx-dock.js",
+    "js/fx-synth.js",
+    "js/favs.js",
+    "js/addons.js",
+    "js/spectrum.js",
+    "js/synth-mode.js"
+   ]
+  },
+  {
+   "name": "TrkFavs",
+   "writers": [
+    "js/favs.js"
+   ],
+   "readers": [
+    "js/fx-dock.js",
+    "js/tv-dock.js",
+    "js/library.js"
+   ]
+  },
+  {
+   "name": "TrkFrameInterp",
+   "writers": [
+    "js/frame-interp.js"
+   ],
+   "readers": [
+    "js/video-max.js",
+    "js/media-player-mode.js"
+   ]
+  },
+  {
+   "name": "TrkLibSkins",
+   "writers": [
+    "js/lib-skins.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "TrkLite",
+   "writers": [
+    "js/lite.js"
+   ],
+   "readers": [
+    "js/core.js"
+   ]
+  },
+  {
+   "name": "TrkMMD",
+   "writers": [
+    "js/mmd.js"
+   ],
+   "readers": [
+    "js/core.js",
+    "js/render.js"
+   ]
+  },
+  {
+   "name": "TrkMediaPlayer",
+   "writers": [
+    "js/media-player-mode.js"
+   ],
+   "readers": [
+    "js/tv-dock.js"
+   ]
+  },
+  {
+   "name": "TrkPad",
+   "writers": [
+    "js/pad.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "TrkSafeMode",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": [
+    "js/lite.js",
+    "js/media.js",
+    "js/tv-rich.js",
+    "js/video-max.js",
+    "js/library.js",
+    "js/addons.js",
+    "js/mmd.js",
+    "js/spectrum.js",
+    "js/synth-mode.js",
+    "js/media-player-mode.js",
+    "js/study-room.js"
+   ]
+  },
+  {
+   "name": "TrkSpec",
+   "writers": [
+    "js/spectrum.js"
+   ],
+   "readers": [
+    "js/core.js"
+   ]
+  },
+  {
+   "name": "TrkStudyRoom",
+   "writers": [
+    "js/study-room.js"
+   ],
+   "readers": [
+    "js/tv-dock.js",
+    "js/library.js"
+   ]
+  },
+  {
+   "name": "TrkStudyUtils",
+   "writers": [
+    "js/study-room-utils.js"
+   ],
+   "readers": [
+    "js/study-room.js"
+   ]
+  },
+  {
+   "name": "TrkTV",
+   "writers": [
+    "js/tv-dock.js"
+   ],
+   "readers": [
+    "js/core.js",
+    "js/tv-rich.js",
+    "js/favs.js"
+   ]
+  },
+  {
+   "name": "TrkTrkPlaylistId",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": [
+    "js/main.js"
+   ]
+  },
+  {
+   "name": "TrkVerified",
+   "writers": [
+    "js/verified.js"
+   ],
+   "readers": [
+    "js/library.js"
+   ]
+  },
+  {
+   "name": "TrkVideoMax",
+   "writers": [
+    "js/video-max.js"
+   ],
+   "readers": [
+    "js/tv-dock.js",
+    "js/library.js",
+    "js/media-player-mode.js"
+   ]
+  },
+  {
+   "name": "VIDEO_KEY_DEFAULTS",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "VRM_RECT",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "W",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "__trkPendingTvDockSkin",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": [
+    "js/tv-dock.js"
+   ]
+  },
+  {
+   "name": "_escHold",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "_trkCloseSynth",
+   "writers": [
+    "js/synth-mode.js"
+   ],
+   "readers": [
+    "js/media-player-mode.js"
+   ]
+  },
+  {
+   "name": "_trkMediaPlayerMode",
+   "writers": [
+    "js/media-player-mode.js"
+   ],
+   "readers": [
+    "js/library.js"
+   ]
+  },
+  {
+   "name": "_trkSyncSynthModeSettings",
+   "writers": [
+    "js/synth-mode.js"
+   ],
+   "readers": [
+    "js/core.js"
+   ]
+  },
+  {
+   "name": "activeMascot",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "addSongFiles",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "addVideoFiles",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "allSongs",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "applyLanguage",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "applyNoteVars",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "autoPlay",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "bannerRandomBtn",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "bannerVolTip",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "baseName",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "beatPulse",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "buildChart",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "buildChartNotes",
+   "writers": [
+    "js/chart-gen.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "buildCustomSkin",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "buildSkinGrid",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "buildSkinNow",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "catchAllKeys",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "catchHitPos",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "catchJudge",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "catchState",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "cgAllocate",
+   "writers": [
+    "js/chart-gen.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "cgEstimateLevel",
+   "writers": [
+    "js/chart-gen.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "chartKeyOf",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "chartSummary",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "clampTvBlur",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "clampTvDim",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "cleanTvParamFavorites",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "closeSettings",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ctx",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "currentAcc",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "currentScore",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "customSkinDefs",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "decodeAudio",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "downloadBlob",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "downloadJSON",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawCatchField",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawExtrasOverlay",
+   "writers": [
+    "js/extras.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawFxOverlay",
+   "writers": [
+    "js/stagefx.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawLaneTint",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawLives",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawOrbitField",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawStageBackdrop",
+   "writers": [
+    "js/stagefx.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawStageField",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawTruck",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "drawVideo",
+   "writers": [
+    "js/tv-dock.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "el",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "emit",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "endGame",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ensureStageMap",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ensureTrkDistributionPlaylists",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": [
+    "js/main.js"
+   ]
+  },
+  {
+   "name": "esc",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "estimateLevel",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "exportChart",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "extOf",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "failSound",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "fmtDate",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "fmtTime",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "fontFamily",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "formatKey",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "formatPadBind",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "fx",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "gameplayFxMultiplier",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "gameplayFxPower",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "generateNotes",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "getAC",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "handleInput",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "has",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "hashString",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "hexToRgba",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "hintEl",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "hitPos",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "idbStore",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "importChartFile",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "initLibrary",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "initPacks",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "isBlast",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "isCatch",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "isOrbit",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "isPclMascot",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "isStage",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "isTruck",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "judgeNote",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "keyCodeOf",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "keysLabel",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "laneCol",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "laneColor",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "laneName",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "lanePivot",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "laneTilt",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "layout",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "lifeAfterJudge",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "lifeState",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "liteLibRows",
+   "writers": [
+    "js/lite.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "liteMascotNoLoad",
+   "writers": [
+    "js/lite.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "liteNoAnalyze",
+   "writers": [
+    "js/lite.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "liteSyncUI",
+   "writers": [
+    "js/lite.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "loadMedia",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "loadSE",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "loop",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "luminance",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "makeCheck",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "makeColorRow",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "makeSeg",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "mixHex",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "modsUnranked",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "mulberry32",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "nextSong",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "noteAlpha",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "noteImage",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "noteShape",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "num",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "on",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "onLongPress",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "openSettings",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "orbit",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "orbitHitPos",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "ownField",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "packDB",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "packRuntime",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "packsReady",
+   "writers": [
+    "js/main.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "padBack",
+   "writers": [
+    "js/pad.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "parseGrad",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "pauseGame",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "pick",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "plToast",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "playSE",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "poke",
+   "writers": [
+    "js/main.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "prevSong",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "previewStartFor",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "rateKey",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "reduceMotion",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "refreshPackSongs",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "refreshSeedSecrets",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "registerMascot",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "rememberMusicVolume",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "renderAllStatuses",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "renderRecords",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "renderStatus",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "resetCatch",
+   "writers": [
+    "js/catch.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "resetLives",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "resetOrbit",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "resetStage",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "resetTruck",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "resumeGame",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "rmsAt",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "rr",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "runUnranked",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "safeHttpUrl",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "safeLink",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "safeName",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "sanitizeNotes",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "sanitizeSkinDef",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "saveCustomSkins",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "saveRecords",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "saveSongPrefs",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "saveUserPrefs",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "savedSkinAtBoot",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "seBuffers",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "seFiles",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "seekTo",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "selectSong",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "setAddonSongs",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "setBackground",
+   "writers": [
+    "js/media.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "setPhase",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "setStatus",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "settings",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "showFxPower",
+   "writers": [
+    "js/main.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "showScreen",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "showToast",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "skin",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "skinShelf",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "slotLane",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "slotOfKey",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "songInfo",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "songRec",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "srcLabel",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "stage",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "stageHitPos",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "stageInput",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "stageKeys",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "stageMap",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "stagePress",
+   "writers": [
+    "js/stage.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "starPath",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "startGame",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "startPreview",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "steerTruck",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "sweepMisses",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "syncNoteUI",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "syncOptionsUI",
+   "writers": [
+    "js/main.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "syncPickers",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "syncTruckKeyUI",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "takeAmpReset",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "tickClock",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "titleString",
+   "writers": [
+    "js/modes.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "toHex",
+   "writers": [
+    "js/data.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "toTitle",
+   "writers": [
+    "js/game.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "travelMs",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "trkExport",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "trkReset",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "truckJudge",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "truckKeysLabel",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "truckPosKeys",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "truckRowY",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "truckState",
+   "writers": [
+    "js/truck.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "trySongChart",
+   "writers": [
+    "js/library.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "updateChartButtons",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "updateKeyUI",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "updateMascotUI",
+   "writers": [
+    "js/custom.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "updatePadUI",
+   "writers": [
+    "js/pad.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "updateTouchKeys",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "validCode",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "validPadBind",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "vctx",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "video",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "view",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "vrmState",
+   "writers": [
+    "js/render.js"
+   ],
+   "readers": []
+  },
+  {
+   "name": "windows",
+   "writers": [
+    "js/core.js"
+   ],
+   "readers": []
+  }
+ ]
+}

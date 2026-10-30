@@ -1,0 +1,499 @@
+{
+  "asOf": "2026-10-09",
+  "scope": "Phase 1: individually released modern Champion Themes and official Worlds/MSI vocal anthems. Phase 2: six K/DA releases (POP/STARS and all five ALL OUT tracks). Not the complete LoL music catalog.",
+  "sources": {
+    "championThemeTag": "https://www.leagueoflegends.com/en-us/news/tags/champion-theme/",
+    "musicTag": "https://www.leagueoflegends.com/en-us/news/tags/music/",
+    "creatorSafeGuidelines": "https://www.riotgames.com/en/riot-music-creator-safe-guidelines",
+    "worlds2026Announcement": "https://lolesports.com/en-US/news/worlds-anthem-presented-by-true-damage",
+    "worlds2026OfficialVideo": "https://www.youtube.com/watch?v=mlFxxNsExJc",
+    "worlds2026SpotifyTrack": "https://open.spotify.com/track/3s2YCL5LHLzXWbw7ezQru3",
+    "worlds2026ListenNow": "https://truedamage.ffm.to/knowmyname",
+    "leagueOfLegendsYouTube": "https://www.youtube.com/@leagueoflegends",
+    "kdaSpotifyArtist": "https://open.spotify.com/artist/4gOc8TsQed9eqnqJct2c5v",
+    "kdaAllOutSpotifyAlbum": "https://open.spotify.com/album/3wX4yrxMuHapSLvadxQkVV",
+    "kdaOfficialYoutubeChannel": "https://www.youtube.com/@leagueoflegends"
+  },
+  "championThemes": {
+    "id": "lol-champion-themes",
+    "name": "Modern Champion Themes",
+    "tracks": [
+      {
+        "title": "Volibear, the Relentless Storm",
+        "album": "Volibear, the Relentless Storm",
+        "artist": "League of Legends, Einar Selvik",
+        "url": "https://www.youtube.com/watch?v=wOJAErCvVhs"
+      },
+      {
+        "title": "Fiddlesticks, the Harbinger of Doom",
+        "album": "Fiddlesticks, the Harbinger of Doom",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=tq9bB6QPAdA"
+      },
+      {
+        "title": "Sett, the Boss",
+        "album": "Sett, the Boss",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=Fl_dVBZlfm8"
+      },
+      {
+        "title": "Aphelios, the Weapon of the Faithful",
+        "album": "Aphelios, the Weapon of the Faithful",
+        "artist": "League of Legends, Laura Vall",
+        "url": "https://www.youtube.com/watch?v=NQIeAbFT4Kc"
+      },
+      {
+        "title": "Senna, the Redeemer",
+        "album": "Senna, the Redeemer",
+        "artist": "League of Legends, The Crystal Method",
+        "url": "https://www.youtube.com/watch?v=7izlxCSb20Y"
+      },
+      {
+        "title": "Lillia, the Bashful Bloom",
+        "album": "Lillia, the Bashful Bloom",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=fXv9HUFXszI"
+      },
+      {
+        "title": "Yone, the Unforgotten",
+        "album": "Yone, the Unforgotten",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=6FlWvjg95sc"
+      },
+      {
+        "title": "Samira, the Desert Rose",
+        "album": "Samira, the Desert Rose",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=Gm2S3MyzgFQ"
+      },
+      {
+        "title": "Seraphine, the Starry-Eyed Songstress",
+        "album": "Seraphine, the Starry-Eyed Songstress",
+        "artist": "League of Legends, Seraphine, Jasmine Clarke",
+        "url": "https://www.youtube.com/watch?v=O11UcwRctAE"
+      },
+      {
+        "title": "Rell, the Iron Maiden",
+        "album": "Rell, the Iron Maiden",
+        "artist": "League of Legends, Ecca Vandal",
+        "url": "https://www.youtube.com/watch?v=ETaX9DZBSEk"
+      },
+      {
+        "title": "Viego, the Ruined King",
+        "album": "Viego, the Ruined King",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=TCQ9MEZL1Y4"
+      },
+      {
+        "title": "Gwen, the Hallowed Seamstress",
+        "album": "Gwen, the Hallowed Seamstress",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=ZJK0gG-WSUc"
+      },
+      {
+        "title": "Dr. Mundo, the Madman of Zaun",
+        "album": "Dr. Mundo, the Madman of Zaun",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=Iy1yS9ysT4A"
+      },
+      {
+        "title": "Akshan, the Rogue Sentinel",
+        "album": "Akshan, the Rogue Sentinel",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=nudASZLNmV8"
+      },
+      {
+        "title": "Vex, the Gloomist",
+        "album": "Vex, the Gloomist",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=z1QrEf8Ti_0"
+      },
+      {
+        "title": "Caitlyn, the Sheriff of Piltover",
+        "album": "Caitlyn, the Sheriff of Piltover",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=itK7gvvxxDs"
+      },
+      {
+        "title": "Zeri, the Spark of Zaun",
+        "album": "Zeri, the Spark of Zaun",
+        "artist": "League of Legends, Lauren Babic",
+        "url": "https://www.youtube.com/watch?v=jDXCgs5SRfw"
+      },
+      {
+        "title": "Renata Glasc, the Chem-Baroness",
+        "album": "Renata Glasc, the Chem-Baroness",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=3v7ZGvXmSUA"
+      },
+      {
+        "title": "Bel'Veth, the Empress of the Void",
+        "album": "Bel'Veth, the Empress of the Void",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=Ie2ia4kyRx4"
+      },
+      {
+        "title": "Nilah, the Joy Unbound",
+        "album": "Nilah, the Joy Unbound (Champion Theme)",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=xiCXFXIFqGA"
+      },
+      {
+        "title": "Udyr, the Spirit Walker",
+        "album": "Udyr, the Spirit Walker",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=YLC-CLyaHw4"
+      },
+      {
+        "title": "K'Sante, the Pride of Nazumah",
+        "album": "K'Sante, the Pride of Nazumah",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=z3f56QPX99o"
+      },
+      {
+        "title": "Ahri, the Nine-Tailed Fox",
+        "album": "Ahri, the Nine-Tailed Fox (Champion Theme)",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=tgXfFhdbgSU"
+      },
+      {
+        "title": "Milio, the Gentle Flame",
+        "album": "Milio, the Gentle Flame (Champion Theme)",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=UyLp9OBU54A"
+      },
+      {
+        "title": "Naafiri, the Hound of a Hundred Bites",
+        "album": "Naafiri, the Hound of a Hundred Bites",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=f9M7O-uqPf8"
+      },
+      {
+        "title": "Briar, the Restrained Hunger",
+        "album": "Briar, the Restrained Hunger (Champion Theme)",
+        "artist": "League of Legends, Two Feathers",
+        "url": "https://www.youtube.com/watch?v=5LqjJYU6EP8"
+      },
+      {
+        "title": "Jax, the Grandmaster at Arms",
+        "album": "Jax, the Grandmaster at Arms",
+        "artist": "League of Legends, Jean-Gabriel Raynaud, Cédric Baravaglio",
+        "url": "https://www.youtube.com/watch?v=98APArgQUfs"
+      },
+      {
+        "title": "Hwei, the Visionary",
+        "album": "Hwei, the Visionary",
+        "artist": "League of Legends, Ben Hicks",
+        "url": "https://www.youtube.com/watch?v=FsQGLz7Fvig"
+      },
+      {
+        "title": "Smolder, the Fiery Fledgling",
+        "album": "Smolder, the Fiery Fledgling",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=vakwLmBnKco"
+      },
+      {
+        "title": "Skarner, the Primordial Sovereign",
+        "album": "Skarner, the Primordial Sovereign",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=kwBMaGcD-Js"
+      },
+      {
+        "title": "Lee Sin, the Blind Monk",
+        "album": "Lee Sin, the Blind Monk",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=8q34ETMSLck"
+      },
+      {
+        "title": "Aurora, the Witch Between Worlds",
+        "album": "Aurora, the Witch Between Worlds",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=0FY6Kj_sA3s"
+      },
+      {
+        "title": "Teemo, the Swift Scout",
+        "album": "Teemo, the Swift Scout",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=z4rGVtgjmF8"
+      },
+      {
+        "title": "Viktor, the Herald of the Arcane",
+        "album": "Viktor, the Herald of the Arcane",
+        "artist": "League of Legends Music",
+        "url": "https://www.youtube.com/watch?v=WkhNPnByda8"
+      },
+      {
+        "title": "Mel, the Soul’s Reflection",
+        "album": "Mel, the Soul’s Reflection",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=sHIdAWjfTEE"
+      },
+      {
+        "title": "Xin Zhao, the Seneschal of Demacia",
+        "album": "Xin Zhao, the Seneschal of Demacia",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=UTEOs_7elOA"
+      },
+      {
+        "title": "LeBlanc, the Deceiver",
+        "album": "LeBlanc, the Deceiver",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=A9iOtL_fb2c"
+      },
+      {
+        "title": "Yunara, the Unbroken Faith",
+        "album": "Spirit Blossom Beyond (Original Soundtrack from League of Legends)",
+        "artist": "League of Legends, Kevin Penkin, Reigan",
+        "url": "https://www.youtube.com/watch?v=gni4Zh-9Z94"
+      },
+      {
+        "title": "Zaahen, the Unsundered",
+        "album": "Trials of Twilight (Original Soundtrack from League of Legends)",
+        "artist": "League of Legends, Layth Sidiq",
+        "url": "https://www.youtube.com/watch?v=ePVscH1Yi3s"
+      },
+      {
+        "title": "Shyvana, the Half-Dragon",
+        "album": "Shyvana, the Half-Dragon",
+        "artist": "League of Legends",
+        "url": "https://www.youtube.com/watch?v=IAtPS0qc770"
+      },
+      {
+        "title": "Locke, the Ashen Exorcist",
+        "album": "Locke, the Ashen Exorcist",
+        "artist": "Pressure Cooker, Asandisa Siswana, Zolina Ngejana",
+        "url": "https://www.youtube.com/watch?v=nakzw9Y_CLI"
+      }
+    ],
+    "creatorSafe": {
+      "status": "links-partial",
+      "matchedTracks": 39,
+      "checkedAt": "2026-10-12",
+      "evidence": "mirror",
+      "notFound": [
+        "Smolder, the Fiery Fledgling",
+        "Yunara, the Unbroken Faith"
+      ],
+      "note": "Matched by title (case, apostrophe and a trailing ' - Champion Theme' ignored). 'Smolder, the Fiery Fledgling' (2024) is not among the 977 listed entries; the mirror omits 2 entries in positions 701-750, the 2024-era block where Skarner and Lee Sin sit, so it may be one of them. 'Yunara, the Unbroken Faith' is listed only as '(Spirit Blossom Springs Lofi Remix)'. Credits differ for 'Locke, the Ashen Exorcist' (playlist: League of Legends, Pressure Cooker, Elben Schutte) and slightly for Aphelios, Hwei and LeBlanc. 2XKO tracks titled '... - X Champion Theme' are different songs and were not counted."
+    }
+  },
+  "worldsAnthems": {
+    "id": "lol-worlds-anthems",
+    "name": "Worlds / WCS Anthems",
+    "tracks": [
+      {
+        "title": "Silver Scrapes (Orchestral Theme)",
+        "album": "Worlds 2025 Orchestral Anthem",
+        "artist": "Danny McCarthy & Patrick Cunningham",
+        "url": "https://www.youtube.com/watch?v=21hQsnpdNpA"
+      },
+      {
+        "title": "Warriors",
+        "album": "Worlds 2014 Anthem",
+        "artist": "Imagine Dragons",
+        "url": "https://www.youtube.com/watch?v=fmI_Ndrxy14"
+      },
+      {
+        "title": "Worlds Collide",
+        "album": "Worlds 2015 Anthem",
+        "artist": "Nicki Taylor",
+        "url": "https://www.youtube.com/watch?v=4Twd965VzX4"
+      },
+      {
+        "title": "Ignite",
+        "album": "Worlds 2016 Anthem",
+        "artist": "Zedd",
+        "url": "https://www.youtube.com/watch?v=Zasx9hjo4WY"
+      },
+      {
+        "title": "Legends Never Die",
+        "album": "Worlds 2017 Anthem",
+        "artist": "Against The Current",
+        "url": "https://www.youtube.com/watch?v=r6zIGXun57U"
+      },
+      {
+        "title": "RISE",
+        "album": "Worlds 2018 Anthem",
+        "artist": "The Glitch Mob, Mako, The Word Alive",
+        "url": "https://www.youtube.com/watch?v=fB8TyLTD7EE"
+      },
+      {
+        "title": "Phoenix",
+        "album": "Worlds 2019 Anthem",
+        "artist": "Cailin Russo, Chrissy Costanza",
+        "url": "https://www.youtube.com/watch?v=i1IKnWDecwA"
+      },
+      {
+        "title": "Take Over",
+        "album": "Worlds 2020 Anthem",
+        "artist": "Jeremy McKinnon, MAX, Henry",
+        "url": "https://www.youtube.com/watch?v=KbNL9ZyB49c"
+      },
+      {
+        "title": "Burn It All Down",
+        "album": "Worlds 2021 Anthem",
+        "artist": "PVRIS",
+        "url": "https://www.youtube.com/watch?v=1Z6CHioIn3s"
+      },
+      {
+        "title": "STAR WALKIN'",
+        "album": "Worlds 2022 Anthem",
+        "artist": "Lil Nas X",
+        "url": "https://www.youtube.com/watch?v=HYsz1hP0BFo"
+      },
+      {
+        "title": "GODS",
+        "album": "Worlds 2023 Anthem",
+        "artist": "NewJeans",
+        "url": "https://www.youtube.com/watch?v=C3GouGa0noM"
+      },
+      {
+        "title": "Heavy Is the Crown",
+        "album": "Worlds 2024 Anthem",
+        "artist": "Linkin Park",
+        "url": "https://www.youtube.com/watch?v=5FrhtahQiRc"
+      },
+      {
+        "title": "Sacrifice",
+        "album": "Worlds 2025 Anthem",
+        "artist": "G.E.M.",
+        "url": "https://www.youtube.com/watch?v=pzt6SmvGpXk"
+      },
+      {
+        "title": "Know My Name",
+        "album": "Worlds 2026 Anthem",
+        "artist": "True Damage, SOYEON of i-dle, Coco Jones, VIC MENSA, Sofía Reyes",
+        "url": "https://open.spotify.com/track/3s2YCL5LHLzXWbw7ezQru3",
+        "status": "released"
+      }
+    ],
+    "creatorSafe": {
+      "status": "links-partial",
+      "matchedTracks": 1,
+      "checkedAt": "2026-10-12",
+      "evidence": "mirror",
+      "notFound": [
+        "Silver Scrapes (Orchestral Theme)",
+        "Warriors",
+        "Ignite",
+        "Legends Never Die",
+        "RISE",
+        "Phoenix",
+        "Take Over",
+        "Burn It All Down",
+        "STAR WALKIN'",
+        "GODS",
+        "Heavy Is the Crown",
+        "Sacrifice",
+        "Know My Name"
+      ],
+      "note": "Only 'Worlds Collide' (Worlds 2015, listed as League of Legends, Nicki Taylor) is in the playlist. The playlist also lists the instrumental 'YYYY World Championship Theme' tracks, which are different from these vocal anthems. The other 12 anthems are not among the 977 listed entries. Silver Scrapes (Orchestral Theme, added 2026-10-14) is not checked against this list yet. Its link is the LoL Esports official YouTube channel (@lolesports, 2025-10-28). The song is not an NCS track; commercial use (for example in monetised videos) needs the rights holder's permission, so check before use."
+    }
+  },
+  "msiAnthems": {
+    "id": "lol-msi-anthems",
+    "name": "MSI Anthems",
+    "tracks": [
+      {
+        "title": "Bring Home the Glory",
+        "album": "MSI 2019 Anthem",
+        "artist": "Sara Skinner",
+        "url": "https://www.youtube.com/watch?v=TG-RGt7Q1oI"
+      },
+      {
+        "title": "Starts Right Here",
+        "album": "MSI 2021 Anthem",
+        "artist": "Kenny Mason, Foreign Air",
+        "url": "https://soundcloud.com/leagueoflegends/starts-right-here-feat-kenny-mason-foreign-air"
+      },
+      {
+        "title": "Set It Off",
+        "album": "MSI 2022 Anthem",
+        "artist": "DPR LIVE, DPR CLINE",
+        "url": "https://www.youtube.com/watch?v=Q2zIiN0LyC4"
+      },
+      {
+        "title": "Rules (Are Meant To Break)",
+        "album": "MSI 2023 Anthem",
+        "artist": "Che Lingo",
+        "url": "https://www.youtube.com/watch?v=kE19Ac234Zo"
+      }
+    ],
+    "creatorSafe": {
+      "status": "links-absent",
+      "matchedTracks": 0,
+      "checkedAt": "2026-10-12",
+      "evidence": "mirror",
+      "notFound": [
+        "Bring Home the Glory",
+        "Starts Right Here",
+        "Set It Off",
+        "Rules (Are Meant To Break)"
+      ],
+      "note": "None of the 4 anthems is among the 977 listed entries. The playlist lists instrumental '2016/2017/2018 Mid-Season Invitational Theme' tracks, which are different songs."
+    }
+  },
+  "kdaSongs": {
+    "id": "lol-kda-songs",
+    "name": "K/DA — POP/STARS + ALL OUT",
+    "tracks": [
+      {
+        "title": "POP/STARS",
+        "album": "POP/STARS",
+        "artist": "K/DA, Madison Beer, i-dle, Jaira Burns, League of Legends",
+        "url": "https://open.spotify.com/track/3em2uN4cCWHcCXhjMzJ8ps",
+        "officialVideoUrl": "https://www.youtube.com/watch?v=UOxkGD8qRB4"
+      },
+      {
+        "title": "THE BADDEST",
+        "album": "ALL OUT",
+        "artist": "K/DA, i-dle, Wolftyla, Bea Miller, League of Legends",
+        "url": "https://open.spotify.com/track/6y3EPT8iw6HmuMpX05gyvt",
+        "officialVideoUrl": "https://www.youtube.com/watch?v=RkID8_gnTxw"
+      },
+      {
+        "title": "MORE",
+        "album": "ALL OUT",
+        "artist": "K/DA, Madison Beer, i-dle, Lexie Liu, Jaira Burns, Seraphine, League of Legends",
+        "url": "https://open.spotify.com/track/65pHtEdxGt4e3Fv1ncPi6V",
+        "officialVideoUrl": "https://www.youtube.com/watch?v=3VTkBuxU4yk"
+      },
+      {
+        "title": "VILLAIN",
+        "album": "ALL OUT",
+        "artist": "K/DA, Madison Beer, Kim Petras, League of Legends",
+        "url": "https://open.spotify.com/track/33CZravFcGBOwRw5dCOCel",
+        "officialVideoUrl": "https://www.youtube.com/watch?v=xoWxv2yZXLQ"
+      },
+      {
+        "title": "DRUM GO DUM",
+        "album": "ALL OUT",
+        "artist": "K/DA, Wolftyla, Bekuh Boom, Aluna, League of Legends",
+        "url": "https://open.spotify.com/track/3CEW3iffD2QvNZMK20sMqW",
+        "officialVideoUrl": "https://www.youtube.com/watch?v=E_PbH5y70Tc"
+      },
+      {
+        "title": "I'LL SHOW YOU",
+        "album": "ALL OUT",
+        "artist": "K/DA, TWICE, Bekuh Boom, Annika Wells, League of Legends",
+        "url": "https://open.spotify.com/track/497qmwcUsCv5hmMU0K8Hik",
+        "officialVideoUrl": "https://www.youtube.com/watch?v=WW1BpABbzHs"
+      }
+    ],
+    "creatorSafe": {
+      "status": "links-absent",
+      "matchedTracks": 0,
+      "checkedAt": "2026-10-12",
+      "evidence": "mirror",
+      "notFound": [
+        "POP/STARS",
+        "THE BADDEST",
+        "MORE",
+        "VILLAIN",
+        "DRUM GO DUM",
+        "I'LL SHOW YOU"
+      ],
+      "note": "None of the 6 K/DA songs is among the 977 listed entries (Riot's 2020 Creator-Safe post already said K/DA could not be cleared). Only Teamfight Tactics remixes such as 'Out of Your League (K/DA)' and 'Get Down, Get Down (K/DA)' appear, which are different tracks."
+    }
+  }
+}

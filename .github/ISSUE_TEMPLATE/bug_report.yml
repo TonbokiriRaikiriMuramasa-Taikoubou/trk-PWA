@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: 🐛 不具合の報告 / Bug report
+description: うまく動かないときは、ここから教えてください。/ Something broken? Tell us here.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        教えてくれてありがとうございます！ 分かるところだけでも大丈夫です。
+        Thanks! Only fill in what you know.
+  - type: textarea
+    id: what
+    attributes:
+      label: 何が起きましたか / What happened
+      description: 起きたことを書いてください。/ Describe what went wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現の手順 / Steps to reproduce
+      placeholder: |
+        1. 「音源を選ぶ」で曲を読み込む
+        2. モードを STAGE にする
+        3. プレイを始めると…
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: ブラウザとOS / Browser and OS
+      placeholder: Chrome 141 / Windows 11、Safari / iPhone など
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: どのモードでしたか / Which mode
+      options:
+        - MANUAL 🥁
+        - TRUCK 🚚
+        - ORBIT 🪐
+        - STAGE 🎪
+        - CATCH 🚛
+        - 選曲や設定の画面 / Not during play
+        - わからない / Not sure
+    validations:
+      required: false
+  - type: textarea
+    id: console
+    attributes:
+      label: コンソールのエラー / Console errors
+      description: F12 キー → Console タブの赤い文字（あれば貼ってください）/ Paste any red text from the browser console.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: media
+    attributes:
+      label: 読み込んだ音源について / About the audio
+      options:
+        - label: 自分の端末の音源を使った / I used my own audio file（このリポジトリには含めないでください / please do not attach it）
+        - label: 内蔵のデモ（Pulse Study）を使った / I used the built-in demo

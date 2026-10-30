@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>trk! アイコン作成ツール</title>
+<style>
+  body{background:#111;color:#eee;font-family:system-ui,sans-serif;padding:24px;max-width:1300px;margin:auto}
+  .row{display:flex;gap:20px;flex-wrap:wrap}
+  .card{background:#1b1d29;padding:16px;border-radius:16px;text-align:center;width:260px}
+  .card img{width:192px;height:192px;border-radius:44px;display:block;margin:0 auto 10px}
+  .card small{display:block;color:#aaa;margin-bottom:8px;min-height:3em}
+  button{margin:4px;padding:8px 14px;border-radius:999px;border:1px solid #444;background:#262b3b;color:#eee;cursor:pointer}
+  button:hover{border-color:#ff3b55;color:#ff3b55}
+  canvas{max-width:100%;border-radius:12px;border:1px solid #333}
+</style>
+</head>
+<body>
+<h1>trk! アイコン作成ツール</h1>
+<p>好きな案の「PNGを書き出す」を押すと <b>icon-192.png</b> と <b>icon-512.png</b> がダウンロードされます → <code>icons/</code> へ。<br>
+「icon.svg」は <code>icons/icon.svg</code> へ、OGP画像は <code>docs/og.png</code> へ入れてください。</p>
+<div class="row" id="cards"></div>
+<h2>OGP画像（1200×630・Xで共有したときのカード）</h2>
+<canvas id="og" width="1200" height="630"></canvas><br>
+<button id="ogBtn">og.png を書き出す</button>
+
+<script>
+const F = "system-ui,-apple-system,Segoe UI,sans-serif";
+const ICONS = {
+  logo: { name:"A：ロゴ", note:"選曲画面のロゴと同じ見た目。いちばん分かりやすい", svg:`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#07080d"/>
+  <circle cx="256" cy="256" r="200" fill="#151826"/>
+  <text x="256" y="292" text-anchor="middle" font-family="${F}" font-weight="900" font-size="150" fill="#f4f4f8" letter-spacing="4">trk<tspan fill="#ff3b55">!</tspan></text>
+  <circle cx="206" cy="352" r="22" fill="#ff3b55"/>
+  <circle cx="306" cy="352" r="22" fill="#55aaff"/>
+</svg>` },
+  truck: { name:"B：トラック", note:"名前の由来とTRUCK・CATCHが伝わる", svg:`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#07080d"/>
+  <rect x="90" y="330" width="332" height="10" rx="5" fill="#2a2f40"/>
+  <rect x="110" y="190" width="190" height="110" rx="14" fill="#f4f4f8" stroke="#1b1b22" stroke-width="6"/>
+  <text x="205" y="264" text-anchor="middle" font-family="${F}" font-weight="900" font-size="60" fill="#1b1b22">trk<tspan fill="#ff3b55">!</tspan></text>
+  <rect x="300" y="220" width="100" height="80" rx="16" fill="#ff3b55" stroke="#1b1b22" stroke-width="6"/>
+  <rect x="340" y="236" width="44" height="30" rx="6" fill="#cfeaff"/>
+  <circle cx="160" cy="310" r="28" fill="#ff3b55" stroke="#1b1b22" stroke-width="6"/>
+  <circle cx="250" cy="310" r="28" fill="#55aaff" stroke="#1b1b22" stroke-width="6"/>
+  <circle cx="360" cy="310" r="28" fill="#ffd166" stroke="#1b1b22" stroke-width="6"/>
+</svg>` },
+  orbit: { name:"C：オービット", note:"文字なし。小さく表示しても形が崩れにくい", svg:`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#07080d"/>
+  <path d="M30 470 C 140 470 100 330 190 318 C 240 312 236 270 256 256" fill="none" stroke="#1d2133" stroke-width="46" stroke-linecap="round"/>
+  <path d="M30 470 C 140 470 100 330 190 318 C 240 312 236 270 256 256" fill="none" stroke="#3a4060" stroke-width="6" stroke-linecap="round"/>
+  <rect x="130" y="352" width="36" height="36" rx="9" fill="#55aaff" stroke="#fff" stroke-width="5"/>
+  <rect x="182" y="300" width="36" height="36" rx="9" fill="#ff3b55" stroke="#fff" stroke-width="5"/>
+  <circle cx="256" cy="256" r="120" fill="none" stroke="#ffd166" stroke-opacity=".35" stroke-width="6"/>
+  <circle cx="256" cy="256" r="66" fill="none" stroke="#f4f4f8" stroke-width="10"/>
+  <circle cx="256" cy="256" r="32" fill="#ff3b55" stroke="#fff" stroke-width="6"/>
+  <circle cx="341" cy="171" r="16" fill="#ffd166"/>
+</svg>` }
+};
+
+const svgUrl = s => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s.trim());
+const loadImg = src => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+
+function save(blob, name) {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+
+async function toPng(svg, size) {
+  const im = await loadImg(svgUrl(svg)), c = document.createElement("canvas");
+  c.width = c.height = size; c.getContext("2d").drawImage(im, 0, 0, size, size);
+  return new Promise(r => c.toBlob(r, "image/png"));
+}
+
+function rrect(x, X, Y, w, h, r) {
+  x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r);
+  x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath();
+}
+
+const og = document.getElementById("og");
+async function drawOG(id) {
+  const x = og.getContext("2d"), FONT = 'system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif';
+  const g = x.createLinearGradient(0, 0, 1200, 630); g.addColorStop(0, "#07080d"); g.addColorStop(1, "#1a0f1f");
+  x.fillStyle = g; x.fillRect(0, 0, 1200, 630);
+  const rg = x.createRadialGradient(900, 180, 0, 900, 180, 620); rg.addColorStop(0, "rgba(255,59,85,.25)"); rg.addColorStop(1, "rgba(255,59,85,0)");
+  x.fillStyle = rg; x.fillRect(0, 0, 1200, 630);
+  const im = await loadImg(svgUrl(ICONS[id].svg));
+  x.save(); rrect(x, 80, 115, 400, 400, 84); x.clip(); x.drawImage(im, 80, 115, 400, 400); x.restore();
+  x.textBaseline = "alphabetic";
+  x.font = `900 150px ${FONT}`; x.fillStyle = "#f4f4f8"; x.fillText("trk", 540, 280);
+  const w = x.measureText("trk").width; x.fillStyle = "#ff3b55"; x.fillText("!", 540 + w, 280);
+  x.font = `700 40px ${FONT}`; x.fillStyle = "#ffd166"; x.fillText("All-Generation Rhythm Game", 545, 345);
+  x.font = `600 30px ${FONT}`; x.fillStyle = "#c9cbd6"; x.fillText("万能なブラウザ再生プレイヤー。完全無料。", 545, 402);
+  x.font = `56px ${FONT}`; x.fillText("🥁 🚚 🪐 🎪 🚛", 540, 488);
+  x.font = `600 22px ${FONT}`; x.fillStyle = "#8a8d9c"; x.fillText("tonbokiriraikirimuramasa-taikoubou.github.io/trk", 545, 570);
+}
+
+for (const [id, ic] of Object.entries(ICONS)) {
+  const card = document.createElement("div"); card.className = "card";
+  card.innerHTML = `<img alt=""><b></b><small></small>`;
+  card.querySelector("img").src = svgUrl(ic.svg);
+  card.querySelector("b").textContent = ic.name;
+  card.querySelector("small").textContent = ic.note;
+  const mk = (label, fn) => { const b = document.createElement("button"); b.textContent = label; b.onclick = fn; card.append(b); };
+  mk("PNGを書き出す", async () => { save(await toPng(ic.svg, 192), "icon-192.png"); save(await toPng(ic.svg, 512), "icon-512.png"); });
+  mk("icon.svg", () => save(new Blob([ic.svg.trim()], { type:"image/svg+xml" }), "icon.svg"));
+  mk("OGPに使う", () => drawOG(id));
+  document.getElementById("cards").append(card);
+}
+document.getElementById("ogBtn").onclick = () => og.toBlob(b => save(b, "og.png"), "image/png");
+drawOG("logo");
+</script>
+</body>
+</html>

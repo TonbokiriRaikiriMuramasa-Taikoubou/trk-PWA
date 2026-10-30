@@ -1,0 +1,3 @@
+# Third-party modules are kept byte-for-byte identical to their upstream packages.
+# Allow their existing space-before-tab formatting without masking other whitespace checks.
+assets/vendor/** whitespace=-space-before-tab

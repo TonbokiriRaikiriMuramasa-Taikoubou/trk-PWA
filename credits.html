@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>権利とクレジット — trk!</title>
+<meta name="description" content="trk! のコード、キャラクター、モデル、第三者ライブラリの権利とクレジット。">
+<link rel="stylesheet" href="css/privacy.css">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+<header class="siteHeader">
+  <a class="brand" href="./"><span class="brandMark">trk!</span><span>Rights &amp; Credits</span></a>
+  <a class="backLink" href="./">ゲームへ戻る</a>
+</header>
+
+<main class="page">
+  <article class="card creditsHero">
+    <p class="eyebrow">RIGHTS ATLAS</p>
+    <h1>権利とクレジット図鑑</h1>
+    <p class="lead">trk! の「これは誰のもの？」を、ゲームの部品ごとに見られるページです。楽しく遊ぶためにも、配布するときは作者さんの条件を守ってください。</p>
+    <p class="updated">このページは `NOTICE.md` と、リポジトリに含まれる素材の説明をもとにしています。法的助言ではありません。</p>
+    <div class="creditActions">
+      <a class="creditButton" href="NOTICE.md">正式なNOTICEを読む</a>
+      <a class="creditButton secondary" href="privacy.html">プライバシーを見る</a>
+    </div>
+  </article>
+
+  <section class="creditGrid" aria-label="権利とクレジット">
+    <article class="creditCard accentRed">
+      <div class="creditIcon">🧩</div>
+      <h2>trk! のコード</h2>
+      <p>ゲーム本体、Web Audio合成、譜面生成、UI、内蔵モーションなどのコードは、原則として <strong>GPL-3.0-or-later</strong> です。</p>
+      <a href="LICENSE">GPL-3.0-or-later全文 →</a>
+    </article>
+
+    <article class="creditCard accentBlue">
+      <div class="creditIcon">🎨</div>
+      <h2>初音ミク</h2>
+      <p><code>js/characters/miku.js</code> の初音ミクはPiapro Character Licenseに基づく非公式の二次創作です。GPLの対象ではありません。</p>
+      <p class="smallNote">商用派生版では、このファイルとindex.htmlの読み込み行を削除してください。</p>
+      <a href="https://piapro.jp/license/pcl/summary" target="_blank" rel="noopener noreferrer">PCLを読む →</a>
+    </article>
+
+    <article class="creditCard accentGold">
+      <div class="creditIcon">💠</div>
+      <h2>Lat式ミク Ver2.31</h2>
+      <p><code>assets/mmd/lat-miku/</code> のモデル・テクスチャ・ReadMeはGPLの対象外です。Lat様の原文ReadMeを同梱し、改変元とモデル製作者を表示しています。</p>
+      <p class="smallNote">初音ミクのキャラクター権利はPCLに従います。trk!では非営利・無償の範囲で扱います。</p>
+      <a href="assets/mmd/lat-miku/README.md">同梱モデルの説明 →</a>
+    </article>
+
+    <article class="creditCard accentGreen">
+      <div class="creditIcon">🕶️</div>
+      <h2>VRM / MMDライブラリ</h2>
+      <p>three.js、three-vrm、three-vrm-animation、three-mmd-loaderは、それぞれの作者によるMIT Licenseのライブラリです。trk!は同一オリジンだけを読み込む方針のため、<code>assets/vendor/</code> に同梱しています（出どころとハッシュは <code>tools/vendor-lock.json</code>、検査は <code>npm run check</code>）。</p>
+      <a href="NOTICE.md#4-third-party-libraries">NOTICEの第三者ライブラリ欄 →</a>
+    </article>
+
+    <article class="creditCard accentPurple">
+      <div class="creditIcon">📱</div>
+      <h2>Androidラッパー</h2>
+      <p>任意で生成できるCapacitor Core / AndroidはMIT Licenseです。Capacitor CLIはMIT、TypeScriptはApache-2.0で、APKを作るための開発ツールです。</p>
+      <p class="smallNote">APK版の権限・署名・実機確認はまだ完了していません。</p>
+      <a href="docs/android.md">APK準備の説明 →</a>
+    </article>
+
+    <article class="creditCard accentCyan">
+      <div class="creditIcon">🎵</div>
+      <h2>ユーザーの曲とパック</h2>
+      <p>読み込んだ曲、譜面、画像、VRM、MMDモデル、`.stpack` は、それぞれの作者さんのものです。配布や公認パック化をするときは、再配布の権利を確認してください。</p>
+      <a href="docs/pack-format.md">パック仕様を見る →</a>
+    </article>
+  </section>
+
+  <article class="card creditFooterCard">
+    <h2>小さなクレジットの約束</h2>
+    <p>「借りたものは、名前と条件を一緒に置く」。これがtrk!のMOD文化のルールです。新しいモデルやライブラリを追加するときは、元のReadMe・ライセンス・作者名・配布条件を確認して、このページと `NOTICE.md` を更新します。</p>
+    <p class="note">現在同梱されている外部モデルは、再配布条件を原文で確認したLat式ミクだけです。持ち込みモデルを自動で再配布することはありません。</p>
+  </article>
+</main>
+
+<footer class="siteFooter">
+  <a href="./">trk!へ戻る</a>
+  <span>·</span>
+  <a href="privacy.html">Privacy</a>
+  <span>·</span>
+  <a href="https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk" target="_blank" rel="noopener noreferrer">Source code</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+# 手元のテスト音源は無視し、任意同梱のチュートリアルデモだけを追跡します
+*.mp3
+!assets/optional-demo-audio/first-spark-tutorial.mp3
+
+# 🎓 trk's OST の手続き生成スケッチ（生成スクリプト tools/make-trk-ost.mjs の出力・Git外）
+assets/trk-ost/
+*.m4a
+*.aac
+*.wav
+*.flac
+*.ogg
+*.oga
+*.opus
+*.mp4
+*.mov
+*.webm
+*.vrm
+*.vrma
+*.stpack
+test-songs/
+
+# 書き出した譜面（作者さんのものなので、リポジトリには入れません）
+*.shadow-taiko.json
+
+# GitHub Pages workflow artifact staging
+_site/
+
+# Capacitor's generated copy of the static web app
+mobile-web/
+
+# Local npm dependencies
+node_modules/
+
+# OS・エディタ
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 配布ZIPの組み立て（tools/prepare-release.mjs）の出力・Git外
+dist/

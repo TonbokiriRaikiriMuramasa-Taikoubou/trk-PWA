@@ -1,0 +1,2070 @@
+{
+  "asOf": "2026-10-09",
+  "scope": "Phase 3: the nine official SoundCloud albums 'The Music of League of Legends: Season 1-9 (Original Game Soundtrack)', the official 'Warsongs' album, and a snapshot of the official SoundCloud popular-tracks page. Not the complete LoL music catalog.",
+  "method": "Playlist links point at the official SoundCloud album/page. Per-track links point at the official Spotify album tracks (same pattern as the Creator-Safe Sessions lists), because a SoundCloud set page only exposes its first 15 tracks without JavaScript. Track order/count/title/artist follow the official Spotify album page; Season 1 (9 tracks) and Season 2 (30 tracks) were additionally compared against the official SoundCloud set pages and matched title-for-title in the same order. matchAliases are mechanical prefix truncations of the official title (no invented names).",
+  "creatorSafe": {
+    "playlist": "https://open.spotify.com/playlist/5hDYD44imzFZEqTfAoco1N",
+    "description": "Riot Games' official Spotify playlist 'Riot Games Creator-Safe Playlist', described as a collection of music that is 100% owned by Riot Games (979 songs at the trk108 check).",
+    "method": "Entries 1-100: matched title, artist and order against the official Spotify embed of the playlist, which shows only the first 100 entries: 1-20 = Season 9 (20/20), 21-59 = Season 8 (39/39), 60-100 = the first 41 of Season 7's 48 tracks (checked 2026-10-11; Season 9 was first matched on 2026-10-09 including durations). Entries 101+: the embed stops at 100, so the same playlist was read on songdata.io (see mirror), checked 2026-10-12. It lists the playlist in 50-entry blocks and sorts each block by Spotify track ID, so the exact order inside a block is not visible. Its 51-100 block holds exactly the 50 titles the official embed shows there (the last 9 of Season 8 and the first 41 of Season 7). Its 101-150, 151-200 and 201-250 blocks hold exactly the titles predicted by continuing in album order (Season 7 tracks 42-48, Season 6, Season 5 split 16/9 at 150/151, Season 4, Season 3 split 19/4 at 200/201, Season 2, Season 1), plus 7 singles in the 201-250 block. Every title matched character for character, so the Season 1-7 positions are given as album-order ranges. The playlist uses another Spotify release of these albums (its track IDs differ from the album track IDs linked here), so matching is by title and artist. Warsongs: 10 of 11 tracks are in the 251-300 block under plain titles with the same artists (e.g. 'Piercing Light' by 'League of Legends, Mako'). 'Silver Scrapes' is not among the listed entries. trk116 (2026-10-12) read every row the mirror shows (51-977) and matched all LoL lists: the mirror shows 977 of the 979 entries; its 50-entry blocks stay aligned up to 700 and the 701-750 block shows 48 rows, so the 2 entries it omits sit in positions 701-750 (a 2024-era block). 'Not found' therefore means not among the 977 listed entries.",
+    "mirror": {
+      "url": "https://songdata.io/playlist/5hDYD44imzFZEqTfAoco1N",
+      "checkedAt": "2026-10-12",
+      "readEntries": "51-977 (every row the mirror shows: 977 of 979; 2 omitted in positions 701-750)",
+      "note": "Third-party listing of the official playlist (not run by Riot or Spotify). Used only because the official embed shows 100 entries. Its 51-100 block matched the official embed exactly."
+    },
+    "soundcloudPlaylists": [
+      {
+        "title": "Riot Games Creator-Safe Playlist Pt. I",
+        "url": "https://soundcloud.com/leagueoflegends/sets/riot-games-creator-safe",
+        "tracks": 499,
+        "note": "Official; linked from Riot's guidelines and the 2020 LoL news post. Last updated about 4 years before 2026-10-12, and holds the older single/remix uploads, not the Season album versions. Only the first 15 entries render; entries 11-15 are Warsongs tracks 1-5 as remix uploads (e.g. 'Piercing Light (Mako Remix)'). Not enumerated."
+      },
+      {
+        "title": "Riot Games Creator-Safe Playlist Pt. II",
+        "url": "https://soundcloud.com/leagueoflegends/sets/riot-games-creator-safe-pt2",
+        "tracks": 230,
+        "note": "Official; posted about 4 years before 2026-10-12. Not enumerated."
+      }
+    ],
+    "statuses": {
+      "verified": "every track found in the official playlist",
+      "partial": "album: matchedTracks found; notFound lists the titles not among the entries the mirror shows",
+      "links-partial": "official link list (tools/leagueoflegends-music-tracklist.json): matchedTracks found; notFound as above",
+      "links-absent": "official link list: no track found (matchedTracks 0; notFound lists every title)",
+      "mixed": "popular-tracks snapshot: matchedTracks found; notFound lists the rest (mostly collaboration songs)",
+      "unverified": "not matched (kept for lists added later; no list uses it now)"
+    },
+    "statusFiles": [
+      "tools/leagueoflegends-soundcloud-albums-tracklist.json (albums, popularTracks)",
+      "tools/leagueoflegends-music-tracklist.json (Champion Themes, Worlds, MSI, K/DA)",
+      "tools/leagueoflegends-sessions-tracklist.json (Sessions albums)"
+    ],
+    "evidence": {
+      "embed": "official Spotify embed of the playlist (entries 1-100)",
+      "mirror": "songdata.io listing of the same playlist (entries 101+)",
+      "embed+mirror": "entries up to 100 from the official embed, the rest from songdata.io"
+    },
+    "catalogStatusSource": "js/catalog.js LOL_CREATOR_SAFE (must equal every list's creatorSafe.status in the statusFiles; checked by tools/check-repo.mjs)"
+  },
+  "sources": {
+    "soundcloudAlbumsPage": "https://soundcloud.com/leagueoflegends/albums",
+    "soundcloudPopularTracks": "https://soundcloud.com/leagueoflegends/popular-tracks",
+    "soundcloudProfile": "https://soundcloud.com/leagueoflegends",
+    "spotifyArtist": "https://open.spotify.com/artist/47mIJdHORyRerp4os813jD",
+    "creatorSafeGuidelines": "https://www.riotgames.com/en/riot-music-creator-safe-guidelines",
+    "creatorSafePlaylist": "https://open.spotify.com/playlist/5hDYD44imzFZEqTfAoco1N"
+  },
+  "albums": [
+    {
+      "id": "lol-season-1",
+      "name": "Music of LoL: Season 1",
+      "album": "The Music of League of Legends: Season 1 (Original Game Soundtrack)",
+      "icon": "1️⃣",
+      "color": "aqua",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 1"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-2",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/6GXIGoirm6W8EnwYytVj1j",
+      "trackCount": 9,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 9,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "235-243",
+        "evidence": "mirror"
+      },
+      "tracks": [
+        [
+          "Welcome to League of Legends - Theme (From League of Legends: Season 1)",
+          "League of Legends",
+          "1l8HFGaFkaOT2EYMSl4vc4",
+          "Welcome to League of Legends - Theme"
+        ],
+        [
+          "Welcome to League of Legends - Cinematic (From League of Legends: Season 1)",
+          "League of Legends",
+          "3RVBegxJAfmJVII8exR8y5",
+          "Welcome to League of Legends - Cinematic"
+        ],
+        [
+          "Classic Summoner's Rift Champion Select - Tutorial (From League of Legends: Season 1)",
+          "League of Legends",
+          "28Vdl7Zj8yJ2iOQp3FNKtr",
+          "Classic Summoner's Rift Champion Select - Tutorial"
+        ],
+        [
+          "Classic Summoner's Rift Champion Select - Blind Pick (From League of Legends: Season 1)",
+          "League of Legends",
+          "7ucvDoSd4H1QYeegxhT7Zy",
+          "Classic Summoner's Rift Champion Select - Blind Pick"
+        ],
+        [
+          "Classic Summoner's Rift Champion Select - Draft Pick (From League of Legends: Season 1)",
+          "League of Legends",
+          "6ST0rc0hua9L4OereS8dSA",
+          "Classic Summoner's Rift Champion Select - Draft Pick"
+        ],
+        [
+          "Classic Summoner's Rift - Pt. 1 (From League of Legends: Season 1)",
+          "League of Legends",
+          "0CMOBuYKXwbAEVS8b1MJi1",
+          "Classic Summoner's Rift - Pt. 1"
+        ],
+        [
+          "Classic Summoner's Rift - Pt. 2 (From League of Legends: Season 1)",
+          "League of Legends",
+          "2NIdPtEjgZvAdDmohtkam9",
+          "Classic Summoner's Rift - Pt. 2"
+        ],
+        [
+          "Classic Summoner's Rift - Pt. 3 (From League of Legends: Season 1)",
+          "League of Legends",
+          "6gI5KRWGQmlKw8hka6ZK6q",
+          "Classic Summoner's Rift - Pt. 3"
+        ],
+        [
+          "Classic Summoner's Rift - Pt. 4 (From League of Legends: Season 1)",
+          "League of Legends",
+          "197QxbSGxN4lLMWuRLgsVS",
+          "Classic Summoner's Rift - Pt. 4"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-2",
+      "name": "Music of LoL: Season 2",
+      "album": "The Music of League of Legends: Season 2 (Original Game Soundtrack)",
+      "icon": "2️⃣",
+      "color": "blue",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 2"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-9",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/5tbKnlrYfWLOS2oDNVRG1I",
+      "trackCount": 30,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 30,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "205-234",
+        "evidence": "mirror"
+      },
+      "tracks": [
+        [
+          "Battlecast Prime Cho Gath (From League of Legends: Season 2)",
+          "League of Legends",
+          "0hQAu7y232YfMSfU4tFDHB",
+          "Battlecast Prime Cho Gath"
+        ],
+        [
+          "Darius, the Hand of Noxus (From League of Legends: Season 2)",
+          "League of Legends",
+          "2FwG1WoGC6LmdFpGBCJflk",
+          "Darius, the Hand of Noxus"
+        ],
+        [
+          "Dark Candy Fiddlesticks (From League of Legends: Season 2)",
+          "League of Legends",
+          "4KkkqhwuIxRUvYeHu1qFf5",
+          "Dark Candy Fiddlesticks"
+        ],
+        [
+          "Diana, Scorn of the Moon (From League of Legends: Season 2)",
+          "League of Legends",
+          "0ILtH4lbI7HPMNk36BsdxZ",
+          "Diana, Scorn of the Moon"
+        ],
+        [
+          "Dominion - Theme (From League of Legends: Season 2)",
+          "League of Legends",
+          "0yPRDKoYi1Z25uJcREfbDi",
+          "Dominion - Theme"
+        ],
+        [
+          "Dominion Champion Select - Blind Pick (From League of Legends: Season 2)",
+          "League of Legends",
+          "2K0kg7PZ58sx0GMoj4dBnx",
+          "Dominion Champion Select - Blind Pick"
+        ],
+        [
+          "Dominion Champion Select - Draft Pick (From League of Legends: Season 2)",
+          "League of Legends",
+          "3BenizsLMdBo7oMG6apjvg",
+          "Dominion Champion Select - Draft Pick"
+        ],
+        [
+          "Dominion - Pt. 1 (From League of Legends: Season 2)",
+          "League of Legends",
+          "2Ovg7t9CQpgfadm61LuHQc",
+          "Dominion - Pt. 1"
+        ],
+        [
+          "Dominion - Pt. 2 (From League of Legends: Season 2)",
+          "League of Legends",
+          "1HutE7HbW23qqP6HxwiTCk",
+          "Dominion - Pt. 2"
+        ],
+        [
+          "Dominion - Pt. 3 (From League of Legends: Season 2)",
+          "League of Legends",
+          "02eGIN8vbicepVhCTKjRXZ",
+          "Dominion - Pt. 3"
+        ],
+        [
+          "Draven, the Glorious Executioner (From League of Legends: Season 2)",
+          "League of Legends",
+          "0GezBJeT85lhaCYQfBUisy",
+          "Draven, the Glorious Executioner"
+        ],
+        [
+          "Elise, the Spider Queen (From League of Legends: Season 2)",
+          "League of Legends",
+          "0BfaTNIDUGrNlvILKxd7z4",
+          "Elise, the Spider Queen"
+        ],
+        [
+          "Eternum Nocturne (From League of Legends: Season 2)",
+          "League of Legends",
+          "2yObVBOL8Cnj94egQyi8NT",
+          "Eternum Nocturne"
+        ],
+        [
+          "Gatekeeper Galio (From League of Legends: Season 2)",
+          "League of Legends",
+          "0rrnbw9aLIvk8HW0Q26Lfq",
+          "Gatekeeper Galio"
+        ],
+        [
+          "Jayce, the Defender of Tomorrow (From League of Legends: Season 2)",
+          "League of Legends",
+          "1s0J4sFnUbt5F8BNI6dv1q",
+          "Jayce, the Defender of Tomorrow"
+        ],
+        [
+          "Kha'Zix, the Voidreaver (From League of Legends: Season 2)",
+          "League of Legends",
+          "2ULCLD3vvSQhQ2WcRYj0b6",
+          "Kha'Zix, the Voidreaver"
+        ],
+        [
+          "Lulu, the Fae Sorceress (From League of Legends: Season 2)",
+          "League of Legends",
+          "6VjoeSYFwnvKggTHzv3RV0",
+          "Lulu, the Fae Sorceress"
+        ],
+        [
+          "Nami, the Tidecaller (From League of Legends: Season 2)",
+          "League of Legends",
+          "6ccnNwcCUBJrECp4yNuCBN",
+          "Nami, the Tidecaller"
+        ],
+        [
+          "Pulsefire Ezreal (From League of Legends: Season 2)",
+          "League of Legends",
+          "2YDsUgxzUtgOnnFZtAM4jF",
+          "Pulsefire Ezreal"
+        ],
+        [
+          "Pulsefire Ezreal - Trailer (From League of Legends: Season 2)",
+          "League of Legends",
+          "2pcXIusEDaSAqv8NJTVrHG",
+          "Pulsefire Ezreal - Trailer"
+        ],
+        [
+          "Rengar, the Pridestalker (From League of Legends: Season 2)",
+          "League of Legends",
+          "26SUL0ZMdwAx8c4PxCI6SN",
+          "Rengar, the Pridestalker"
+        ],
+        [
+          "Summoner's Call (From League of Legends: Season 2)",
+          "League of Legends",
+          "5qOLWMlFElkCHHVG2BgH6e",
+          "Summoner's Call"
+        ],
+        [
+          "Syndra, the Dark Sovereign (From League of Legends: Season 2)",
+          "League of Legends",
+          "59O70pSrzx5jT6io75XBie",
+          "Syndra, the Dark Sovereign"
+        ],
+        [
+          "Twisted Treeline - Pt. 1 (From League of Legends: Season 2)",
+          "League of Legends",
+          "7gedTMNSpYEl8B0ryanfJt",
+          "Twisted Treeline - Pt. 1"
+        ],
+        [
+          "Twisted Treeline - Pt. 2 (From League of Legends: Season 2)",
+          "League of Legends",
+          "6KHlJquMSnC5eviXENFZHg",
+          "Twisted Treeline - Pt. 2"
+        ],
+        [
+          "Twisted Treeline - Pt. 3 (From League of Legends: Season 2)",
+          "League of Legends",
+          "1pyfUBBGAOg03injM2aaxp",
+          "Twisted Treeline - Pt. 3"
+        ],
+        [
+          "Varus, the Arrow of Retribution (From League of Legends: Season 2)",
+          "League of Legends",
+          "1zS0DWXGfLtOnsnOh38sdp",
+          "Varus, the Arrow of Retribution"
+        ],
+        [
+          "Vi, the Piltover Enforcer (Here Comes Vi) (From League of Legends: Season 2)",
+          "League of Legends, Nicki Taylor",
+          "6AiWyPOrEuChWNW78zPCcV",
+          "Vi, the Piltover Enforcer (Here Comes Vi)"
+        ],
+        [
+          "Zed, the Master of Shadows (From League of Legends: Season 2)",
+          "League of Legends",
+          "5dfNGS3psiZmy4QX4z41ty",
+          "Zed, the Master of Shadows"
+        ],
+        [
+          "Zyra, Rise of the Thorns (From League of Legends: Season 2)",
+          "League of Legends",
+          "3TkakGHH20pYv0vreG5wR1",
+          "Zyra, Rise of the Thorns"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-3",
+      "name": "Music of LoL: Season 3",
+      "album": "The Music of League of Legends: Season 3 (Original Game Soundtrack)",
+      "icon": "3️⃣",
+      "color": "green",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 3"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-1",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/12Wkzjt1vkH0F5TLChsscq",
+      "trackCount": 23,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 23,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "182-204",
+        "evidence": "mirror"
+      },
+      "tracks": [
+        [
+          "Aatrox, the Darkin Blade - Classic Login (From League of Legends: Season 3)",
+          "League of Legends",
+          "1BF2FjOMCgDzKcLLJ2dZq3",
+          "Aatrox, the Darkin Blade - Classic Login"
+        ],
+        [
+          "Aether Wing Kayle (From League of Legends: Season 3)",
+          "League of Legends",
+          "2hrHNP4rNAcQ32B3qKuNoW",
+          "Aether Wing Kayle"
+        ],
+        [
+          "Forecast Janna (From League of Legends: Season 3)",
+          "League of Legends",
+          "6veosXmNfMI8BBYgoF4AyC",
+          "Forecast Janna"
+        ],
+        [
+          "Jinx, the Loose Cannon (From League of Legends: Season 3)",
+          "League of Legends",
+          "5bVwQyXxxom4CyBt2DzFYO",
+          "Jinx, the Loose Cannon"
+        ],
+        [
+          "Haunted Zyra (From League of Legends: Season 3)",
+          "League of Legends",
+          "2kR9Sfa11oIYa1iunpZ0Nf",
+          "Haunted Zyra"
+        ],
+        [
+          "Howling Abyss - Theme (From League of Legends: Season 3)",
+          "League of Legends",
+          "0RFqbMdpuYknxw9HKbjsD7",
+          "Howling Abyss - Theme"
+        ],
+        [
+          "Howling Abyss - Champion Select (From League of Legends: Season 3)",
+          "League of Legends",
+          "2oDUBFrDDbcJ2qU6ISRQTA",
+          "Howling Abyss - Champion Select"
+        ],
+        [
+          "Howling Abyss - Early Game (From League of Legends: Season 3)",
+          "League of Legends",
+          "59eZz6OYXaGBwnslFOeOLD",
+          "Howling Abyss - Early Game"
+        ],
+        [
+          "Howling Abyss - Mid Game (From League of Legends: Season 3)",
+          "League of Legends",
+          "7zuZRYQSHlV2Xa5KApZC3I",
+          "Howling Abyss - Mid Game"
+        ],
+        [
+          "Howling Abyss - Late Game (From League of Legends: Season 3)",
+          "League of Legends",
+          "5ixOfR6E7DDdvfn3FE5402",
+          "Howling Abyss - Late Game"
+        ],
+        [
+          "Howling Abyss - Victory (From League of Legends: Season 3)",
+          "League of Legends",
+          "2H4z0w00wVHFaFPvIPTwZ6",
+          "Howling Abyss - Victory"
+        ],
+        [
+          "Howling Abyss - Defeat (From League of Legends: Season 3)",
+          "League of Legends",
+          "46H9BTLNn11LET7rvREK7K",
+          "Howling Abyss - Defeat"
+        ],
+        [
+          "Howling Abyss - Death (From League of Legends: Season 3)",
+          "League of Legends",
+          "3SqbeNUWNA5I92App2z6vF",
+          "Howling Abyss - Death"
+        ],
+        [
+          "Infernal Nasus (From League of Legends: Season 3)",
+          "League of Legends",
+          "7LqiZtkwx3Luefoy8fO9Ii",
+          "Infernal Nasus"
+        ],
+        [
+          "Lucian, the Purifiers Resolve (From League of Legends: Season 3)",
+          "League of Legends",
+          "7GYXeRY1RW5zWpkXIxUhSf",
+          "Lucian, the Purifiers Resolve"
+        ],
+        [
+          "Lunar Revel - 2013 (From League of Legends: Season 3)",
+          "League of Legends",
+          "4tniDXfI0ZJNsbCkl93e70",
+          "Lunar Revel - 2013"
+        ],
+        [
+          "Pool Party - 2013 (From League of Legends: Season 3)",
+          "League of Legends",
+          "2Q7aChMX9EOkeb5ipBEFav",
+          "Pool Party - 2013"
+        ],
+        [
+          "Quinn, Demacia's Wings (From League of Legends: Season 3)",
+          "League of Legends",
+          "2DmEVrqNxoqaOkJVsjdPbW",
+          "Quinn, Demacia's Wings"
+        ],
+        [
+          "Snowdown - 2013 (From League of Legends: Season 3)",
+          "League of Legends",
+          "72CNziFtOnhjG2Ht7PAI4Z",
+          "Snowdown - 2013"
+        ],
+        [
+          "Spirit Guard Udyr (From League of Legends: Season 3)",
+          "League of Legends",
+          "3T7CD2dVhcml907FdvjrEU",
+          "Spirit Guard Udyr"
+        ],
+        [
+          "Thresh, the Chain Warden (From League of Legends: Season 3)",
+          "League of Legends",
+          "6szh1ilzJ4elXtv8C2YfwG",
+          "Thresh, the Chain Warden"
+        ],
+        [
+          "Yasuo, the Unforgiven (From League of Legends: Season 3)",
+          "League of Legends",
+          "6BteJwCHHsW9FipyPhRqo5",
+          "Yasuo, the Unforgiven"
+        ],
+        [
+          "Zac, the Secret Weapon (From League of Legends: Season 3)",
+          "League of Legends",
+          "32OdaxmnulcXWHerByIlAi",
+          "Zac, the Secret Weapon"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-4",
+      "name": "Music of LoL: Season 4",
+      "album": "The Music of League of Legends: Season 4 (Original Game Soundtrack)",
+      "icon": "4️⃣",
+      "color": "amber",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 4"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-4",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/5yJhZ0IbtdXn8PatnYG8qf",
+      "trackCount": 22,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 22,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "160-181",
+        "evidence": "mirror"
+      },
+      "tracks": [
+        [
+          "A New Dawn (From League of Legends: Season 4)",
+          "League of Legends",
+          "78If11UOVpoozS36HiD9kW",
+          "A New Dawn"
+        ],
+        [
+          "Azir, the Emperor of the Sands (From League of Legends: Season 4)",
+          "League of Legends",
+          "5NFyA0X3PUocJPRunSEmX2",
+          "Azir, the Emperor of the Sands"
+        ],
+        [
+          "Braum, the Heart of the Freljord (From League of Legends: Season 4)",
+          "League of Legends",
+          "1G9ne4OgxM9yVdeqPpfl4g",
+          "Braum, the Heart of the Freljord"
+        ],
+        [
+          "Dunkmaster Darius (From League of Legends: Season 4)",
+          "League of Legends",
+          "3MJ0Pc13WYmPqXihLHLWca",
+          "Dunkmaster Darius"
+        ],
+        [
+          "Gnar, the Missing Link (From League of Legends: Season 4)",
+          "League of Legends",
+          "35v3W3FD9pqSjUaiJJh0xu",
+          "Gnar, the Missing Link"
+        ],
+        [
+          "Harrowing - 2014 (From League of Legends: Season 4)",
+          "League of Legends",
+          "7HBkkuW3RowwQLf69lC9pW",
+          "Harrowing - 2014"
+        ],
+        [
+          "Kalista, the Spear of Vengeance (From League of Legends: Season 4)",
+          "League of Legends",
+          "77z9tnxpX9u1XSTEMx9xu1",
+          "Kalista, the Spear of Vengeance"
+        ],
+        [
+          "Lunar Revel - 2014 (From League of Legends: Season 4)",
+          "League of Legends",
+          "4a5R7lpUw1pBjD65f8Wxc5",
+          "Lunar Revel - 2014"
+        ],
+        [
+          "Rek'Sai, the Void Burrower (From League of Legends: Season 4)",
+          "League of Legends",
+          "7sxqEBilAywoof8zEE1ahr",
+          "Rek'Sai, the Void Burrower"
+        ],
+        [
+          "Season 4 - Theme (From League of Legends: Season 4)",
+          "League of Legends",
+          "156g4a6jKUYQcLZPo9n58q",
+          "Season 4 - Theme"
+        ],
+        [
+          "Shurima - Login Theme (From League of Legends: Season 4)",
+          "League of Legends",
+          "4WLsHJUvR5Lm6CQkUwnIq2",
+          "Shurima - Login Theme"
+        ],
+        [
+          "Shurima - Descent into the Tomb (From League of Legends: Season 4)",
+          "League of Legends",
+          "1y7KaA1wzmdcIoe9R3f2Cm",
+          "Shurima - Descent into the Tomb"
+        ],
+        [
+          "Shurima - Rise of the Ascended (From League of Legends: Season 4)",
+          "League of Legends",
+          "5qxKxJzLre2xoT8W09SrGj",
+          "Shurima - Rise of the Ascended"
+        ],
+        [
+          "Sion, the Undead Juggernaut (From League of Legends: Season 4)",
+          "League of Legends",
+          "4XVmt7xCyieik7M27kHsBD",
+          "Sion, the Undead Juggernaut"
+        ],
+        [
+          "Snowdown - 2014 (From League of Legends: Season 4)",
+          "League of Legends",
+          "2EAjsziyu42T5BqfonXfpr",
+          "Snowdown - 2014"
+        ],
+        [
+          "Super Galaxy Rumble - Login Theme (From League of Legends: Season 4)",
+          "League of Legends",
+          "0YjTIm4wZTakD18NVeB4Zj",
+          "Super Galaxy Rumble - Login Theme"
+        ],
+        [
+          "Summoner's Rift - Early Game (From League of Legends: Season 4)",
+          "League of Legends",
+          "4zWik7iH8wrO6wSwo8rS1U",
+          "Summoner's Rift - Early Game"
+        ],
+        [
+          "Summoner's Rift - Mid Game (From League of Legends: Season 4)",
+          "League of Legends",
+          "0BZpSJQSdhuVYFtyhMXf27",
+          "Summoner's Rift - Mid Game"
+        ],
+        [
+          "Summoner's Rift - Late Game (From League of Legends: Season 4)",
+          "League of Legends",
+          "1Nr0qRofOhnatRU0vILFM5",
+          "Summoner's Rift - Late Game"
+        ],
+        [
+          "Summoner's Rift - Victory (From League of Legends: Season 4)",
+          "League of Legends",
+          "6n17o0sYWpfs0CB1yau1Ch",
+          "Summoner's Rift - Victory"
+        ],
+        [
+          "Summoner's Rift - Defeat (From League of Legends: Season 4)",
+          "League of Legends",
+          "1MHbMcuDhNeewhzKySp7Kx",
+          "Summoner's Rift - Defeat"
+        ],
+        [
+          "Vel'Koz, the Eye of the Void (From League of Legends: Season 4)",
+          "League of Legends",
+          "5tN30HCmFKzt6pR9EvEjKD",
+          "Vel'Koz, the Eye of the Void"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-5",
+      "name": "Music of LoL: Season 5",
+      "album": "The Music of League of Legends: Season 5 (Original Game Soundtrack)",
+      "icon": "5️⃣",
+      "color": "pink",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 5"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-3",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/7KZ6m6G3EyNxahSR2HZ8h9",
+      "trackCount": 25,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 25,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "135-159",
+        "evidence": "mirror"
+      },
+      "tracks": [
+        [
+          "Bard, the Wandering Caretaker (From League of Legends: Season 5)",
+          "League of Legends",
+          "1dk7SEeUMAqgzuzPZyHX7Q",
+          "Bard, the Wandering Caretaker"
+        ],
+        [
+          "Bard: Mountain (From League of Legends: Season 5)",
+          "League of Legends",
+          "2Ru740OfrPlxLKOyccgCiF",
+          "Bard: Mountain"
+        ],
+        [
+          "Butcher's Bridge - Early Game (From League of Legends: Season 5)",
+          "League of Legends",
+          "0H8eF39wUMpqnjDjJQuqch",
+          "Butcher's Bridge - Early Game"
+        ],
+        [
+          "Butcher's Bridge - Mid Game (From League of Legends: Season 5)",
+          "League of Legends",
+          "3nWH5aa77uL6DDinffc1js",
+          "Butcher's Bridge - Mid Game"
+        ],
+        [
+          "Butcher's Bridge - Late Game (From League of Legends: Season 5)",
+          "League of Legends",
+          "58NSyZprAGyjPGh0AabHxJ",
+          "Butcher's Bridge - Late Game"
+        ],
+        [
+          "Butcher's Bridge - Victory (From League of Legends: Season 5)",
+          "League of Legends",
+          "6KeKgg8YAEnzPoEFfrf4nx",
+          "Butcher's Bridge - Victory"
+        ],
+        [
+          "Butcher's Bridge - Defeat (From League of Legends: Season 5)",
+          "League of Legends",
+          "38GqjGNrRo7kWa3zmDgxDm",
+          "Butcher's Bridge - Defeat"
+        ],
+        [
+          "Captain Fortune (From League of Legends: Season 5)",
+          "League of Legends",
+          "5XWR5eHxYOy4vzpleHCq38",
+          "Captain Fortune"
+        ],
+        [
+          "Captain Gangplank (From League of Legends: Season 5)",
+          "League of Legends",
+          "37bPjA5uSkrcnLKJv1FPv4",
+          "Captain Gangplank"
+        ],
+        [
+          "Dragon Trainer Tristana (From League of Legends: Season 5)",
+          "League of Legends",
+          "43KI6SlPFE90BnvGIhTg9z",
+          "Dragon Trainer Tristana"
+        ],
+        [
+          "Ekko, the Boy Who Shattered Time (From League of Legends: Season 5)",
+          "League of Legends",
+          "4EA0wwkAWrBnhignVXxzWI",
+          "Ekko, the Boy Who Shattered Time"
+        ],
+        [
+          "Ekko: Seconds (From League of Legends: Season 5)",
+          "League of Legends",
+          "1U28vZ6bZtRKsN8eYOpnmm",
+          "Ekko: Seconds"
+        ],
+        [
+          "Firecracker Jinx (From League of Legends: Season 5)",
+          "League of Legends",
+          "0IJJY3ngxaHYEGOq8p4T75",
+          "Firecracker Jinx"
+        ],
+        [
+          "Gangplank, the Saltwater Scourge (From League of Legends: Season 5)",
+          "League of Legends",
+          "1zNnd0tLQlzUbrOPYI48sV",
+          "Gangplank, the Saltwater Scourge"
+        ],
+        [
+          "Graves & Twisted Fate (From League of Legends: Season 5)",
+          "League of Legends",
+          "421izke0nc3Y5aRPvTAnbQ",
+          "Graves & Twisted Fate"
+        ],
+        [
+          "Illaoi, the Kraken Priestess (From League of Legends: Season 5)",
+          "League of Legends",
+          "7mvnPRMwRncwWxxsuQ8QEW",
+          "Illaoi, the Kraken Priestess"
+        ],
+        [
+          "Kindred, the Eternal Hunters (From League of Legends: Season 5)",
+          "League of Legends",
+          "1gxSWl3csj0jJKEhFcsE0s",
+          "Kindred, the Eternal Hunters"
+        ],
+        [
+          "Omega Squad Teemo (From League of Legends: Season 5)",
+          "League of Legends",
+          "5RCkN0WDEZfJRGP54Ojnxd",
+          "Omega Squad Teemo"
+        ],
+        [
+          "Poppy, Keeper of the Hammer (From League of Legends: Season 5)",
+          "League of Legends",
+          "0HwdsZ9G7QOtmYcqkvwZ9S",
+          "Poppy, Keeper of the Hammer"
+        ],
+        [
+          "PROJECT: Overdrive (From League of Legends: Season 5)",
+          "League of Legends",
+          "2yorbvmoo5xwnqGK7gI32T",
+          "PROJECT: Overdrive"
+        ],
+        [
+          "PROJECT: Yi (From League of Legends: Season 5)",
+          "League of Legends",
+          "59xIH9mch0K639Ij79B9Ay",
+          "PROJECT: Yi"
+        ],
+        [
+          "Season 5 - Theme (From League of Legends: Season 5)",
+          "League of Legends",
+          "5Wvc5jq07zDWH2AoNFbpvu",
+          "Season 5 - Theme"
+        ],
+        [
+          "Snowdown - 2015 (From League of Legends: Season 5)",
+          "League of Legends",
+          "0w73mVeXoECswl2fimArtG",
+          "Snowdown - 2015"
+        ],
+        [
+          "Tahm Kench, the River King (From League of Legends: Season 5)",
+          "League of Legends",
+          "4P65H9WbGdzMSiEowtlXDQ",
+          "Tahm Kench, the River King"
+        ],
+        [
+          "Zombie Slayer Jinx (From League of Legends: Season 5)",
+          "League of Legends",
+          "5R56lhoGPI9K5YguScWJM6",
+          "Zombie Slayer Jinx"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-6",
+      "name": "Music of LoL: Season 6",
+      "album": "The Music of League of Legends: Season 6 (Original Game Soundtrack)",
+      "icon": "6️⃣",
+      "color": "purple",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 6"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-7",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/6DK95stzKIJ8QFuN4rsc92",
+      "trackCount": 27,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 27,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "108-134",
+        "evidence": "mirror"
+      },
+      "tracks": [
+        [
+          "Aurelion Sol, the Star Forger (From League of Legends: Season 6)",
+          "League of Legends",
+          "1pftnxWtt8aPjBsQQs0XF9",
+          "Aurelion Sol, the Star Forger"
+        ],
+        [
+          "Camille, the Steel Shadow (From League of Legends: Season 6)",
+          "League of Legends",
+          "43ZEhmFrDMDzBin4udnCeV",
+          "Camille, the Steel Shadow"
+        ],
+        [
+          "Champion Spotlight - Level 1 (From League of Legends: Season 6)",
+          "League of Legends",
+          "4VMzQ3whIscd9zKAOur92r",
+          "Champion Spotlight - Level 1"
+        ],
+        [
+          "Champion Spotlight - Level 2 (From League of Legends: Season 6)",
+          "League of Legends",
+          "03T4SBc3aucYk7IROttDDb",
+          "Champion Spotlight - Level 2"
+        ],
+        [
+          "Champion Spotlight - Level 3 (From League of Legends: Season 6)",
+          "League of Legends",
+          "0ta7PIHofwWKTIEu0xrS0i",
+          "Champion Spotlight - Level 3"
+        ],
+        [
+          "Dark Star Thresh (From League of Legends: Season 6)",
+          "League of Legends",
+          "4SkR3IRfKy15KigNoUujUq",
+          "Dark Star Thresh"
+        ],
+        [
+          "Devil Teemo Music (From League of Legends: Season 6)",
+          "League of Legends",
+          "2Ouu2lSyHKhzlwCZx9CuuP",
+          "Devil Teemo Music"
+        ],
+        [
+          "April Fools - 2016 (From League of Legends: Season 6)",
+          "League of Legends",
+          "6e0Bynlayxa9N9nqWrzEur",
+          "April Fools - 2016"
+        ],
+        [
+          "Elementalist Lux (From League of Legends: Season 6)",
+          "League of Legends",
+          "0SreJmzt22XxCnt4HzUjzj",
+          "Elementalist Lux"
+        ],
+        [
+          "Elementalist Lux: The Light Within (From League of Legends: Season 6)",
+          "League of Legends",
+          "6TI8T0mKndbgpe5VK72oOy",
+          "Elementalist Lux: The Light Within"
+        ],
+        [
+          "Endless Starlight (From League of Legends: Season 6)",
+          "League of Legends",
+          "6hPmQIwe1Kyxhk5sh2nfJq",
+          "Endless Starlight"
+        ],
+        [
+          "Ivern, the Green Father (From League of Legends: Season 6)",
+          "League of Legends",
+          "5stCcxBmAIPYGZtv0UruBI",
+          "Ivern, the Green Father"
+        ],
+        [
+          "Jhin, the Virtuoso (From League of Legends: Season 6)",
+          "League of Legends",
+          "0PKBTXJghojSMfLlGY6z9x",
+          "Jhin, the Virtuoso"
+        ],
+        [
+          "Jhin: Mind of the Virtuoso (From League of Legends: Season 6)",
+          "League of Legends",
+          "4oNM3DW5ZSgSx6CFPHiHXq",
+          "Jhin: Mind of the Virtuoso"
+        ],
+        [
+          "Kled, the Cantankerous Cavalier (From League of Legends: Season 6)",
+          "League of Legends",
+          "1jIrAPDKbaMf5DLjybhoDj",
+          "Kled, the Cantankerous Cavalier"
+        ],
+        [
+          "Lunar Revel - 2016 (From League of Legends: Season 6)",
+          "League of Legends",
+          "3p2swIreXPQNuRXkUl7Pyn",
+          "Lunar Revel - 2016"
+        ],
+        [
+          "Lunar Revel: A Traveler Arrives - 2016 (From League of Legends: Season 6)",
+          "League of Legends",
+          "4b9iHGF3gXFZs99x2N0e4E",
+          "Lunar Revel: A Traveler Arrives - 2016"
+        ],
+        [
+          "Mecha Zero Sion (From League of Legends: Season 6)",
+          "League of Legends",
+          "5JFgWRBmyQGILKsjhCsjYv",
+          "Mecha Zero Sion"
+        ],
+        [
+          "PROJECT: Ashe (From League of Legends: Season 6)",
+          "League of Legends",
+          "5rIMXi40LdvWwjWBMud6XB",
+          "PROJECT: Ashe"
+        ],
+        [
+          "Ryze, the Rune Mage (From League of Legends: Season 6)",
+          "League of Legends",
+          "3ruPZuVc5K7Bqx7ILdpOv3",
+          "Ryze, the Rune Mage"
+        ],
+        [
+          "Season 6 - Theme (From League of Legends: Season 6)",
+          "League of Legends",
+          "42VpveENg5nn5p9pSWgUrJ",
+          "Season 6 - Theme"
+        ],
+        [
+          "Snowdown - 2016 (From League of Legends: Season 6)",
+          "League of Legends",
+          "3OfDhuZ5Fe1T7wQ7UfdT1f",
+          "Snowdown - 2016"
+        ],
+        [
+          "Taliyah, the Stoneweaver (From League of Legends: Season 6)",
+          "League of Legends",
+          "5Pmm2xumq8UfMINilxNVZz",
+          "Taliyah, the Stoneweaver"
+        ],
+        [
+          "Taric, the Shield of Valoran (From League of Legends: Season 6)",
+          "League of Legends",
+          "5At5n2kkXEISApvgC3nTmv",
+          "Taric, the Shield of Valoran"
+        ],
+        [
+          "Summoner's Rift: The Fields - Lobby (From League of Legends: Season 6)",
+          "League of Legends",
+          "7at8pEtCTQlDOUPvZggKP1",
+          "Summoner's Rift: The Fields - Lobby"
+        ],
+        [
+          "Summoner's Rift: The March - Draft Pick (From League of Legends: Season 6)",
+          "League of Legends",
+          "0FM63lMw4fXugZBC7RT8qx",
+          "Summoner's Rift: The March - Draft Pick"
+        ],
+        [
+          "Yorick, the Shepherd of Souls (From League of Legends: Season 6)",
+          "League of Legends",
+          "5MY7luFuhjlfHuwWkFKlrK",
+          "Yorick, the Shepherd of Souls"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-7",
+      "name": "Music of LoL: Season 7",
+      "album": "The Music of League of Legends: Season 7 (Original Game Soundtrack)",
+      "icon": "7️⃣",
+      "color": "red",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 7"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-6",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/4ejVwiIVblKgKMspuxAAQ8",
+      "trackCount": 48,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 48,
+        "checkedAt": "2026-10-12",
+        "playlistPositions": "60-107",
+        "evidence": "embed+mirror"
+      },
+      "tracks": [
+        [
+          "Arcade - 2017 (From League of Legends: Season 7)",
+          "League of Legends",
+          "0o5keY7aqjRCRX6WJtncfg",
+          "Arcade - 2017"
+        ],
+        [
+          "Arcade Summoner's Rift - Early Game (From League of Legends: Season 7)",
+          "League of Legends",
+          "5DsKfRaAZ9ib3IS7NPYaM0",
+          "Arcade Summoner's Rift - Early Game"
+        ],
+        [
+          "Arcade Summoner's Rift - Mid Game (From League of Legends: Season 7)",
+          "League of Legends",
+          "1kchA9oWRlMvxr6kXGSrmN",
+          "Arcade Summoner's Rift - Mid Game"
+        ],
+        [
+          "Arcade Summoner's Rift - Late Game (From League of Legends: Season 7)",
+          "League of Legends",
+          "6Whustb2sKJoYCPB4Y2F1t",
+          "Arcade Summoner's Rift - Late Game"
+        ],
+        [
+          "Blood Moon Diana (From League of Legends: Season 7)",
+          "League of Legends",
+          "2nvUQ28Ph24ODxh8tOuSsP",
+          "Blood Moon Diana"
+        ],
+        [
+          "Dark Star - 2017 (From League of Legends: Season 7)",
+          "League of Legends",
+          "3cUFySiyhaMOtrdsPoLxOr",
+          "Dark Star - 2017"
+        ],
+        [
+          "Dragonslayer Xin Zhao (From League of Legends: Season 7)",
+          "League of Legends",
+          "4ZB77PJQs86UksVf5bEDPl",
+          "Dragonslayer Xin Zhao"
+        ],
+        [
+          "Evelynn, Agony's Embrace (From League of Legends: Season 7)",
+          "League of Legends",
+          "112T2vxYVRtkv65tpjKPNc",
+          "Evelynn, Agony's Embrace"
+        ],
+        [
+          "Eyes on Worlds - 2017 (From League of Legends: Season 7)",
+          "League of Legends",
+          "6vV59fmReZ3QqkCVIQKZ62",
+          "Eyes on Worlds - 2017"
+        ],
+        [
+          "Fates Fall (From League of Legends: Season 7)",
+          "League of Legends",
+          "5CNQNdez7um22TS6aXEVcF",
+          "Fates Fall"
+        ],
+        [
+          "Galio, the Colossus (From League of Legends: Season 7)",
+          "League of Legends",
+          "0d4Boi8220b7UqgqQd2D9n",
+          "Galio, the Colossus"
+        ],
+        [
+          "God Fist Lee Sin (From League of Legends: Season 7)",
+          "League of Legends",
+          "5BJlw4kyBzh56YaNAa1r1D",
+          "God Fist Lee Sin"
+        ],
+        [
+          "Honor - Theme (From League of Legends: Season 7)",
+          "League of Legends",
+          "5JSOCiDdxaZhzzLfhszFhj",
+          "Honor - Theme"
+        ],
+        [
+          "Kayn, the Shadow Reaper (From League of Legends: Season 7)",
+          "League of Legends",
+          "7opyosRvg5tyQlBh8DrkYW",
+          "Kayn, the Shadow Reaper"
+        ],
+        [
+          "Omega Squad - 2017 (From League of Legends: Season 7)",
+          "League of Legends",
+          "5dwHCncJ5Va59lSbXwWDC1",
+          "Omega Squad - 2017"
+        ],
+        [
+          "Ornn, the Fire Beneath the Mountain (From League of Legends: Season 7)",
+          "League of Legends",
+          "7qUQi2RUdfGQSqkerTqvE4",
+          "Ornn, the Fire Beneath the Mountain"
+        ],
+        [
+          "Ornn, the Fire Beneath the Mountain - Trailer (From League of Legends: Season 7)",
+          "League of Legends",
+          "12FhFZXmznmulW96gVicAP",
+          "Ornn, the Fire Beneath the Mountain - Trailer"
+        ],
+        [
+          "The Path to Hearth-Home (From League of Legends: Season 7)",
+          "League of Legends",
+          "4569wf3RlUNpOub41LF8jH",
+          "The Path to Hearth-Home"
+        ],
+        [
+          "PROJECT: Hunters (From League of Legends: Season 7)",
+          "League of Legends",
+          "5Nh9itjWgvGVG4ixrMeD6B",
+          "PROJECT: Hunters"
+        ],
+        [
+          "PROJECT: Hunters - The Hunt (From League of Legends: Season 7)",
+          "League of Legends",
+          "18nNUMTknWESxiQIXUlZh6",
+          "PROJECT: Hunters - The Hunt"
+        ],
+        [
+          "PROJECT: Jhin - Neon Cherry Blossoms (From League of Legends: Season 7)",
+          "League of Legends",
+          "5LdGhmYHcW5CPTV3m8ZBYX",
+          "PROJECT: Jhin - Neon Cherry Blossoms"
+        ],
+        [
+          "PROJECT: Overcharge - Champion Select (From League of Legends: Season 7)",
+          "League of Legends",
+          "1RVUdVPROXknDg8nkGZXrf",
+          "PROJECT: Overcharge - Champion Select"
+        ],
+        [
+          "PROJECT: Overcharge - Matchmaking (From League of Legends: Season 7)",
+          "League of Legends",
+          "5r5hquvLGw7uGScZRm5SIi",
+          "PROJECT: Overcharge - Matchmaking"
+        ],
+        [
+          "PROJECT: Overcharge - Map Suite (From League of Legends: Season 7)",
+          "League of Legends",
+          "4OyqI1CtjzjMnej4iirLi8",
+          "PROJECT: Overcharge - Map Suite"
+        ],
+        [
+          "Pulsefire Caitlyn (From League of Legends: Season 7)",
+          "League of Legends",
+          "2BoZH7Rnw2tqivmIakcaV0",
+          "Pulsefire Caitlyn"
+        ],
+        [
+          "Xayah & Rakan, the Charmer & the Rebel (From League of Legends: Season 7)",
+          "League of Legends",
+          "0ZY2ZvDVKOYiwRjW34wEDQ",
+          "Xayah & Rakan, the Charmer & the Rebel"
+        ],
+        [
+          "Xayah & Rakan: Wild Magic (From League of Legends: Season 7)",
+          "League of Legends",
+          "19PH3fKD2RW0R3zFW9IVB7",
+          "Xayah & Rakan: Wild Magic"
+        ],
+        [
+          "Season 7 - Theme (From League of Legends: Season 7)",
+          "League of Legends",
+          "1z1THNoAjAcxkpCGx5uo4e",
+          "Season 7 - Theme"
+        ],
+        [
+          "Snowdown - 2017 (From League of Legends: Season 7)",
+          "League of Legends",
+          "0klSA8K6RoCL42K5QmmibW",
+          "Snowdown - 2017"
+        ],
+        [
+          "Star Guardian - 2017 (From League of Legends: Season 7)",
+          "League of Legends",
+          "0DFEuREjJ0pnAmYLA2kfG2",
+          "Star Guardian - 2017"
+        ],
+        [
+          "Star Guardian - 2017 (From League of Legends: Season 7) - Instrumental",
+          "League of Legends",
+          "0WYznhucPngdhhgKbHnzYr",
+          "Star Guardian - 2017"
+        ],
+        [
+          "Star Guardian: A New Horizon (From League of Legends: Season 7)",
+          "League of Legends",
+          "0fqOAkzxLuMWSF0KGWCfeF",
+          "Star Guardian: A New Horizon"
+        ],
+        [
+          "Star Guardian: A New Horizon (From League of Legends: Season 7) - Instrumental",
+          "League of Legends",
+          "3SB5MGagEgIPzG2mVOtmRo",
+          "Star Guardian: A New Horizon"
+        ],
+        [
+          "Star Guardian: Invasion - Matchmaking (From League of Legends: Season 7)",
+          "League of Legends",
+          "4XouhYq1SfAQ9Rwy3a8o6A",
+          "Star Guardian: Invasion - Matchmaking"
+        ],
+        [
+          "Star Guardian: Invasion - Champ Select (From League of Legends: Season 7)",
+          "League of Legends",
+          "5Dwmr7MmOoxporynzRHGI7",
+          "Star Guardian: Invasion - Champ Select"
+        ],
+        [
+          "Star Guardian: Invasion - Here They Come (From League of Legends: Season 7)",
+          "League of Legends",
+          "7ftsae67mXAPgfeoBxaAit",
+          "Star Guardian: Invasion - Here They Come"
+        ],
+        [
+          "Star Guardian: Invasion - Large Threat Incoming (From League of Legends: Season 7)",
+          "League of Legends",
+          "1b89h4Oep1XTeXzwrZR7Ij",
+          "Star Guardian: Invasion - Large Threat Incoming"
+        ],
+        [
+          "Star Guardian: Invasion - Lets Rest for a Second (From League of Legends: Season 7)",
+          "League of Legends",
+          "2fEy7lNF0ctLpi8FbfHwRa",
+          "Star Guardian: Invasion - Lets Rest for a Second"
+        ],
+        [
+          "Star Guardian: Invasion - The Power of Friendship (From League of Legends: Season 7)",
+          "League of Legends",
+          "3Hg7v1twxG8XUuEb8FS7Fw",
+          "Star Guardian: Invasion - The Power of Friendship"
+        ],
+        [
+          "Star Guardian: Invasion - Time to Keep Moving (From League of Legends: Season 7)",
+          "League of Legends",
+          "7MHUrqJnYnYfeyoNsK9p5s",
+          "Star Guardian: Invasion - Time to Keep Moving"
+        ],
+        [
+          "Star Guardian: Invasion - We Can Do This (From League of Legends: Season 7)",
+          "League of Legends",
+          "1NPVnYwlo9GVovUykSm5a2",
+          "Star Guardian: Invasion - We Can Do This"
+        ],
+        [
+          "Star Guardian: Invasion - We'll Get them Next Time (From League of Legends: Season 7)",
+          "League of Legends",
+          "0APdb203RfQpgnrp6p8MR7",
+          "Star Guardian: Invasion - We'll Get them Next Time"
+        ],
+        [
+          "Super Galaxy - 2017 - Trailer (From League of Legends: Season 7)",
+          "League of Legends",
+          "7hPknMcjbUTRcxldfGmmzw",
+          "Super Galaxy - 2017 - Trailer"
+        ],
+        [
+          "Urgot, the Dreadnought (From League of Legends: Season 7)",
+          "League of Legends",
+          "0jJQnBq1wPaB3DyXDe6135",
+          "Urgot, the Dreadnought"
+        ],
+        [
+          "VS. 2017 - Yasuo vs Riven (From League of Legends: Season 7)",
+          "League of Legends",
+          "53spONfwLApBB2u0mRx4Ue",
+          "VS. 2017 - Yasuo vs Riven"
+        ],
+        [
+          "Warwick, the Uncaged Wrath of Zaun (From League of Legends: Season 7)",
+          "League of Legends",
+          "4KwChqMoMiG8WZjtaYXfeW",
+          "Warwick, the Uncaged Wrath of Zaun"
+        ],
+        [
+          "Zoe, the Aspect of Twilight (From League of Legends: Season 7)",
+          "League of Legends",
+          "0BROLp1JMtCEwf899A2l2L",
+          "Zoe, the Aspect of Twilight"
+        ],
+        [
+          "Zoe, the Aspect of Twilight - Trailer (From League of Legends: Season 7)",
+          "League of Legends",
+          "0xBfQLLFgHuezhHM5mILl3",
+          "Zoe, the Aspect of Twilight - Trailer"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-8",
+      "name": "Music of LoL: Season 8",
+      "album": "The Music of League of Legends: Season 8 (Original Game Soundtrack)",
+      "icon": "8️⃣",
+      "color": "gray",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 8"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-473008103",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/5Qoly8Zj0HhJl8sc5rmplS",
+      "trackCount": 39,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 39,
+        "checkedAt": "2026-10-11",
+        "playlistPositions": "21-59",
+        "evidence": "embed"
+      },
+      "tracks": [
+        [
+          "Aatrox, the Darkin Blade (From League of Legends: Season 8)",
+          "League of Legends",
+          "529Q7I9Ez4Myhu82wmdOEi",
+          "Aatrox, the Darkin Blade"
+        ],
+        [
+          "Akali, the Rogue Assassin (From League of Legends: Season 8)",
+          "League of Legends",
+          "2iaMss0OgPhqmaz55QR6QE",
+          "Akali, the Rogue Assassin"
+        ],
+        [
+          "Akali, the Rogue Assassin - Trailer (From League of Legends: Season 8)",
+          "League of Legends",
+          "39ENz1YXNQ8cAg8l7Cdv8u",
+          "Akali, the Rogue Assassin - Trailer"
+        ],
+        [
+          "Annie Origins - Ashes (From League of Legends: Season 8)",
+          "League of Legends",
+          "4vI4lAVeGWluPz5xcsuy05",
+          "Annie Origins - Ashes"
+        ],
+        [
+          "Annie Origins - Burning (From League of Legends: Season 8)",
+          "League of Legends",
+          "11OvoI8iTLJBGR43FlGbeZ",
+          "Annie Origins - Burning"
+        ],
+        [
+          "Annie Origins - Drawings (From League of Legends: Season 8)",
+          "League of Legends",
+          "6APoaWoBwtA7Vg5DTHjPRi",
+          "Annie Origins - Drawings"
+        ],
+        [
+          "Annie Origins - Flower (From League of Legends: Season 8)",
+          "League of Legends",
+          "1c1iirM9tjnt16enW6uP2U",
+          "Annie Origins - Flower"
+        ],
+        [
+          "Annie Origins - Playroom (From League of Legends: Season 8)",
+          "League of Legends",
+          "4HOoQMoW45FMP5GMeP9eRG",
+          "Annie Origins - Playroom"
+        ],
+        [
+          "Annie Origins - River (From League of Legends: Season 8)",
+          "League of Legends",
+          "4ponI5SqbVr2eB1rGltGUm",
+          "Annie Origins - River"
+        ],
+        [
+          "Annie Origins - Transformation (From League of Legends: Season 8)",
+          "League of Legends",
+          "47xuctFGK0EY7qbsR6h6GB",
+          "Annie Origins - Transformation"
+        ],
+        [
+          "Clash - Theme (From League of Legends: Season 8)",
+          "League of Legends",
+          "7cttKRHZdvugyChWYd1MJg",
+          "Clash - Theme"
+        ],
+        [
+          "Eclipse Leona (From League of Legends: Season 8)",
+          "League of Legends",
+          "0Sex6EfgfskzyEF9sp2oib",
+          "Eclipse Leona"
+        ],
+        [
+          "Eyes On MSI - Theme - 2018 (From League of Legends: Season 8)",
+          "League of Legends",
+          "0iuJpvteN3tpbUP5QT1t7a",
+          "Eyes On MSI - Theme - 2018"
+        ],
+        [
+          "Eyes on MSI - Theme - 2018 (Miami) (From League of Legends: Season 8)",
+          "League of Legends",
+          "0unpjhsyJAHPDacewMmn4L",
+          "Eyes on MSI - Theme - 2018 (Miami)"
+        ],
+        [
+          "Eyes on Worlds - Theme - 2018 (From League of Legends: Season 8)",
+          "League of Legends",
+          "0X1NhMm25l4ezm8VbPMGGe",
+          "Eyes on Worlds - Theme - 2018"
+        ],
+        [
+          "VS. 2018: Where Power Lies (From League of Legends: Season 8)",
+          "League of Legends",
+          "0A3SkVQzZ6xEc5cWw3WFRh",
+          "VS. 2018: Where Power Lies"
+        ],
+        [
+          "God-King Darius (From League of Legends: Season 8)",
+          "League of Legends",
+          "4yp2RjuT5oD8BMkWNMp5Vo",
+          "God-King Darius"
+        ],
+        [
+          "God-King Garen (From League of Legends: Season 8)",
+          "League of Legends",
+          "7qiUjwS49USOOAYwhLgPIb",
+          "God-King Garen"
+        ],
+        [
+          "Gun Goddess Miss Fortune (From League of Legends: Season 8)",
+          "League of Legends",
+          "6a2QdVUH2fz1mOxtOe6v8f",
+          "Gun Goddess Miss Fortune"
+        ],
+        [
+          "Irelia, the Blade Dancer (From League of Legends: Season 8)",
+          "League of Legends",
+          "6YLIpb1Pvwkx5iJQ5lIFb5",
+          "Irelia, the Blade Dancer"
+        ],
+        [
+          "Irelia, the Blade Dancer - Trailer (From League of Legends: Season 8)",
+          "League of Legends",
+          "2JdgILbCZsl2NYuDD4fdJc",
+          "Irelia, the Blade Dancer - Trailer"
+        ],
+        [
+          "Kaisa, Daughter of the Void (From League of Legends: Season 8)",
+          "League of Legends",
+          "4rHYw6wTr5HB7ivzq9jTTO",
+          "Kaisa, Daughter of the Void"
+        ],
+        [
+          "Lunar Revel - 2018 (From League of Legends: Season 8)",
+          "League of Legends",
+          "06NsHDHrTuf1AB4EPSAeaD",
+          "Lunar Revel - 2018"
+        ],
+        [
+          "Neeko, the Curious Chameleon (From League of Legends: Season 8)",
+          "League of Legends",
+          "7KWFQVR35I9U6MUwYTceGp",
+          "Neeko, the Curious Chameleon"
+        ],
+        [
+          "Nunu and Willump, the Boy and his Yeti (From League of Legends: Season 8)",
+          "League of Legends",
+          "54AwNpFWuhpnNYpRwluBwu",
+          "Nunu and Willump, the Boy and his Yeti"
+        ],
+        [
+          "Nunu and Willump, the Boy and his Yeti - Trailer (From League of Legends: Season 8)",
+          "League of Legends",
+          "46tA0M1zE7ueWOL7UktZJe",
+          "Nunu and Willump, the Boy and his Yeti - Trailer"
+        ],
+        [
+          "It's Me and You (From League of Legends: Season 8)",
+          "League of Legends, TJ Brown",
+          "6eWRAX0cil0VMZP6L43aRr",
+          "It's Me and You"
+        ],
+        [
+          "Odyssey - Theme (From League of Legends: Season 8)",
+          "League of Legends",
+          "1VtHbH7GvyA8wqLkekb5vB",
+          "Odyssey - Theme"
+        ],
+        [
+          "Odyssey - Map Suite (From League of Legends: Season 8)",
+          "League of Legends",
+          "03o7gbGUlFISHrO9maYzQm",
+          "Odyssey - Map Suite"
+        ],
+        [
+          "Odyssey - Rock Suite - Pt. 1 (From League of Legends: Season 8)",
+          "League of Legends",
+          "2v9IgHcfHJW4bGOjplFjsj",
+          "Odyssey - Rock Suite - Pt. 1"
+        ],
+        [
+          "Odyssey - Rock Suite - Pt. 2 (From League of Legends: Season 8)",
+          "League of Legends",
+          "5uKhBGRNt8SoQcrgxqylLb",
+          "Odyssey - Rock Suite - Pt. 2"
+        ],
+        [
+          "Pool Party - 2018 (From League of Legends: Season 8)",
+          "League of Legends",
+          "0vx2jBVRuCykMxaJW6RQq2",
+          "Pool Party - 2018"
+        ],
+        [
+          "Pyke, the Bloodharbor Ripper (From League of Legends: Season 8)",
+          "League of Legends",
+          "2QJFcMb9BCsK5hVit5RRt6",
+          "Pyke, the Bloodharbor Ripper"
+        ],
+        [
+          "Pyke, the Bloodharbor Ripper - Trailer (From League of Legends: Season 8)",
+          "League of Legends",
+          "5I8r9yZ3wdLClnmDiVvLsF",
+          "Pyke, the Bloodharbor Ripper - Trailer"
+        ],
+        [
+          "Season Start - 2018 (From League of Legends: Season 8)",
+          "League of Legends",
+          "5WmmVBnSSTybR2cnMIKrSN",
+          "Season Start - 2018"
+        ],
+        [
+          "Snowdown 2018 (From League of Legends: Season 8)",
+          "League of Legends",
+          "3UZHrGgwfCejbYADVHCTv7",
+          "Snowdown 2018"
+        ],
+        [
+          "Swain, the Noxian Grand General (From League of Legends: Season 8)",
+          "League of Legends",
+          "26MjENPoNUTacyDAr3VSFM",
+          "Swain, the Noxian Grand General"
+        ],
+        [
+          "Swain, the Noxian Grand General - Trailer (From League of Legends: Season 8)",
+          "League of Legends",
+          "7h0rt80GKeCJgL1wc438wr",
+          "Swain, the Noxian Grand General - Trailer"
+        ],
+        [
+          "The Climb (From League of Legends: Season 8)",
+          "League of Legends",
+          "2rJOmdKP1hUEX4qfjpvh6u",
+          "The Climb"
+        ]
+      ]
+    },
+    {
+      "id": "lol-season-9",
+      "name": "Music of LoL: Season 9",
+      "album": "The Music of League of Legends: Season 9 (Original Game Soundtrack)",
+      "icon": "9️⃣",
+      "color": "aqua",
+      "tags": [
+        "Game",
+        "LoL",
+        "Soundtrack",
+        "Season 9"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/the-music-of-league-of-5",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/3cYnSSnBe1akJwxv64PHOg",
+      "trackCount": 20,
+      "creatorSafe": {
+        "status": "verified",
+        "matchedTracks": 20,
+        "checkedAt": "2026-10-11",
+        "playlistPositions": "1-20",
+        "evidence": "embed"
+      },
+      "tracks": [
+        [
+          "Arcade 2019: ULTRACOMBO (From League of Legends: Season 9)",
+          "League of Legends",
+          "43lwePf9aAtvsPrXBcXDgD",
+          "Arcade 2019: ULTRACOMBO"
+        ],
+        [
+          "Dark Cosmic Jhin (From League of Legends: Season 9)",
+          "League of Legends",
+          "32sO2ACAuGKxSiVZZyCTtk",
+          "Dark Cosmic Jhin"
+        ],
+        [
+          "Galaxy Slayer Zed (From League of Legends: Season 9)",
+          "League of Legends",
+          "29w2VH3Fwy8v80r3c0gmUe",
+          "Galaxy Slayer Zed"
+        ],
+        [
+          "Kayle and Morgana, the Righteous & the Fallen (From League of Legends: Season 9)",
+          "League of Legends",
+          "5PyvuIRDc0cXSd5Yaut3OO",
+          "Kayle and Morgana, the Righteous & the Fallen"
+        ],
+        [
+          "Lunar Revel - 2019 (From League of Legends: Season 9)",
+          "League of Legends",
+          "0xRQ4Fd5CP9AVUVkKVcCMw",
+          "Lunar Revel - 2019"
+        ],
+        [
+          "Mid Season Trials - 2019 (From League of Legends: Season 9)",
+          "League of Legends",
+          "3xB75LvdoVRSRB24LChJl4",
+          "Mid Season Trials - 2019"
+        ],
+        [
+          "Mordekaiser, the Iron Revenant (From League of Legends: Season 9)",
+          "League of Legends",
+          "3GaGIvQCBjGyGdE9enq4XA",
+          "Mordekaiser, the Iron Revenant"
+        ],
+        [
+          "Pantheon, the Unbreakable Spear (From League of Legends: Season 9)",
+          "League of Legends",
+          "3H7onHYWzFhe6M2uW4K1Yf",
+          "Pantheon, the Unbreakable Spear"
+        ],
+        [
+          "PROJECT - 2019 - Trailer 1 (From League of Legends: Season 9)",
+          "League of Legends",
+          "3I6DbOodDCKg5dcmRSBc34",
+          "PROJECT - 2019 - Trailer 1"
+        ],
+        [
+          "PROJECT - 2019 - Trailer 2 (From League of Legends: Season 9)",
+          "League of Legends",
+          "5SAYH4yRqA2YYY1smBKtIR",
+          "PROJECT - 2019 - Trailer 2"
+        ],
+        [
+          "Qiyana, Empress of the Elements (From League of Legends: Season 9)",
+          "League of Legends",
+          "36sx1bpnaergNG0mrtiZzi",
+          "Qiyana, Empress of the Elements"
+        ],
+        [
+          "Star Guardian - 2019 (From League of Legends: Season 9)",
+          "League of Legends",
+          "24yjATtGbLJvTUgiaI8xQ7",
+          "Star Guardian - 2019"
+        ],
+        [
+          "Sylas, the Unshackled (From League of Legends: Season 9)",
+          "League of Legends",
+          "2HI6zONMPfiRSsB3yJORAy",
+          "Sylas, the Unshackled"
+        ],
+        [
+          "Team Fight Tactics - Intro (From League of Legends: Season 9)",
+          "League of Legends",
+          "5AJ3fLP96y3Gl2cpT02fdN",
+          "Team Fight Tactics - Intro"
+        ],
+        [
+          "Team Fight Tactics - Lobby (From League of Legends: Season 9)",
+          "League of Legends",
+          "20EzvV77Tc8hYfPeuSz3y2",
+          "Team Fight Tactics - Lobby"
+        ],
+        [
+          "Team Fight Tactics - Draft (From League of Legends: Season 9)",
+          "League of Legends",
+          "6dVtaUiIDoVUeWzsNU9rxC",
+          "Team Fight Tactics - Draft"
+        ],
+        [
+          "Team Fight Tactics - Chapter 1 (From League of Legends: Season 9)",
+          "League of Legends",
+          "2JgGLTcVZPKn3UPXyJwX8y",
+          "Team Fight Tactics - Chapter 1"
+        ],
+        [
+          "Team Fight Tactics - Chapter 2 (From League of Legends: Season 9)",
+          "League of Legends",
+          "3K3KCWci32h0a8lzCGjLEM",
+          "Team Fight Tactics - Chapter 2"
+        ],
+        [
+          "Team Fight Tactics - Chapter 3 (From League of Legends: Season 9)",
+          "League of Legends",
+          "15HhF4oC839TxbZ4Fw02CK",
+          "Team Fight Tactics - Chapter 3"
+        ],
+        [
+          "Yuumi, the Magical Cat (From League of Legends: Season 9)",
+          "League of Legends",
+          "0fhIhKjiOc1x6ognaXtSPl",
+          "Yuumi, the Magical Cat"
+        ]
+      ]
+    },
+    {
+      "id": "lol-warsongs",
+      "name": "LoL Warsongs (2016)",
+      "album": "Warsongs",
+      "icon": "🎛️",
+      "color": "red",
+      "tags": [
+        "Game",
+        "LoL",
+        "Warsongs",
+        "Remix"
+      ],
+      "soundcloudUrl": "https://soundcloud.com/leagueoflegends/sets/warsongs-7",
+      "spotifyAlbumUrl": "https://open.spotify.com/album/1KHalUH2ZfT38gIdT8MJdn",
+      "trackCount": 11,
+      "creatorSafe": {
+        "status": "partial",
+        "matchedTracks": 10,
+        "checkedAt": "2026-10-12",
+        "playlistBlock": "251-300",
+        "evidence": "mirror",
+        "notFound": [
+          "Silver Scrapes (feat. Proto Shredanoid)"
+        ],
+        "note": "Tracks 1-10 are listed in the 251-300 block under plain titles with the same artists. 'Silver Scrapes' is not among the 977 listed entries; the 2 entries the mirror omits sit in positions 701-750 (2024-era), far from the other Warsongs tracks. The official SoundCloud Creator-Safe Playlist Pt. I also lists tracks 1-5 (remix uploads) at entries 11-15."
+      },
+      "tracks": [
+        [
+          "Piercing Light (feat. Mako)",
+          "League of Legends, Mako",
+          "4kVME8P0uGX7TS6hYtrZ4A",
+          "Piercing Light"
+        ],
+        [
+          "Edge of Infinity (feat. Minnesota)",
+          "League of Legends, Minnesota",
+          "2kGxdcuE98WJfpE0Qzu8mH",
+          "Edge of Infinity"
+        ],
+        [
+          "Welcome to Planet Urf (feat. Jauz)",
+          "League of Legends, Jauz",
+          "5CDGdBlWcwNbDGi4i0y0xZ",
+          "Welcome to Planet Urf"
+        ],
+        [
+          "Project: Yi (feat. Vicetone)",
+          "League of Legends, Vicetone",
+          "6iO7kuuJ596VUD8GhRL783",
+          "Project: Yi"
+        ],
+        [
+          "Flash Funk (feat. Marshmello)",
+          "League of Legends, Marshmello",
+          "5GQ9qkFtWCsCeIqCTxbvBc",
+          "Flash Funk"
+        ],
+        [
+          "Let the Games Begin (feat. Hyper Potions)",
+          "League of Legends, Hyper Potions",
+          "6BkTJk3eerkG3nVJEqikoI",
+          "Let the Games Begin"
+        ],
+        [
+          "Worlds Collide (feat. Arty)",
+          "League of Legends, ARTY",
+          "2KsNlUftzjZLm2TIi2Vi3t",
+          "Worlds Collide"
+        ],
+        [
+          "The Glory (feat. James Egbert)",
+          "League of Legends, James Egbert",
+          "2Ab6vcPSWJeTsmNsLubhMx",
+          "The Glory"
+        ],
+        [
+          "The Boy Who Shattered Time (feat. Mitis)",
+          "League of Legends, MitiS",
+          "66MIKqGHhzX3Q4EZc3nwvd",
+          "The Boy Who Shattered Time"
+        ],
+        [
+          "Lucidity (feat. Dan Negovan)",
+          "League of Legends, Dan Negovan",
+          "6IqYTFNZCLJT6DH7PK1crH",
+          "Lucidity"
+        ],
+        [
+          "Silver Scrapes (feat. Proto Shredanoid)",
+          "League of Legends, Protoshredanoid",
+          "1ZsBcTuBtv9qkHabiwkBm8",
+          "Silver Scrapes"
+        ]
+      ]
+    }
+  ],
+  "popularTracks": {
+    "id": "lol-popular-tracks",
+    "name": "LoL Popular Tracks",
+    "icon": "🔥",
+    "color": "amber",
+    "tags": [
+      "Game",
+      "LoL",
+      "Popular",
+      "SoundCloud"
+    ],
+    "soundcloudUrl": "https://soundcloud.com/leagueoflegends/popular-tracks",
+    "trackCount": 30,
+    "regionBlocked": [
+      "know-my-name-instrumental-teaser",
+      "live-my-life-feat-anderson",
+      "legends-never-die-1"
+    ],
+    "tracks": [
+      [
+        "Legends Never Die (ft. Against The Current) | Worlds 2017 - League of Legends",
+        "League of Legends",
+        "legends-never-die",
+        "Legends Never Die"
+      ],
+      [
+        "RISE (ft. The Glitch Mob, Mako, and The Word Alive) | Worlds 2018 - League of Legends",
+        "League of Legends",
+        "rise-ft-the-glitch-mob-mako-1",
+        "RISE"
+      ],
+      [
+        "GODS",
+        "League of Legends",
+        "gods",
+        ""
+      ],
+      [
+        "Phoenix (ft. Cailin Russo and Chrissy Costanza) | Worlds 2019",
+        "League of Legends",
+        "phoenix-ft-cailin-russo-and-chrissy-costanza-worlds-2019",
+        "Phoenix"
+      ],
+      [
+        "K/DA - POP/STARS (ft Madison Beer, (G)I-DLE, Jaira Burns)",
+        "K/DA",
+        "kda-popstars-ft-madison-beer-gi-dle-jaira-burns",
+        "K/DA - POP/STARS"
+      ],
+      [
+        "K/DA - VILLAIN feat. Madison Beer and Kim Petras",
+        "K/DA",
+        "kda-villain",
+        "K/DA - VILLAIN"
+      ],
+      [
+        "Warriors (ft. 2WEI and Edda Hayes) | Season Start 2020",
+        "League of Legends, 2WEI",
+        "warriors",
+        "Warriors"
+      ],
+      [
+        "Awaken (ft. Valerie Broussard & Ray Chen)",
+        "League of Legends",
+        "awaken-ft-valerie-broussard-ray-chen",
+        "Awaken"
+      ],
+      [
+        "Get Jinxed",
+        "League of Legends",
+        "get-jinxed",
+        ""
+      ],
+      [
+        "K/DA - MORE (feat. Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine)",
+        "K/DA",
+        "kda-more-feat-madison-beer-gi-dle-lexie-liu-jaira-burns-seraphine",
+        "K/DA - MORE"
+      ],
+      [
+        "Piercing Light (Mako Remix)",
+        "League of Legends",
+        "piercing-light-mako-remix",
+        ""
+      ],
+      [
+        "Legends Never Die [Alan Walker Remix] | Worlds 2017 - League of Legends",
+        "Alan Walker",
+        "legends-never-die-alan-walker-remix-worlds-2017-league-of-legends",
+        "Legends Never Die [Alan Walker Remix]"
+      ],
+      [
+        "K/DA - THE BADDEST ft. (G)I-DLE, Bea Miller, Wolftyla",
+        "K/DA",
+        "kda-the-baddest",
+        "K/DA - THE BADDEST"
+      ],
+      [
+        "Bite Marks",
+        "League of Legends, TEYA",
+        "bite-marks",
+        ""
+      ],
+      [
+        "Burn It All Down",
+        "League of Legends, PVRIS",
+        "burn-it-all-down",
+        ""
+      ],
+      [
+        "Still Here",
+        "League of Legends",
+        "still-here",
+        ""
+      ],
+      [
+        "Know My Name (feat. Coco Jones, SOYEON & i-dle)",
+        "True Damage, League of Legends, Sofía Reyes, VIC MENSA",
+        "know-my-name-instrumental-teaser",
+        "Know My Name"
+      ],
+      [
+        "Here, Tomorrow",
+        "League of Legends, Lilas, Kevin Penkin",
+        "here-tomorrow",
+        ""
+      ],
+      [
+        "True Damage - GIANTS (ft. Becky G, Keke Palmer, SOYEON, DUCKWRTH, Thutmose)",
+        "True Damage",
+        "true-damage-giants-ft-becky-g-keke-palmer-soyeon-duckwrth-thutmose",
+        "True Damage - GIANTS"
+      ],
+      [
+        "Take Over (ft. Jeremy McKinnon (A Day To Remember), MAX, Henry) | Worlds 2020",
+        "League of Legends",
+        "take-over-worlds-2020",
+        "Take Over"
+      ],
+      [
+        "The Call",
+        "League of Legends, 2WEI and Louis Leibfried featuring Edda Hayes",
+        "the-call",
+        ""
+      ],
+      [
+        "K/DA - DRUM GO DUM ft. Aluna, Wolftyla, Bekuh BOOM",
+        "K/DA",
+        "kda-drum-go-dum",
+        "K/DA - DRUM GO DUM"
+      ],
+      [
+        "PARANOIA",
+        "League of Legends",
+        "paranoia",
+        ""
+      ],
+      [
+        "Live My Life (feat. Anderson .Paak & Nic D)",
+        "HEARTSTEEL, League of Legends, BAEKHYUN, Connor Price",
+        "live-my-life-feat-anderson",
+        "Live My Life"
+      ],
+      [
+        "Get Jinxed",
+        "League of Legends",
+        "get-jinxed-1",
+        ""
+      ],
+      [
+        "As We Fall",
+        "League of Legends",
+        "as-we-fall-league-of-legends",
+        ""
+      ],
+      [
+        "Legends Never Die",
+        "League of Legends, Against The Current",
+        "legends-never-die-1",
+        ""
+      ],
+      [
+        "Worlds Collide - 2015 World Championship (ft. Nicki Taylor)",
+        "League of Legends",
+        "worlds-collide-2015-world-championship-ft-nicki-taylor",
+        "Worlds Collide - 2015 World Championship"
+      ],
+      [
+        "Ignite (Finals Remix – 2016 League Of Legends World Championship)",
+        "Zedd",
+        "ignite-finals-remix-2016-league-of-legends-world-championship",
+        ""
+      ],
+      [
+        "Lightbringer",
+        "League of Legends",
+        "lightbringer",
+        ""
+      ]
+    ],
+    "creatorSafe": {
+      "status": "mixed",
+      "matchedTracks": 7,
+      "checkedAt": "2026-10-12",
+      "evidence": "mirror",
+      "notFound": [
+        "Legends Never Die (ft. Against The Current) | Worlds 2017 - League of Legends",
+        "RISE (ft. The Glitch Mob, Mako, and The Word Alive) | Worlds 2018 - League of Legends",
+        "GODS",
+        "Phoenix (ft. Cailin Russo and Chrissy Costanza) | Worlds 2019",
+        "K/DA - POP/STARS (ft Madison Beer, (G)I-DLE, Jaira Burns)",
+        "K/DA - VILLAIN feat. Madison Beer and Kim Petras",
+        "Warriors (ft. 2WEI and Edda Hayes) | Season Start 2020",
+        "Awaken (ft. Valerie Broussard & Ray Chen)",
+        "K/DA - MORE (feat. Madison Beer, (G)I-DLE, Lexie Liu, Jaira Burns, Seraphine)",
+        "Legends Never Die [Alan Walker Remix] | Worlds 2017 - League of Legends",
+        "K/DA - THE BADDEST ft. (G)I-DLE, Bea Miller, Wolftyla",
+        "Bite Marks",
+        "Burn It All Down",
+        "Know My Name (feat. Coco Jones, SOYEON & i-dle)",
+        "True Damage - GIANTS (ft. Becky G, Keke Palmer, SOYEON, DUCKWRTH, Thutmose)",
+        "Take Over (ft. Jeremy McKinnon (A Day To Remember), MAX, Henry) | Worlds 2020",
+        "The Call",
+        "K/DA - DRUM GO DUM ft. Aluna, Wolftyla, Bekuh BOOM",
+        "PARANOIA",
+        "Live My Life (feat. Anderson .Paak & Nic D)",
+        "As We Fall",
+        "Legends Never Die",
+        "Ignite (Finals Remix – 2016 League Of Legends World Championship)"
+      ],
+      "note": "7 of 30 found: 'Get Jinxed' (both uploads; listed as League of Legends, Djerv), 'Piercing Light (Mako Remix)' (= Warsongs track 1), 'Still Here', 'Here, Tomorrow', 'Worlds Collide - 2015 World Championship' (listed as League of Legends, Nicki Taylor) and 'Lightbringer' (the 2014 Pentakill song; its SoundCloud page sits in the album 'Pentakill - Smite and Ignite'). The other 23 - Worlds/MSI anthems, K/DA, True Damage, HEARTSTEEL, remixes and other collaboration songs - are not among the 977 listed entries."
+    }
+  }
+}

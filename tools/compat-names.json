@@ -1,0 +1,44 @@
+{
+  "note": "互換名（window 直下の別名）の段階的廃止の一覧。docs/ADDONS.md と tools/check-repo.mjs の両方から参照する正。文書の見出しや文言を変えても検査が落ちないよう、一覧はこのファイルに置く（レビュー4回目の指摘）。一覧を変えるときはこのファイルを直す。",
+  "removedIn": "trk90",
+  "removed": [
+    "activeMods",
+    "analysis",
+    "applySkin",
+    "avatarHit",
+    "bgImage",
+    "bindingSlot",
+    "caption",
+    "chart",
+    "chartDiff",
+    "chartMode",
+    "clock",
+    "currentLevel",
+    "currentSong",
+    "effects",
+    "errors",
+    "fingerprint",
+    "lastMissT",
+    "levelOverride",
+    "loadToken",
+    "mediaName",
+    "mediaURL",
+    "nextIdx",
+    "practice",
+    "pressFlash",
+    "pressH",
+    "safeModeOn",
+    "seekDragging",
+    "videoFilter"
+  ],
+  "retained": [
+    { "name": "chartMeta", "reason": "凍結 js/fx.js が裸のグローバルとして読む（文字列・イベント名のみ）" },
+    { "name": "phase", "reason": "凍結 js/fx.js が裸のグローバルとして読む（文字列・イベント名のみ）" },
+    { "name": "prefs", "reason": "凍結 js/fx.js が裸のグローバルとして読む（文字列・イベント名のみ）" },
+    { "name": "stats", "reason": "凍結 js/fx.js が裸のグローバルとして読む（文字列・イベント名のみ）" },
+    { "name": "videoReady", "reason": "凍結 js/fx.js が裸のグローバルとして読む（文字列・イベント名のみ）" }
+  ],
+  "exempt": [
+    { "name": "_trkStudyRoomOpen", "reason": "読み取り専用の互換フラグ。js/fx.js が読む。33件の一覧には含めない" }
+  ]
+}

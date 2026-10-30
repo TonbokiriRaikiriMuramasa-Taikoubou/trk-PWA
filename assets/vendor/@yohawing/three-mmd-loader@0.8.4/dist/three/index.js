@@ -1,0 +1,943 @@
+import * as THREE from "three";
+import * as mmdAnimWasm from "../parser/wasm/generated/mmd_anim_wasm.js";
+import { FallbackCore, initCore } from "../parser/wasm/index.js";
+import { parseVpd } from "../parser/index.js";
+import { MmdAnimRuntime, DefaultMmdRuntime, createMmdAnimWasmCameraTrack, createMmdAnimWasmLightTrack } from "../runtime/index.js";
+import { createThreeBufferGeometry, createThreeMorphSplitGeometries } from "./geometry.js";
+import { createLoaderMmdModelDataFromModel } from "./modelAssembly.js";
+import { applyThreeMmdMaterialTextures, createThreeMmdMaterials } from "./materials.js";
+import { computeMmdMaterialRenderOrder, mmdMaterialCastsShadow, mmdMaterialCastsSelfShadow, syncMmdModelShadowFlags } from "./material/material-metadata.js";
+import { attachMmdSdefSkinning } from "./material/material-sdef.js";
+import { isModelSource } from "./modelSource.js";
+import { readModelSource, readModelSourceBytes } from "./modelSource.js";
+import { createMmdMaterialRenderOrderMeshes, createMmdOutlineMeshes } from "./outline.js";
+import { createLoaderPerformanceProfile } from "./performance.js";
+import { MMD_SELF_SHADOW_LAYER } from "./shadow.js";
+import { createThreeSkeleton } from "./skeleton.js";
+export { createThreeBufferGeometry, createThreeMorphSplitGeometries } from "./geometry.js";
+export { applyMmdCameraStateToThreeCamera } from "./camera.js";
+export { applyMmdLightStateToThreeDirectionalLight } from "./light.js";
+export { disposeMmdModel } from "./dispose.js";
+export { classifyMmdAssetKind, createMmdFileIndex } from "./assets.js";
+export { createMmdTextureMapFromFiles, findMmdAccessoryFiles, findMmdAudioFiles, findMmdModelFiles, findMmdMotionFiles, isMmdAccessoryFile, isMmdAudioFile, isMmdModelFile, isMmdMotionFile, isMmdTextureFile, normalizeMmdRelativePath } from "./folder.js";
+export { isModelSource } from "./modelSource.js";
+export { applyThreeMmdMaterialTextures, createThreeMmdMaterials } from "./materials.js";
+export { mmdWorldMatrixToThree, syncThreeMmdRuntimeToMesh, syncThreeMmdRuntimeToModel } from "./runtime-sync.js";
+export { applyMmdSelfShadowStateToThreeDirectionalLight, configureMmdSelfShadowDirectionalLight, fitMmdSelfShadowDirectionalLightToBox, MMD_SELF_SHADOW_LAYER } from "./shadow.js";
+export { createThreeSkeleton } from "./skeleton.js";
+export { attachMmdMaterialMetadata, computeMmdMaterialRenderOrder, materialTransparencyMode, mmdMaterialAlphaTest, mmdMaterialCastsShadow, mmdMaterialDepthWrite, mmdMaterialMorphCanAffectAlpha, mmdMaterialSuppressesColorAtAlpha, mmdMaterialTransparencyMode, syncMmdModelShadowFlags } from "./material/material-metadata.js";
+export { attachMmdMaterialFactors, attachMmdSphereTexture, materialHasTextureMap, mmdSphereModeToUniform } from "./material/material-shader-hooks.js";
+export { syncMmdMaterialStates, syncMmdSpecularDirection } from "./material/material-sync.js";
+export { attachMmdOutlineExpansion, createMmdMaterialRenderOrderMeshes, createMmdOutlineMeshes, syncMmdOutlineMaterialStates } from "./outline.js";
+export { attachMmdSdefSkinning, computeMmdSdefSkinnedNormal, computeMmdSdefSkinnedPosition } from "./material/material-sdef.js";
+export { computeQdefSkinnedNormal, computeQdefSkinnedPosition } from "./material/material-qdef.js";
+export { createMmdBuiltInToonTextureMap, createTextureResolver, defaultSharedToonTexturePath, getDefaultToonGradientMap, isMmdDdsTexturePath, normalizeMmdTexturePath, resolveMappedTexture, resolveMmdToonTextureReference } from "./textures.js";
+export class ThreeMmdLoader {
+    options;
+    textureCache = new Map();
+    corePromise;
+    fallbackCore;
+    useExplicitCore;
+    coreDiagnostic;
+    implicitMmdAnimWasmReady = false;
+    constructor(options = {}) {
+        this.options = options;
+        validateLoaderOptions(options);
+        this.useExplicitCore = options.core !== undefined;
+        this.coreDiagnostic = this.useExplicitCore ? { kind: "provided" } : { kind: "wasm" };
+        if (options.core) {
+            this.corePromise = Promise.resolve(options.core);
+        }
+    }
+    async loadModel(source, options = {}) {
+        validateModelSource(source, "loadModel");
+        validateLoadModelOptions(options);
+        const profile = createLoaderPerformanceProfile(describeModelSourceForPerformance(source), normalizeLoaderPerformanceOptions(this.options.performance));
+        profile?.mark("start");
+        try {
+            const { bytes, diagnostic: sourceDiagnostic } = await readModelSource(source, {
+                fetch: options.fetch ?? this.options.fetch,
+                signal: options.signal
+            });
+            profile?.mark("bytes");
+            const core = await this.getCore();
+            profile?.mark("core-ready");
+            const { model: parsedModel, coreDiagnostic } = this.loadCoreModel(core, bytes);
+            const modelData = createLoaderMmdModelDataFromModel(parsedModel);
+            let parsedModelDisposed = false;
+            try {
+                profile?.mark("parsed");
+                const mesh = createThreeMmdMesh(modelData, {
+                    morphSplit: options.morphSplit ?? true,
+                    morphAttributes: options.morphAttributes ?? true
+                });
+                parsedModel.dispose?.();
+                parsedModelDisposed = true;
+                profile?.mark("mesh");
+                const materials = normalizeMeshMaterials(mesh.material);
+                warnDeprecatedLoadModelOptions(options);
+                const effectiveOutlines = options.outline ?? options.outlines ?? true;
+                const sourceDescriptor = createModelSourceDescriptor(source, bytes.byteLength);
+                const materialDiagnostics = [];
+                const texturePromise = applyThreeMmdMaterialTextures(materials, modelData.materials, {
+                    textureResolver: this.options.textureResolver,
+                    textureMap: this.options.textureMap,
+                    textureLoader: this.options.textureLoader,
+                    ddsLoader: this.options.ddsLoader,
+                    modelUrl: typeof source === "string" ? source : undefined,
+                    geometry: mesh.geometry,
+                    morphs: modelData.morphs,
+                    geometryAwareAlpha: this.options.geometryAwareAlpha || effectiveOutlines,
+                    materialDiagnostics,
+                    textureCache: this.textureCache
+                });
+                const textureDiagnostics = await texturePromise;
+                profile?.mark("textures");
+                const runtime = this.createRuntime({
+                    modelBytes: bytes,
+                    mesh,
+                    source: sourceDescriptor
+                });
+                profile?.mark("runtime-ready");
+                const renderOrder = computeMmdMaterialRenderOrder(materials.map((material, materialIndex) => ({
+                    materialIndex,
+                    transparencyMode: material.userData.mmdMaterial?.transparencyMode ?? "opaque"
+                })));
+                mesh.userData.mmdMaterialRenderOrder = renderOrder;
+                syncMmdModelShadowFlags(mesh, modelData.materials);
+                if (options.frustumCulled !== undefined) {
+                    mesh.frustumCulled = options.frustumCulled;
+                }
+                syncMorphSplitBodyMeshRenderState(mesh, modelData.materials);
+                profile?.mark("materials");
+                const model = createThreeMmdModel({
+                    mesh,
+                    runtime,
+                    source: sourceDescriptor,
+                    sourceDiagnostic,
+                    coreDiagnostic,
+                    textureDiagnostics,
+                    materialDiagnostics,
+                    performanceDiagnostics: profile?.measures ?? [],
+                    materials: modelData.materials,
+                    outlines: effectiveOutlines,
+                    renderOrderProxies: options.materialRenderOrder ?? options.renderOrderProxies ?? true
+                });
+                profile?.mark("assembled");
+                profile?.measure("read-bytes", "start", "bytes");
+                profile?.measure("parse-model", "bytes", "parsed");
+                profile?.measure("create-mesh", "parsed", "mesh");
+                profile?.measure("load-textures", "mesh", "textures");
+                profile?.measure("material-metadata", "textures", "materials");
+                profile?.measure("assemble-model", "materials", "assembled");
+                profile?.measure("total", "start", "assembled");
+                profile?.measure("init-core", "bytes", "core-ready");
+                profile?.measure("parse-only", "core-ready", "parsed");
+                profile?.measure("init-runtime", "textures", "runtime-ready");
+                profile?.measure("create-proxies", "materials", "assembled");
+                return model;
+            }
+            finally {
+                if (!parsedModelDisposed) {
+                    parsedModel.dispose?.();
+                }
+            }
+        }
+        finally {
+            profile?.clear();
+        }
+    }
+    createRuntime(context) {
+        const explicitRuntime = this.options.runtimeFactory?.(context);
+        if (explicitRuntime) {
+            return explicitRuntime;
+        }
+        if (this.canCreateImplicitMmdAnimRuntime(context)) {
+            try {
+                return MmdAnimRuntime.fromPmxBytes(mmdAnimWasm, context.modelBytes, normalizeMmdAnimRuntimeOptions(this.options.runtime));
+            }
+            catch {
+                return new DefaultMmdRuntime(this.options.runtime);
+            }
+        }
+        return new DefaultMmdRuntime(this.options.runtime);
+    }
+    canCreateImplicitMmdAnimRuntime(context) {
+        return (this.implicitMmdAnimWasmReady &&
+            !this.useExplicitCore &&
+            isPmxBytes(context.modelBytes) &&
+            this.options.runtime?.physics !== "stateful-spring");
+    }
+    getCore() {
+        this.corePromise ??= this.initCoreWithObservableFallback();
+        return this.corePromise;
+    }
+    async initCoreWithObservableFallback() {
+        try {
+            const core = await initCore();
+            if (core instanceof FallbackCore) {
+                this.fallbackCore = core;
+                this.coreDiagnostic = {
+                    kind: "fallback",
+                    operation: "initCore",
+                    reason: "WASM core disabled; using TypeScript fallback parser."
+                };
+                this.implicitMmdAnimWasmReady = false;
+            }
+            else {
+                this.coreDiagnostic = { kind: "wasm" };
+                this.implicitMmdAnimWasmReady = true;
+            }
+            return core;
+        }
+        catch (error) {
+            this.options.onCoreFallback?.({ operation: "initCore", error });
+            this.coreDiagnostic = {
+                kind: "fallback",
+                operation: "initCore",
+                reason: formatDiagnosticReason(error)
+            };
+            this.implicitMmdAnimWasmReady = false;
+            this.fallbackCore ??= new FallbackCore();
+            return this.fallbackCore;
+        }
+    }
+    loadCoreModel(core, bytes) {
+        try {
+            const model = core.loadModel(bytes);
+            return {
+                model,
+                coreDiagnostic: this.createSuccessfulCoreDiagnostic(core)
+            };
+        }
+        catch (error) {
+            if (this.useExplicitCore) {
+                throw error;
+            }
+            this.options.onCoreFallback?.({ operation: "loadModel", error });
+            const coreDiagnostic = {
+                kind: "fallback",
+                operation: "loadModel",
+                reason: formatDiagnosticReason(error)
+            };
+            this.fallbackCore ??= new FallbackCore();
+            return {
+                model: this.fallbackCore.loadModel(bytes),
+                coreDiagnostic
+            };
+        }
+    }
+    loadCoreVmd(core, bytes) {
+        try {
+            const animation = core.loadVmd(bytes);
+            this.recordSuccessfulCoreUse(core);
+            return animation;
+        }
+        catch (error) {
+            if (this.useExplicitCore) {
+                throw error;
+            }
+            this.options.onCoreFallback?.({ operation: "loadVmd", error });
+            this.coreDiagnostic = {
+                kind: "fallback",
+                operation: "loadVmd",
+                reason: formatDiagnosticReason(error)
+            };
+            this.fallbackCore ??= new FallbackCore();
+            return this.fallbackCore.loadVmd(bytes);
+        }
+    }
+    recordSuccessfulCoreUse(core) {
+        this.coreDiagnostic = this.createSuccessfulCoreDiagnostic(core);
+    }
+    createSuccessfulCoreDiagnostic(core) {
+        if (this.useExplicitCore) {
+            return { kind: "provided" };
+        }
+        if (core !== this.fallbackCore) {
+            return { kind: "wasm" };
+        }
+        return this.coreDiagnostic;
+    }
+    async loadAnimation(source) {
+        validateModelSource(source, "loadAnimation");
+        const bytes = await readModelSourceBytes(source, { fetch: this.options.fetch });
+        if (bytes.byteLength === 0) {
+            throw createEmptySourceError("loadAnimation");
+        }
+        const core = await this.getCore();
+        const animation = this.loadCoreVmd(core, bytes);
+        return {
+            source,
+            name: animation.metadata.modelName,
+            animation
+        };
+    }
+    createCameraTrack(animation) {
+        if (!this.implicitMmdAnimWasmReady || this.useExplicitCore) {
+            return undefined;
+        }
+        const mmdAnimation = unwrapThreeMmdAnimation(animation);
+        if (mmdAnimation.bytes.byteLength === 0 ||
+            (mmdAnimation.metadata.counts.cameras === 0 && mmdAnimation.cameraFrames.length === 0)) {
+            return undefined;
+        }
+        try {
+            return createMmdAnimWasmCameraTrack(mmdAnimWasm, mmdAnimation.bytes);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    createLightTrack(animation) {
+        if (!this.implicitMmdAnimWasmReady || this.useExplicitCore) {
+            return undefined;
+        }
+        const mmdAnimation = unwrapThreeMmdAnimation(animation);
+        if (mmdAnimation.bytes.byteLength === 0 ||
+            (mmdAnimation.metadata.counts.lights === 0 && mmdAnimation.lightFrames.length === 0)) {
+            return undefined;
+        }
+        try {
+            return createMmdAnimWasmLightTrack(mmdAnimWasm, mmdAnimation.bytes);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    async loadPose(source) {
+        validateModelSource(source, "loadPose");
+        const bytes = await readModelSourceBytes(source, { fetch: this.options.fetch });
+        if (bytes.byteLength === 0) {
+            throw createEmptySourceError("loadPose");
+        }
+        return {
+            source,
+            pose: parseVpd(bytes)
+        };
+    }
+    async loadPoseAnimation(source, name = "pose") {
+        validateModelSource(source, "loadPoseAnimation");
+        const bytes = await readModelSourceBytes(source, { fetch: this.options.fetch });
+        if (bytes.byteLength === 0) {
+            throw createEmptySourceError("loadPoseAnimation");
+        }
+        const pose = parseVpd(bytes);
+        const animation = createMmdAnimationFromPose(pose, name);
+        return {
+            source,
+            name,
+            animation
+        };
+    }
+}
+function createThreeMmdModel(options) {
+    const bodyMeshes = readMorphSplitBodyMeshes(options.mesh);
+    const outlineSources = bodyMeshes.length > 0 ? bodyMeshes : [options.mesh];
+    const outlineMeshes = options.outlines
+        ? outlineSources.flatMap((mesh) => createMmdOutlineMeshes({
+            mesh,
+            materials: options.materials
+        }))
+        : [];
+    if (options.materials.some((material) => mmdMaterialCastsSelfShadow(material.flags))) {
+        options.mesh.layers.enable(MMD_SELF_SHADOW_LAYER);
+    }
+    outlineMeshes.forEach((outline) => {
+        syncMmdModelShadowFlags(outline, options.materials);
+        outline.frustumCulled = options.mesh.frustumCulled;
+    });
+    // MMD-compatible material order and per-material shadow flags need body
+    // proxies; outline proxies then interleave with the same material order.
+    const renderOrderMeshes = options.renderOrderProxies && bodyMeshes.length === 0
+        ? createMmdMaterialRenderOrderMeshes({
+            mesh: options.mesh,
+            materials: options.materials
+        }, {
+            shadowOnly: !options.outlines
+        })
+        : [];
+    if (renderOrderMeshes.length > 0 || bodyMeshes.length > 0) {
+        options.mesh.geometry.setDrawRange(0, 0);
+    }
+    if (renderOrderMeshes.length > 0) {
+        options.mesh.castShadow = false;
+    }
+    const object = new THREE.Group();
+    object.name = options.mesh.name;
+    object.add(options.mesh, ...bodyMeshes, ...renderOrderMeshes, ...outlineMeshes);
+    const runtimeTickOptions = { mesh: object };
+    return {
+        root: object,
+        get object() {
+            warnDeprecatedApi("ThreeMmdModel.object", "ThreeMmdModel.root");
+            return object;
+        },
+        mesh: options.mesh,
+        outlineMeshes,
+        renderOrderMeshes,
+        runtime: options.runtime,
+        source: options.source,
+        diagnostics: {
+            core: options.coreDiagnostic,
+            source: options.sourceDiagnostic,
+            textures: options.textureDiagnostics,
+            materials: options.materialDiagnostics,
+            performance: options.performanceDiagnostics
+        },
+        get textureDiagnostics() {
+            warnDeprecatedApi("ThreeMmdModel.textureDiagnostics", "ThreeMmdModel.diagnostics.textures");
+            return options.textureDiagnostics;
+        },
+        setAnimation(animation) {
+            options.runtime.setAnimation(unwrapThreeMmdAnimation(animation), options.mesh);
+        },
+        update(seconds, updateOptions) {
+            runtimeTickOptions.physics = updateOptions?.physics;
+            runtimeTickOptions.ik = updateOptions?.ik;
+            runtimeTickOptions.morphOverrides = updateOptions?.morphOverrides;
+            return options.runtime.tick(seconds, runtimeTickOptions);
+        },
+        updateAsync(seconds, updateOptions) {
+            runtimeTickOptions.physics = updateOptions?.physics;
+            runtimeTickOptions.ik = updateOptions?.ik;
+            runtimeTickOptions.morphOverrides = updateOptions?.morphOverrides;
+            const tickAsync = options.runtime.tickAsync;
+            if (tickAsync) {
+                return tickAsync.call(options.runtime, seconds, {
+                    ...runtimeTickOptions,
+                    signal: updateOptions?.signal
+                });
+            }
+            const state = options.runtime.tick(seconds, runtimeTickOptions);
+            return Promise.resolve({
+                seconds: state.seconds,
+                frame: state.frame,
+                frameRate: state.frameRate
+            });
+        }
+    };
+}
+function unwrapThreeMmdAnimation(animation) {
+    return "animation" in animation ? animation.animation : animation;
+}
+const deprecatedApiWarnings = new Set();
+function warnDeprecatedLoadModelOptions(options) {
+    if (options.outlines !== undefined) {
+        warnDeprecatedApi("ThreeMmdLoadModelOptions.outlines", "outline");
+    }
+    if (options.renderOrderProxies !== undefined) {
+        warnDeprecatedApi("ThreeMmdLoadModelOptions.renderOrderProxies", "materialRenderOrder");
+    }
+}
+function validateLoadModelOptions(options) {
+    if (typeof options !== "object" || options === null || Array.isArray(options)) {
+        throw new TypeError("ThreeMmdLoader.loadModel options must be an object");
+    }
+    if (options.fetch !== undefined && typeof options.fetch !== "function") {
+        throw new TypeError("ThreeMmdLoader.loadModel fetch must be a function");
+    }
+    if (options.morphSplit !== undefined && typeof options.morphSplit !== "boolean") {
+        throw new TypeError("ThreeMmdLoader.loadModel morphSplit must be a boolean");
+    }
+    if (options.morphAttributes !== undefined && typeof options.morphAttributes !== "boolean") {
+        throw new TypeError("ThreeMmdLoader.loadModel morphAttributes must be a boolean");
+    }
+}
+function warnDeprecatedApi(name, replacement) {
+    if (deprecatedApiWarnings.has(name)) {
+        return;
+    }
+    deprecatedApiWarnings.add(name);
+    globalThis.console?.warn?.(`[three-mmd-loader] ${name} is deprecated and will be removed in the next breaking release. Use ${replacement} instead.`);
+}
+function readMorphSplitBodyMeshes(mesh) {
+    const bodyMeshes = mesh.userData.mmdMorphSplitBodyMeshes;
+    return Array.isArray(bodyMeshes)
+        ? bodyMeshes.filter((candidate) => isSkinnedMesh(candidate))
+        : [];
+}
+function isSkinnedMesh(value) {
+    return (value instanceof THREE.SkinnedMesh ||
+        (typeof value === "object" &&
+            value !== null &&
+            value.isSkinnedMesh === true));
+}
+function syncMorphSplitBodyMeshRenderState(mesh, materials) {
+    const bodyMeshes = readMorphSplitBodyMeshes(mesh);
+    if (bodyMeshes.length === 0) {
+        return;
+    }
+    const renderOrder = mesh.userData.mmdMaterialRenderOrder;
+    const renderOrderByMaterial = new Map((renderOrder ?? []).map((entry) => [entry.materialIndex, entry.renderOrder]));
+    for (const body of bodyMeshes) {
+        const materialIndex = body.userData.mmdMorphSplitBody?.materialIndex;
+        if (typeof materialIndex !== "number") {
+            continue;
+        }
+        body.renderOrder = (renderOrderByMaterial.get(materialIndex) ?? materialIndex) * 2;
+        body.userData.mmdMaterialRenderOrder = [{
+                materialIndex,
+                bucket: renderOrder?.find((entry) => entry.materialIndex === materialIndex)?.bucket ?? "opaque",
+                renderOrder: 0
+            }];
+        body.frustumCulled = mesh.frustumCulled;
+        const material = materials[materialIndex];
+        body.castShadow = !!material && mmdMaterialCastsShadow(material.flags);
+        body.receiveShadow = !!material?.flags.selfShadow;
+    }
+}
+function createModelSourceDescriptor(source, byteLength) {
+    if (typeof source === "string") {
+        return {
+            kind: "url",
+            byteLength,
+            name: source.split(/[\\/]/).at(-1)
+        };
+    }
+    if (typeof File !== "undefined" && source instanceof File) {
+        return {
+            kind: "file",
+            byteLength,
+            name: source.name || undefined
+        };
+    }
+    return {
+        kind: "bytes",
+        byteLength
+    };
+}
+function describeModelSourceForPerformance(source) {
+    if (typeof source === "string") {
+        return `url:${source.split(/[\\/]/).at(-1) ?? "model"}`;
+    }
+    if (typeof File !== "undefined" && source instanceof File) {
+        return `file:${source.name || "model"}`;
+    }
+    if (source instanceof Uint8Array) {
+        return `bytes:${source.byteLength}`;
+    }
+    if (source instanceof ArrayBuffer) {
+        return `array-buffer:${source.byteLength}`;
+    }
+    return "model";
+}
+function createEmptySourceError(method) {
+    return new Error(`ThreeMmdLoader.${method} source must not be empty`);
+}
+function normalizeLoaderPerformanceOptions(performanceOptions) {
+    if (performanceOptions === true) {
+        return { enabled: true };
+    }
+    if (performanceOptions && typeof performanceOptions === "object") {
+        return performanceOptions;
+    }
+    return {};
+}
+function formatDiagnosticReason(error) {
+    if (error instanceof Error) {
+        return error.message;
+    }
+    return String(error);
+}
+function createThreeMmdMesh(modelData, options) {
+    const splitGeometries = options.morphAttributes && options.morphSplit && shouldCreateMorphSplitMeshes(modelData)
+        ? createThreeMorphSplitGeometries(modelData.geometry, modelData.materials, modelData.morphs)
+        : [];
+    const geometry = createThreeBufferGeometry(modelData.geometry, modelData.materials, splitGeometries.length > 0 ? [] : modelData.morphs, { morphAttributes: options.morphAttributes });
+    const materials = createThreeMmdMaterials(modelData.materials);
+    if (geometry.userData.mmdSdef || geometry.userData.mmdQdef) {
+        materials.forEach((material) => attachMmdSdefSkinning(material));
+    }
+    const mesh = new THREE.SkinnedMesh(geometry, materials.length === 1 ? materials[0] : materials);
+    const bodyMeshes = splitGeometries.map((split) => {
+        const body = new THREE.SkinnedMesh(split.geometry, materials);
+        body.name = `${modelData.metadata.englishName || modelData.metadata.name || "mmd"} material ${split.materialIndex}`;
+        body.frustumCulled = mesh.frustumCulled;
+        body.morphTargetDictionary = createMorphTargetDictionaryForIndices(modelData.morphs, split.morphTargetIndices);
+        body.morphTargetInfluences = new Array(split.morphTargetIndices.length).fill(0);
+        body.userData.mmdMorphSplitBody = {
+            materialIndex: split.materialIndex,
+            morphTargetIndices: split.morphTargetIndices,
+            sourceVertexCount: split.sourceVertexCount,
+            vertexCount: split.vertexCount,
+            morphPositionAttributeCount: split.morphPositionAttributeCount
+        };
+        return body;
+    });
+    mesh.morphTargetDictionary = createMorphTargetDictionary(modelData.morphs);
+    mesh.morphTargetInfluences = new Array(modelData.morphs.length).fill(0);
+    bodyMeshes.forEach((body) => {
+        attachMorphSplitInfluenceSync(mesh, body);
+    });
+    mesh.name = modelData.metadata.englishName || modelData.metadata.name;
+    mesh.userData.mmdModel = {
+        format: modelData.metadata.format,
+        name: modelData.metadata.name,
+        englishName: modelData.metadata.englishName,
+        comment: modelData.metadata.comment,
+        englishComment: modelData.metadata.englishComment,
+        diagnostics: modelData.metadata.diagnostics.map((diagnostic) => ({ ...diagnostic })),
+        rigidBodyCount: modelData.rigidBodies.length,
+        jointCount: modelData.joints.length
+    };
+    mesh.userData.mmdPhysics = {
+        rigidBodies: modelData.rigidBodies.map((body) => ({
+            name: body.name,
+            englishName: body.englishName,
+            boneIndex: body.boneIndex,
+            group: body.group,
+            mask: body.mask,
+            shape: body.shape,
+            mode: body.mode,
+            size: [...body.size],
+            position: [...body.position],
+            rotation: [...body.rotation],
+            mass: body.mass,
+            linearDamping: body.linearDamping,
+            angularDamping: body.angularDamping,
+            restitution: body.restitution,
+            friction: body.friction
+        })),
+        joints: modelData.joints.map((joint) => ({
+            name: joint.name,
+            englishName: joint.englishName,
+            rigidBodyIndexA: joint.rigidBodyIndexA,
+            rigidBodyIndexB: joint.rigidBodyIndexB,
+            position: [...joint.position],
+            rotation: [...joint.rotation],
+            translationLowerLimit: [...joint.translationLowerLimit],
+            translationUpperLimit: [...joint.translationUpperLimit],
+            rotationLowerLimit: [...joint.rotationLowerLimit],
+            rotationUpperLimit: [...joint.rotationUpperLimit],
+            springTranslationFactor: [...joint.springTranslationFactor],
+            springRotationFactor: [...joint.springRotationFactor]
+        }))
+    };
+    mesh.userData.mmdMorphs = modelData.morphs.map((morph) => ({
+        name: morph.name,
+        englishName: morph.englishName,
+        type: morph.type,
+        boneOffsets: morph.boneOffsets.map((offset) => ({ ...offset })),
+        groupOffsets: morph.groupOffsets.map((offset) => ({ ...offset })),
+        flipOffsets: morph.flipOffsets?.map((offset) => ({ ...offset })),
+        impulseOffsets: morph.impulseOffsets?.map((offset) => ({ ...offset }))
+    }));
+    mesh.userData.mmdIkChains = createRuntimeIkChains(modelData);
+    if (bodyMeshes.length > 0) {
+        mesh.userData.mmdMorphSplitBodyMeshes = bodyMeshes;
+        mesh.userData.mmdMorphSplit = {
+            sourceVertexCount: modelData.geometry.positions.length / 3,
+            bodyMeshCount: bodyMeshes.length,
+            splitVertexCount: bodyMeshes.reduce((sum, body) => {
+                const position = body.geometry.getAttribute("position");
+                return sum + (position?.count ?? 0);
+            }, 0)
+        };
+    }
+    const skeleton = createThreeSkeleton(modelData.skeleton);
+    skeleton.bones.forEach((bone, index) => {
+        const boneData = modelData.skeleton.bones[index];
+        if (boneData) {
+            bone.userData.mmdBoneName = boneData.name;
+            bone.userData.mmdEnglishBoneName = boneData.englishName;
+            bone.userData.mmdRestPosition = [...boneData.position];
+            if (boneData.ikStateName !== undefined) {
+                bone.userData.mmdIkStateName = boneData.ikStateName;
+            }
+        }
+        if (boneData?.appendTransform) {
+            bone.userData.mmdAppendTransform = boneData.appendTransform;
+        }
+        if (boneData?.flags) {
+            bone.userData.mmdFlags = boneData.flags;
+        }
+        if (boneData?.layer !== undefined) {
+            bone.userData.mmdLayer = boneData.layer;
+        }
+    });
+    skeleton.bones.forEach((bone) => {
+        if (!bone.parent) {
+            mesh.add(bone);
+        }
+    });
+    mesh.bind(skeleton);
+    bodyMeshes.forEach((body) => {
+        body.bind(skeleton, mesh.bindMatrix);
+        attachMorphSplitInfluenceSync(mesh, body);
+    });
+    return mesh;
+}
+function createMorphTargetDictionaryForIndices(morphs, morphTargetIndices) {
+    const dictionary = {};
+    for (let localIndex = 0; localIndex < morphTargetIndices.length; localIndex += 1) {
+        const morph = morphs[morphTargetIndices[localIndex] ?? -1];
+        if (!morph) {
+            continue;
+        }
+        const primaryName = morph.name || morph.englishName;
+        const secondaryName = morph.englishName || morph.name;
+        if (primaryName) {
+            dictionary[primaryName] = localIndex;
+        }
+        if (secondaryName && dictionary[secondaryName] === undefined) {
+            dictionary[secondaryName] = localIndex;
+        }
+    }
+    return dictionary;
+}
+function attachMorphSplitInfluenceSync(source, target) {
+    const split = target.userData.mmdMorphSplitBody;
+    const morphTargetIndices = split?.morphTargetIndices;
+    if (!morphTargetIndices || target.userData.mmdMorphSplitInfluenceSyncAttached) {
+        return;
+    }
+    const previousOnBeforeRender = target.onBeforeRender.bind(target);
+    target.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
+        previousOnBeforeRender(renderer, scene, camera, geometry, material, group);
+        const sourceInfluences = source.morphTargetInfluences;
+        const targetInfluences = target.morphTargetInfluences;
+        if (!sourceInfluences || !targetInfluences) {
+            return;
+        }
+        for (let index = 0; index < morphTargetIndices.length; index += 1) {
+            targetInfluences[index] = sourceInfluences[morphTargetIndices[index] ?? -1] ?? 0;
+        }
+    };
+    target.userData.mmdMorphSplitInfluenceSyncAttached = true;
+}
+function shouldCreateMorphSplitMeshes(modelData) {
+    const vertexCount = modelData.geometry.positions.length / 3;
+    const groups = modelData.geometry.materialGroups?.length ?? modelData.materials.length;
+    if (vertexCount <= 0 || groups <= 1) {
+        return false;
+    }
+    const morphTargetCount = modelData.morphs.filter((morph) => morph.type === "vertex" || morph.type === "uv" || morph.type === "additionalUv").length;
+    if (morphTargetCount === 0) {
+        return false;
+    }
+    const estimatedDenseBytes = vertexCount * morphTargetCount * 3 * Float32Array.BYTES_PER_ELEMENT;
+    return estimatedDenseBytes >= 64 * 1024 * 1024;
+}
+function createRuntimeIkChains(modelData) {
+    return modelData.skeleton.bones
+        .map((bone, boneIndex) => {
+        if (!bone.ik) {
+            return null;
+        }
+        return {
+            goalBoneIndex: boneIndex,
+            effectorBoneIndex: bone.ik.targetIndex,
+            iterationCount: bone.ik.loopCount,
+            maxAnglePerIteration: bone.ik.limitAngle,
+            links: bone.ik.links.map((link) => ({
+                boneIndex: link.boneIndex,
+                enabled: true,
+                fixedAxis: createRuntimeIkLinkFixedAxis(modelData, link.boneIndex),
+                localAxisBasis: createRuntimeIkLinkLocalAxisBasis(modelData, link.boneIndex),
+                limitsKind: link.limits === undefined
+                    ? undefined
+                    : link.limits.kind === "pmdKnee"
+                        ? "pmdKnee"
+                        : "pmxLinkLimit",
+                angleLimit: link.limits
+                    ? {
+                        minimumAngle: link.limits.lower,
+                        maximumAngle: link.limits.upper
+                    }
+                    : undefined
+            }))
+        };
+    })
+        .filter((chain) => chain !== null);
+}
+function createRuntimeIkLinkFixedAxis(modelData, boneIndex) {
+    const bone = modelData.skeleton.bones[boneIndex];
+    const fixedAxis = bone?.fixedAxis;
+    if (!bone?.flags?.hasFixedAxis ||
+        !fixedAxis ||
+        !fixedAxis.every(Number.isFinite) ||
+        Math.hypot(fixedAxis[0], fixedAxis[1], fixedAxis[2]) < 1e-12) {
+        return undefined;
+    }
+    return [fixedAxis[0], fixedAxis[1], fixedAxis[2]];
+}
+function createRuntimeIkLinkLocalAxisBasis(modelData, boneIndex) {
+    const bone = modelData.skeleton.bones[boneIndex];
+    const localAxis = bone?.localAxis;
+    if (!bone?.flags?.hasLocalAxis || !localAxis) {
+        return undefined;
+    }
+    const x = new THREE.Vector3(...localAxis.x);
+    const z = new THREE.Vector3(...localAxis.z);
+    if (!localAxis.x.every(Number.isFinite) ||
+        !localAxis.z.every(Number.isFinite) ||
+        x.lengthSq() < 1e-12 ||
+        z.lengthSq() < 1e-12) {
+        return undefined;
+    }
+    x.normalize();
+    z.addScaledVector(x, -z.dot(x));
+    if (z.lengthSq() < 1e-12) {
+        return undefined;
+    }
+    z.normalize();
+    const y = new THREE.Vector3().crossVectors(z, x).normalize();
+    z.crossVectors(x, y).normalize();
+    const basis = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, y, z));
+    return [basis.x, basis.y, basis.z, basis.w];
+}
+function createMorphTargetDictionary(morphs) {
+    const dictionary = {};
+    morphs.forEach((morph, index) => {
+        const primaryName = morph.name || morph.englishName;
+        const secondaryName = morph.englishName || morph.name;
+        if (primaryName) {
+            dictionary[primaryName] = index;
+        }
+        if (secondaryName && dictionary[secondaryName] === undefined) {
+            dictionary[secondaryName] = index;
+        }
+    });
+    return dictionary;
+}
+function createMmdAnimationFromPose(pose, name) {
+    const boneTracks = {};
+    for (const [boneName, bonePose] of Object.entries(pose.bones)) {
+        boneTracks[boneName] = {
+            packed: "bone",
+            frames: new Uint32Array([0]),
+            translations: new Float32Array(bonePose.translation),
+            rotations: new Float32Array(bonePose.rotation),
+            interpolations: new Float32Array(16),
+            physicsToggles: new Int8Array([-1])
+        };
+    }
+    return {
+        kind: "vmd",
+        bytes: pose.bytes,
+        metadata: {
+            modelName: pose.metadata.modelFile,
+            counts: {
+                bones: Object.keys(boneTracks).length,
+                morphs: 0,
+                cameras: 0,
+                lights: 0,
+                selfShadows: 0,
+                properties: 0
+            },
+            maxFrame: 0,
+            name
+        },
+        boneTracks,
+        morphTracks: {},
+        cameraFrames: [],
+        lightFrames: [],
+        selfShadowFrames: [],
+        propertyFrames: []
+    };
+}
+function normalizeMeshMaterials(material) {
+    const materials = Array.isArray(material) ? material : [material];
+    return materials.filter((candidate) => {
+        return candidate instanceof THREE.MeshToonMaterial;
+    });
+}
+function normalizeMmdAnimRuntimeOptions(options) {
+    return {
+        frameRate: options?.frameRate,
+        initialSeconds: options?.initialSeconds,
+        physics: options?.physics === "external" ? "external" : "none",
+        physicsBackend: options?.physicsBackend,
+        ikTolerance: options?.ikTolerance,
+        ikMaxIterationsCap: options?.ikMaxIterationsCap
+    };
+}
+function isPmxBytes(bytes) {
+    return (bytes.byteLength >= 4 &&
+        bytes[0] === 0x50 &&
+        bytes[1] === 0x4d &&
+        bytes[2] === 0x58 &&
+        bytes[3] === 0x20);
+}
+function validateLoaderOptions(options) {
+    if (typeof options !== "object" || options === null || Array.isArray(options)) {
+        throw new TypeError("ThreeMmdLoader options must be an object");
+    }
+    if (options.textureResolver !== undefined) {
+        if (typeof options.textureResolver !== "object" || options.textureResolver === null) {
+            throw new TypeError("ThreeMmdLoader textureResolver must be an object");
+        }
+        if (typeof options.textureResolver.resolve !== "function") {
+            throw new TypeError("ThreeMmdLoader textureResolver.resolve must be a function");
+        }
+    }
+    if (options.textureMap !== undefined) {
+        if (typeof options.textureMap !== "object" ||
+            options.textureMap === null ||
+            Array.isArray(options.textureMap)) {
+            throw new TypeError("ThreeMmdLoader textureMap must be an object");
+        }
+        for (const [path, value] of Object.entries(options.textureMap)) {
+            if (!isTextureMapValue(value)) {
+                throw new TypeError(`ThreeMmdLoader textureMap entry "${path}" must be a string, URL, or Blob`);
+            }
+        }
+    }
+    if (options.textureLoader !== undefined) {
+        if (typeof options.textureLoader !== "object" || options.textureLoader === null) {
+            throw new TypeError("ThreeMmdLoader textureLoader must be an object");
+        }
+        if (typeof options.textureLoader.load !== "function") {
+            throw new TypeError("ThreeMmdLoader textureLoader.load must be a function");
+        }
+    }
+    if (options.ddsLoader !== undefined) {
+        if (typeof options.ddsLoader !== "object" || options.ddsLoader === null) {
+            throw new TypeError("ThreeMmdLoader ddsLoader must be an object");
+        }
+        if (typeof options.ddsLoader.load !== "function") {
+            throw new TypeError("ThreeMmdLoader ddsLoader.load must be a function");
+        }
+    }
+    if (options.runtime !== undefined &&
+        (typeof options.runtime !== "object" || options.runtime === null)) {
+        throw new TypeError("ThreeMmdLoader runtime options must be an object");
+    }
+    if (options.core !== undefined &&
+        (typeof options.core !== "object" || options.core === null || Array.isArray(options.core))) {
+        throw new TypeError("ThreeMmdLoader core must be an object or Promise-like object");
+    }
+    if (options.onCoreFallback !== undefined && typeof options.onCoreFallback !== "function") {
+        throw new TypeError("ThreeMmdLoader onCoreFallback must be a function");
+    }
+    if (options.runtimeFactory !== undefined && typeof options.runtimeFactory !== "function") {
+        throw new TypeError("ThreeMmdLoader runtimeFactory must be a function");
+    }
+    if (options.fetch !== undefined && typeof options.fetch !== "function") {
+        throw new TypeError("ThreeMmdLoader fetch must be a function");
+    }
+    if (options.performance !== undefined &&
+        typeof options.performance !== "boolean" &&
+        (typeof options.performance !== "object" ||
+            options.performance === null ||
+            Array.isArray(options.performance))) {
+        throw new TypeError("ThreeMmdLoader performance must be a boolean or options object");
+    }
+    if (typeof options.performance === "object" &&
+        options.performance !== null &&
+        options.performance.onMeasure !== undefined &&
+        typeof options.performance.onMeasure !== "function") {
+        throw new TypeError("ThreeMmdLoader performance.onMeasure must be a function");
+    }
+}
+function validateModelSource(source, method) {
+    if (!isModelSource(source)) {
+        throw new TypeError(`ThreeMmdLoader.${method} source must be a string, File, ArrayBuffer, or Uint8Array`);
+    }
+}
+function isTextureMapValue(value) {
+    return (typeof value === "string" ||
+        value instanceof URL ||
+        (typeof Blob !== "undefined" && value instanceof Blob));
+}

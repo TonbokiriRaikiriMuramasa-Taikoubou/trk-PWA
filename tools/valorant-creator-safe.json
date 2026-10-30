@@ -1,0 +1,267 @@
+{
+  "asOf": "2026-10-12",
+  "scope": "Creator-Safe matching for the VALORANT lists in js/catalog.js: val-themes (Champions anthems 2021-2026, 6 songs), val-agent-themes (agent-related songs, 3 songs) and val-cs (the 39 songs of the official VALORANT Creator-Safe Playlist, trk118).",
+  "creatorSafe": {
+    "playlist": "https://open.spotify.com/playlist/4tyTLcBxJnf7DcQcHjwt0W",
+    "description": "VALORANT's official Spotify playlist 'VALORANT Creator-Safe Playlist': 'Welcome to the collection of all VALORANT Music that is 100% owned by Riot Games. It can be used in streams and content creation as long as it follows the \"Legal Jibber Jabber\" rules at riotgames.com/legal' (40 entries on 2026-10-12).",
+    "method": "Read all 40 entries on the official Spotify embed of the playlist (the embed lists up to 100 entries, so this is the whole playlist) and compared titles (case and apostrophes ignored) and artists. Also compared against the 977 rows of the Riot Games Creator-Safe Playlist read for League of Legends (tools/leagueoflegends-soundcloud-albums-tracklist.json creatorSafe.mirror): it lists 36 VALORANT rows, all of whose titles are also in the VALORANT playlist. None of the 9 catalog songs is in either playlist.",
+    "soundcloudPlaylist": {
+      "title": "VALORANT Creator-Safe Playlist",
+      "url": "https://soundcloud.com/valorant/sets/valorant-creator-safe-playlist",
+      "tracks": 38,
+      "note": "Official; updated about a year before 2026-10-12. Only the first 15 entries render without scrolling; all 15 are in the Spotify playlist. Not enumerated."
+    },
+    "entries": [
+      [
+        "MIND THE DROP",
+        "VALORANT, Shyloom",
+        "6gGkBZziur9cF7AmHWw7JD"
+      ],
+      [
+        "TRANQUIL",
+        "VALORANT, Shyloom",
+        "3BlSUSCgZbuckSB1Uvf1uH"
+      ],
+      [
+        "PRESTIGE",
+        "VALORANT, Shyloom",
+        "5CxSuJLRgA1FksNhdKb7OU"
+      ],
+      [
+        "LA CRIATURA",
+        "VALORANT, Shyloom",
+        "6VJv9h29wvxoffKzmk69LS"
+      ],
+      [
+        "CALAMITOUS",
+        "VALORANT, Shyloom",
+        "2LKk7dRMDHID58v2tS5qve"
+      ],
+      [
+        "HEIST",
+        "VALORANT, Shyloom",
+        "1pWzxH8uuEtGR88p6GKvDq"
+      ],
+      [
+        "LEGACY",
+        "VALORANT, Shyloom",
+        "2NfBYicVepLN2ONEjT9auB"
+      ],
+      [
+        "LOUDER",
+        "VALORANT, Shyloom",
+        "6Ec6y7fEkXTjO5b8hpJ37q"
+      ],
+      [
+        "GENESIS",
+        "VALORANT, Shyloom",
+        "7eTpxcvllNWt7JWxcgtI37"
+      ],
+      [
+        "DEAD ON ARRIVAL",
+        "VALORANT, Shyloom",
+        "0D1682askL0NJZDWo8Z7KJ"
+      ],
+      [
+        "Watch",
+        "VALORANT, Stella Mwangi",
+        "0yBN7Ta8Q4QdnURdfevoAM"
+      ],
+      [
+        "Karanlığın",
+        "VALORANT, Helin, ARB4",
+        "2iPaXFJC1ggCQQ9s28uwBb"
+      ],
+      [
+        "Casa de Vidro",
+        "VALORANT, Victor Pozas, Moonsailor, Bia Caboz",
+        "1LPgmcF3F2Hp8Rd69dREpW"
+      ],
+      [
+        "Casa de Vidro - VALORANT REMIX",
+        "VALORANT, Victor Pozas, Moonsailor, Bia Caboz, Andre Oliveira, Ghostwriter",
+        "1P49zcU5hBV7DWmFPQw9QC"
+      ],
+      [
+        "RAJA",
+        "VALORANT, ARB4, Tienas, Mangal Suvarnan",
+        "2MpRCWHaa8KzG4uXFbYl4v"
+      ],
+      [
+        "DIMENSIONAL",
+        "VALORANT, Shyloom",
+        "4trP47xiWSelndRjtYcGDF"
+      ],
+      [
+        "NIGHTFALL",
+        "VALORANT, Shyloom",
+        "2ezHmspMvDUDwKRRMHIjrM"
+      ],
+      [
+        "CLIMB",
+        "VALORANT, Shyloom",
+        "4zBWF6RGgeqIpDgsP3IRGz"
+      ],
+      [
+        "ARSENAL",
+        "VALORANT, Shyloom",
+        "291ioad7jrsCOZzfH1n5S8"
+      ],
+      [
+        "CLAIM IT",
+        "VALORANT, Shyloom",
+        "69F0BklMg7NVEeKIskfhog"
+      ],
+      [
+        "HEAD COUNT",
+        "VALORANT, Shyloom",
+        "1v3IfSzHpBwuMF74nX4GJ0"
+      ],
+      [
+        "HINDSIGHT",
+        "VALORANT, Shyloom",
+        "6dRaWGnIe7ZTWNFBneEpt3"
+      ],
+      [
+        "REFRESH",
+        "VALORANT, Shyloom",
+        "7HVbLhw9kktQPsz9X7ibfj"
+      ],
+      [
+        "THE BAG",
+        "VALORANT, Shyloom",
+        "52bV63Gp388XmTH9nxNHDN"
+      ],
+      [
+        "LOCK IT IN",
+        "VALORANT, Shyloom",
+        "0clg3JUrMDxkvVLP9T1Go8"
+      ],
+      [
+        "REFLECTIONS",
+        "VALORANT, David Yousefi, Bryan Nguyen, Ghostwriter, SWEEP",
+        "4xIr2DkCZaqNfTTMyBb11T"
+      ],
+      [
+        "LIMITLESS",
+        "VALORANT, Shyloom",
+        "6pwRzpj5Sw0wMTvbHJ3Pu9"
+      ],
+      [
+        "Savior",
+        "VALORANT, One True God",
+        "1yQzX6SMV7VQOj6u4NKqk0"
+      ],
+      [
+        "RENEGADE",
+        "VALORANT, 99 God, C-Low",
+        "5JXWb7DqYJlXiFnJd9Vfgk"
+      ],
+      [
+        "STANDING TALL",
+        "VALORANT, David Donges, Jason Chu",
+        "5kVidSOi8P4azPmUJMiQ0e"
+      ],
+      [
+        "Ignition",
+        "VALORANT, LICK",
+        "6nQT3XpzROqUhQGhg3a8yI"
+      ],
+      [
+        "VISIONS",
+        "VALORANT, eaJ, Safari Riot",
+        "2pscAWkm3jAxcrpBwOtQmS"
+      ],
+      [
+        "Míranos",
+        "VALORANT, SpreadLof",
+        "0hcsmVqM0bvH4jgZw4ong4"
+      ],
+      [
+        "Villain (Take the Shot)",
+        "VALORANT, Barns Courtney, ARB4, Eytan Peled",
+        "77QKSu2wdtQE9ipgsPOOTI"
+      ],
+      [
+        "Gotcha Back",
+        "VALORANT, ARB4, Tienas",
+        "02bB2H2CYytsIyeRDzYiwq"
+      ],
+      [
+        "Stay Awake",
+        "VALORANT, Willim, HAOO",
+        "7Lmx8Vz0NRCZRcdHDpuRsn"
+      ],
+      [
+        "Míranos",
+        "VALORANT, SpreadLof",
+        "3EJ5V2ml5weH8MlkCpl38c"
+      ],
+      [
+        "Closer",
+        "VALORANT, stains, Flaye",
+        "6fS1YaPYbZWDrs6TeFIUdI"
+      ],
+      [
+        "Les rêves d’hier",
+        "VALORANT, VERDAUNT, Marylou Larson",
+        "2qR93uvz6IDAhlOh9JDIOz"
+      ],
+      [
+        "Villain (Take the Shot) - Mushkaa VCT EMEA Remix",
+        "VALORANT, ARB4, Barns Courtney, Mushkaa",
+        "3ORuXCmPe59PRIV52p2fDL"
+      ]
+    ],
+    "catalogStatusSource": "js/catalog.js VAL_CREATOR_SAFE (must equal lists[].creatorSafe.status; checked by tools/check-repo.mjs)",
+    "entriesNote": "[title, artists, Spotify track ID] in playlist order. IDs from the songdata.io listing of this playlist (read 2026-10-12); 36 of them also appear, identical, in the Riot Games playlist rows."
+  },
+  "lists": [
+    {
+      "id": "val-themes",
+      "name": "VALORANT Champions Anthems",
+      "creatorSafe": {
+        "status": "links-absent",
+        "matchedTracks": 0,
+        "checkedAt": "2026-10-12",
+        "evidence": "embed",
+        "notFound": [
+          "Die For You",
+          "Fire Again",
+          "Ticking Away",
+          "SUPERPOWER",
+          "Last Shot",
+          "If The Sun Burns Out Tonight"
+        ],
+        "note": "All six anthems are collaborations with external artists (Grabbitz, Ashnikko, bbno$, KISS OF LIFE, Mark Tuan, templuv, 347aidan, Oli Sykes, Courtney LaPlante). None is in the VALORANT or the Riot Games Creator-Safe Playlist."
+      }
+    },
+    {
+      "id": "val-agent-themes",
+      "name": "VALORANT Agent Themes",
+      "creatorSafe": {
+        "status": "links-absent",
+        "matchedTracks": 0,
+        "checkedAt": "2026-10-12",
+        "evidence": "embed",
+        "notFound": [
+          "Entertain Me",
+          "On My Level",
+          "greater than one"
+        ],
+        "note": "'Entertain Me' (Ylona Garcia), 'On My Level' (Ashley Warren, Bjorn Nilsson) and 'greater than one' (ericdoa, VALORANT) are not in the VALORANT or the Riot Games Creator-Safe Playlist."
+      }
+    },
+    {
+      "id": "val-cs",
+      "name": "VALORANT Creator-Safe",
+      "creatorSafe": {
+        "status": "links-verified",
+        "matchedTracks": 39,
+        "checkedAt": "2026-10-12",
+        "evidence": "embed",
+        "note": "All 40 entries of the playlist; 'Míranos' is listed twice (two releases) and appears once here. Each song links to its Spotify track ID from entries."
+      }
+    }
+  ]
+}

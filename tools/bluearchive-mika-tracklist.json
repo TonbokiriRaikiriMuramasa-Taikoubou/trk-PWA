@@ -1,0 +1,82 @@
+{
+  "checkedAt": "2026-10-14",
+  "playlistId": "ba-mika",
+  "playlistName": "聖園ミカ",
+  "guideUrl": "https://bluearchive.jp/",
+  "sources": {
+    "guideUrl": "https://www.taptap.cn/moment/603897878431138731",
+    "appleAlbum": "https://music.apple.com/cn/album/do-you-wanna-kiss-angel-%E8%94%9A%E8%93%9D%E6%A1%A3%E6%A1%88-%E5%9C%A3%E5%9B%AD%E6%9C%AA%E8%8A%B1%E8%A7%92%E8%89%B2%E6%9B%B2-single/1777997420",
+    "officialProfile": "https://www.taptap.cn/user/543562622",
+    "bilibili": "https://www.bilibili.com/video/BV1zGD1YFEaS/",
+    "rights": "℗ 2024 NEXON Games Co., Ltd.",
+    "releaseDateApple": "2024-11-15"
+  },
+  "scope": "Five verified page entries only: two official PVs and three official audio tracks. Durations are page displays, not measured media. No audio/video distributed. Apple China availability is region-dependent.",
+  "aliases": "English version labels are trk navigation/matching labels based on the verified language/media, not claimed official download filenames. Official PV album field is a trk grouping label; performer credit is left blank.",
+  "pending": [
+    "CN Ver. (Short): no standalone official audio link confirmed",
+    "JP Ver. (Short): no standalone official audio link confirmed"
+  ],
+  "tracks": [
+    {
+      "t": "【中】圣园未花角色曲【Do you wanna kiss angel】",
+      "al": "Do you wanna kiss angel — Official PV",
+      "ar": "",
+      "u": "https://www.bilibili.com/video/BV1zGD1YFEaS/",
+      "matchAliases": [
+        "Do you wanna kiss angel (CN MV)",
+        "Do you wanna kiss angel - CN MV"
+      ],
+      "matchMedia": "video",
+      "durationSeconds": 101
+    },
+    {
+      "t": "【日】圣园未花角色曲【Do you wanna kiss angel】",
+      "al": "Do you wanna kiss angel — Official PV",
+      "ar": "",
+      "u": "https://www.bilibili.com/video/BV1zGD1YFEaS/?p=2",
+      "matchAliases": [
+        "Do you wanna kiss angel (JP MV)",
+        "Do you wanna kiss angel - JP MV"
+      ],
+      "matchMedia": "video",
+      "durationSeconds": 101
+    },
+    {
+      "t": "Do you wanna kiss angel (中文版)",
+      "al": "Do you wanna kiss angel (《蔚蓝档案》圣园未花角色曲) - Single",
+      "ar": "xTOx, Luna Safari, Sakula小舞 & 龟娘",
+      "u": "https://music.apple.com/cn/song/do-you-wanna-kiss-angel-%E4%B8%AD%E6%96%87%E7%89%88/1777997422",
+      "matchAliases": [
+        "Do you wanna kiss angel (CN Ver.)",
+        "Do you wanna kiss angel - CN Ver."
+      ],
+      "matchMedia": "audio",
+      "durationSeconds": 195
+    },
+    {
+      "t": "Do you wanna kiss angel (日文版)",
+      "al": "Do you wanna kiss angel (《蔚蓝档案》圣园未花角色曲) - Single",
+      "ar": "xTOx, Luna Safari, Sakula小舞 & 东山奈央",
+      "u": "https://music.apple.com/cn/song/do-you-wanna-kiss-angel-%E6%97%A5%E6%96%87%E7%89%88/1777997425",
+      "matchAliases": [
+        "Do you wanna kiss angel (JP Ver.)",
+        "Do you wanna kiss angel - JP Ver."
+      ],
+      "matchMedia": "audio",
+      "durationSeconds": 195
+    },
+    {
+      "t": "Do you wanna kiss angel (伴奏版)",
+      "al": "Do you wanna kiss angel (《蔚蓝档案》圣园未花角色曲) - Single",
+      "ar": "xTOx, Luna Safari, Sakula小舞 & 何方",
+      "u": "https://music.apple.com/cn/song/do-you-wanna-kiss-angel-%E4%BC%B4%E5%A5%8F%E7%89%88/1777997427",
+      "matchAliases": [
+        "Do you wanna kiss angel (Instrumental Ver.)",
+        "Do you wanna kiss angel - Instrumental Ver."
+      ],
+      "matchMedia": "audio",
+      "durationSeconds": 189
+    }
+  ]
+}

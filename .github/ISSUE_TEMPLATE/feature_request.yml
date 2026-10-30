@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: 💡 アイデア / Feature request
+description: 「こんなモード・設定がほしい」を送ってください。/ Ideas and requests.
+title: "[Idea] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        アイデアをありがとうございます！ trk! は遊んでくれる人の声で育っていきます。
+        Thanks for the idea! trk! grows with the people who play it.
+  - type: textarea
+    id: idea
+    attributes:
+      label: ほしいもの / What would you like
+      description: どんな機能・モード・設定がほしいですか / What should be added?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: どんなときに欲しいですか / When would you use it
+      description: 遊んでいて困ったことや、ほかのゲームでありがたかったことなど / The problem it solves for you.
+    validations:
+      required: false
+  - type: dropdown
+    id: where
+    attributes:
+      label: 関係しそうなところ / Where it might belong
+      options:
+        - ゲームのモード（MANUAL・TRUCK・ORBIT・STAGE・CATCH）
+        - 見た目・スキン
+        - 設定・プレイオプション
+        - 選曲画面・パック
+        - サウンドエフェクト
+        - わからない / Not sure
+    validations:
+      required: false
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: 確認 / Please confirm
+      options:
+        - label: ほかのゲームの譜面・画像・音声・名前を使う案ではありません / This idea does not reuse another game's charts, art, audio or names
+          required: true
+        - label: 非営利のまま実現できる案です / This idea can be done non-commercially
+          required: true

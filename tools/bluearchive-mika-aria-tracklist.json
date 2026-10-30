@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-14",
+  "playlistId": "ba-mika",
+  "playlistName": "聖園ミカ",
+  "guideUrl": "https://forum.nexon.com/bluearchive-en/board_view?board=3218&thread=3303925",
+  "scope": "Two vocal audio tracks and one full Global official mini musical, selected by the user. English publication titles are not evidence of English vocals. Do not substitute teasers, song-specific MVs, instrumentals, or dialogue tracks.",
+  "sources": {
+    "album": "https://music.apple.com/gb/album/aria-to-the-star-memories-in-melody-mika-blue-archive/1872315023",
+    "albumDate": "2026-01-29",
+    "albumRights": "℗ 2026 Quarter Music",
+    "video": "https://www.youtube.com/watch?v=wsq-I61IvwE",
+    "videoChannel": "https://www.youtube.com/@bluearchive_Global",
+    "videoDate": "2025-12-25",
+    "koreanPrismaticMV": "https://www.youtube.com/watch?v=O36ynEi9TDw",
+    "koreanCometMV": "https://www.youtube.com/watch?v=8ZKft8XR3Ik"
+  },
+  "tracks": [
+    {
+      "t": "Prismatic Diary",
+      "al": "Aria to the Star - Memories in Melody (Mika) [Blue Archive]",
+      "ar": "Mika (CV. Kang Eunae)",
+      "u": "https://music.apple.com/gb/song/prismatic-diary/1872315029",
+      "matchAliases": ["무지개빛 다이어리"],
+      "matchMedia": "audio",
+      "durationSeconds": 169
+    },
+    {
+      "t": "The Incandescent Blue and the Comet",
+      "al": "Aria to the Star - Memories in Melody (Mika) [Blue Archive]",
+      "ar": "Mika (CV. Kang Eunae)",
+      "u": "https://music.apple.com/gb/song/the-incandescent-blue-and-the-comet/1872315037",
+      "matchAliases": ["따뜻한 푸름과 꼬리별"],
+      "matchMedia": "audio",
+      "durationSeconds": 259
+    },
+    {
+      "t": "[Blue Archive] Aria to the Star | Memories in Melody「Mika」",
+      "al": "",
+      "ar": "",
+      "u": "https://www.youtube.com/watch?v=wsq-I61IvwE",
+      "matchMedia": "video",
+      "durationSeconds": 713
+    }
+  ]
+}
