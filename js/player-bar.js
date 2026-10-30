@@ -161,11 +161,14 @@
   function measure() {
     if (!bar) return;
     const root = document.documentElement;
-    const height = bar.offsetHeight || 60;
+    /* 拡大率（CSS の zoom）がかかっていると offsetHeight は拡大前の値なので、実寸を測る */
+    const rectNow = typeof bar.getBoundingClientRect === "function" ? bar.getBoundingClientRect() : null;
+    const height = (rectNow && rectNow.height > 0 ? rectNow.height : bar.offsetHeight) || 60;
     root.style.setProperty("--trk-playerbar-h", `${Math.round(height)}px`);
     /* スマホのシェルでは、下部ナビの上に載せる（ナビの高さをそのまま下の余白にする） */
     const nav = document.querySelector(".trk-mobile-nav");
-    const navHeight = nav && !nav.hidden ? (nav.offsetHeight || 66) : 0;
+    const navRect = nav && !nav.hidden && typeof nav.getBoundingClientRect === "function" ? nav.getBoundingClientRect() : null;
+    const navHeight = nav && !nav.hidden ? ((navRect && navRect.height > 0 ? navRect.height : nav.offsetHeight) || 66) : 0;
     root.style.setProperty("--trk-playerbar-offset", `${barOffset(navHeight)}px`);
     /* PC は 1920×1080 のステージを縮小して見せる。余白は縮小前の座標に直して渡す */
     const shellMode = document.body.classList.contains("trk-mobile");

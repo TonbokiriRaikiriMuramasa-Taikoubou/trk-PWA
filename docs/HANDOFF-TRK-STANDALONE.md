@@ -36,7 +36,7 @@
 | 新リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone`（空。READMEのみ、Pages未設定。**まだ移していません**） |
 | 作業ブランチ | `arena/608b424c-trk-pwa`（Phase 2・3 の実装。PR を開く） |
 | main | `8d33db6`（PR #1 マージ済み）。PR #2（docs）はこのブランチに取り込み済み |
-| テスト | `npm run check` **821 pass / 0 fail**（2026-10-31、trk220 の47件・trk221 の27件を追加） |
+| テスト | `npm run check` **835 pass / 0 fail**（2026-10-31、trk220 の47件・trk221 の27件・trk222 の13件を追加） |
 | Pages | `trk-PWA` で有効化済み（Source: GitHub Actions）。初回デプロイは `Configure Pages` で失敗（**Pages 有効化より前の実行**が原因。APIは `Not Found`）。有効化後の `main` への push で再実行される |
 | iPhone実機 | **未検証**（このセッションには端末がない） |
 
@@ -55,7 +55,8 @@
 - **画面の形の切り替え**：`settings.uiMode`（自動／PC型／スマホ型）。PC でもスマホ型にできるので、縦型のスタンドや小さい窓でも指の操作で使えます。大きいタブレットは PC型も選べます。入口は ⚙ の「🖥 画面と再生バー」と、選曲画面の右上の 📱／🖥。開き直さずにその場で切り替わります。
 - **下の再生バー**：`settings.playerBar`（つねに／曲を選んだら／出さない、既定は曲を選んだら）。`js/player-bar.js`・`css/player-bar.css`。曲名・ジャケット・⏮▶⏭・シーク線・音量・再生画面・✕。色はスキンに追従し、ゲーム中・再生画面・書斎・ほかの窓では引っ込みます。
 - 保存キーは増やしていません（`core.settings` のみ。`?reset=all` で既定へ）。
-- 詳しい設計・検証・未実施の項目は `docs/UI-MODE-AND-PLAYER-BAR.md`、要約は `docs/PWA.md` §9.1。
+- **trk222（2026-10-31）**：再生バーの既定を「つねに表示」へ。**拡大率（50／75／100／125%）** を追加（PC型の画面と再生バー。ゲーム中は100%）。**アイコンの大きさは100%で固定**（既定オン）。右上の 📱／🖥 を **PC型 ↔ スマホ型 の2択**にし、❓ 謎設定に「画面の形は、常に選んだものを使う」（既定オン）を追加。スマホ型のエフェクト欄（音楽・映像・くわし・TRKアンプ・TRKエフェクト・MIX）を**エフェクトのタブへ集約**し、ライブラリのタブにも出せる設定（既定オフ）を追加。
+- 詳しい設計・検証・未実施の項目は `docs/UI-MODE-AND-PLAYER-BAR.md`（§8 が trk222）、要約は `docs/PWA.md` §9.1。
 
 ### まだ残っているもの
 
@@ -205,7 +206,7 @@
 
 ```sh
 npm ci
-npm run check          # 821 pass / 0 fail（2026-10-31時点）
+npm run check          # 835 pass / 0 fail（2026-10-31時点）
 node tools/check-repo.mjs
 node tools/check-security.mjs
 node tools/check-a11y.mjs

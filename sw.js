@@ -11,8 +11,11 @@
 
    🖥 trk221: PC でもスマホ型の画面（js/mobile-shell.js）と、画面の下の再生バー
    （js/player-bar.js・css/player-bar.css）を足しました。どちらも index.html が読み込むので、
-   殻の先読みには自動で入ります（このファイルの一覧を手で直す必要はありません）。 */
-const CACHE = "trk-v2026.10.31-trk221";
+   殻の先読みには自動で入ります（このファイルの一覧を手で直す必要はありません）。
+
+   🖥 trk222: 拡大率などの設定の配線（js/ui-prefs.js）と、エフェクト欄のタブ分け（CSS）を足しました。
+   これも index.html が読み込むので、殻の先読みは自動で追随します。 */
+const CACHE = "trk-v2026.10.31-trk222";
 const CACHE_PREFIX = "trk-";
 const SCOPE = new URL(self.registration.scope);
 const VENDOR_PREFIX = "assets/vendor/";

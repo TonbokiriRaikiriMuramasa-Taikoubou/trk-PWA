@@ -16,8 +16,35 @@ const stage = $("stage"), video = $("video");
 const view = $("view"), vctx = view.getContext("2d");
 const fx = $("fx"), ctx = fx.getContext("2d");
 
+/* 🖥 trk222：拡大率（50／75／100／125%）。ステージの「設計サイズ」を 1/拡大率 に縮めてから、
+   その分だけ大きく描きます（＝中の文字とボタンが同じ比率で大きくなる）。
+   ステージ全体は今までどおり画面に収まるので、はみ出して切れることがありません。
+   ・ゲーム中（playing／paused）は拡大しません。盤面が欠けると遊べないためです。
+   ・スマホ型の選曲画面は CSS が実ピクセルで並べるので、幅と高さは CSS に任せます（css/mobile-shell.css）。
+   ・`settings` はこの関数より後に作られるので、まだ無いときは 100% として扱います。 */
+function uiZoomFactor() {
+  let scale = 100;
+  try { scale = Number(settings && settings.uiScale); } catch (_) { scale = 100; }
+  if (!Number.isFinite(scale) || scale <= 0) scale = 100;
+  const z = scale / 100;
+  if (z === 1) return 1;
+  if (!document.body || !document.body.classList.contains("trk-zoom")) return 1;
+  /* スマホ型は CSS が実ピクセルで並べる（拡大率は文字と余白だけに効かせる）ので、ステージは拡大しない */
+  if (document.body.classList.contains("trk-mobile")) return 1;
+  const phaseNow = stage.dataset.phase || "title";
+  return phaseNow === "title" || phaseNow === "ended" ? z : 1;
+}
 function fitStage() {
-  const s = Math.min(innerWidth / window.Trk.data.W, innerHeight / window.Trk.data.H);
+  const W = window.Trk.data.W, H = window.Trk.data.H;
+  const z = uiZoomFactor();
+  /* スマホ型は幅と高さを CSS に任せる（選曲画面は実ピクセル・プレイ中は 1920×1080）。
+     ここで幅を固定すると、スマホの画面からはみ出します。 */
+  if (document.body && document.body.classList.contains("trk-mobile")) {
+    stage.style.width = "";
+    stage.style.height = "";
+  } else if (z !== 1) { stage.style.width = `${W / z}px`; stage.style.height = `${H / z}px`; }
+  else { stage.style.width = ""; stage.style.height = ""; }
+  const s = Math.min(innerWidth / W, innerHeight / H) * z;
   stage.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
 addEventListener("resize", fitStage);
@@ -38,6 +65,8 @@ function on(name, fn) {
 function emit(name, ...args) {
   for (const fn of HOOKS[name] || []) { try { fn(...args); } catch (e) { console.error(e); } }
 }
+/* 🖥 trk222：拡大率はプレイ中だけ 100% に戻すので、フェーズが変わるたびに寸法を合わせ直す */
+on("phase", fitStage);
 
 /* ---------- 全画面の重ね表示が開いているか（名前空間の移行で、旧 window の旗 3 つ＝書斎・メディアプレーヤー・シンス を置き換え） ----------
    書く側：window.Trk.overlay.set("study", true)   読む側：window.Trk.overlay.is("study")
@@ -242,8 +271,17 @@ const settings = {
   /* 🖥 trk221：画面の形。auto＝端末に合わせる／desktop＝PC型／mobile＝スマホ型
      （PCでも縦型のスタンドや小さい窓で使うときは mobile、大きいタブレットは desktop を選べる） */
   uiMode: pick(prefs.uiMode, ["auto", "desktop", "mobile"], "auto"),
-  /* 🎵 trk221：下に出す再生バー。on＝つねに／auto＝曲を選んだら／off＝出さない */
-  playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "auto"),
+  /* 🎵 trk221：下に出す再生バー。on＝つねに／auto＝曲を選んだら／off＝出さない
+     （trk222：既定を on に。前回聞いていた曲を、そのままバーに出しておける） */
+  playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "on"),
+  /* 🖥 trk222：画面の拡大率（%）。50／75／100／125 の4つだけ。ゲーム中は 100% のまま */
+  uiScale: pick(prefs.uiScale, [50, 75, 100, 125], 100),
+  /* 🖥 trk222：拡大率を変えても、アイコンの大きさは 100% のまま固定する（既定オン） */
+  fixedIconSize: prefs.fixedIconSize !== false,
+  /* 🖥 trk222：右上の 📱／🖥 で選んだ画面の形を、次に開いたときも使い続ける（❓謎設定） */
+  uiModeLock: prefs.uiModeLock !== false,
+  /* 🎛 trk222：スマホ型で、エフェクトの欄をライブラリにも出す（エフェクトのタブには常に出る） */
+  fxInLibrary: prefs.fxInLibrary === true,
   helpText: prefs.helpText !== false,
   tutorialDone: prefs.tutorialDone === true,
   welcomeSeen: prefs.welcomeSeen === true,   /* 👋 「trk!にようこそ！」を閉じた（一度だけ出す） */
@@ -647,8 +685,9 @@ function resetAllPrefs() {
   settings.mmdScale = 1; settings.mmdTurn = 0; settings.mmdMotionBpm = 0; settings.mmdMotionKind = "faceSing";
   settings.mmdQuickUI = true; settings.mmdMotionFavs = [];
   settings.skin = "shadow"; settings.layout = "classic";
-  /* 🖥 trk221：画面の形（自動）と下の再生バー（曲を選んだら表示）も工場出荷状態へ戻す */
-  settings.uiMode = "auto"; settings.playerBar = "auto";
+  /* 🖥 trk221/222：画面の形（自動）・下の再生バー（つねに表示）・拡大率（100%）も工場出荷状態へ戻す */
+  settings.uiMode = "auto"; settings.playerBar = "on";
+  settings.uiScale = 100; settings.fixedIconSize = true; settings.uiModeLock = true; settings.fxInLibrary = false;
 }
 function exportPrefs(kind) {
   const out = {};
@@ -1311,6 +1350,34 @@ function setPhase(p) {
   updateTouchKeys();
   emit("phase", p);
 }
+/* ---------- 🖥 trk222：拡大率とアイコンの大きさを、画面へ反映する ----------
+   ・拡大率は 50／75／100／125 の4つだけ（それ以外の保存値は 100 として扱う＝壊れた設定で崩れない）。
+   ・「アイコンの大きさは100%で固定」がオンのときは、アイコンだけ拡大率のぶん割り戻す
+     （--trk-icon-zoom = 1/拡大率）。絵文字のアイコンが拡大で崩れるのを避けるため。
+   ・ステージの拡大は fitStage() が行う（design サイズを 1/拡大率 に縮めて、その分だけ拡大）。 */
+const UI_SCALES = [50, 75, 100, 125];
+function uiScaleValue() {
+  const n = Number(typeof settings !== "undefined" && settings ? settings.uiScale : 100);
+  return UI_SCALES.includes(n) ? n : 100;
+}
+function applyUiScale({ persist = false } = {}) {
+  const percent = uiScaleValue();
+  settings.uiScale = percent;
+  const z = percent / 100;
+  const root = document.documentElement;
+  root.style.setProperty("--trk-ui-zoom", String(z));
+  const iconsFixed = settings.fixedIconSize !== false;
+  root.style.setProperty("--trk-icon-zoom", String(iconsFixed ? 1 / z : 1));
+  if (document.body) {
+    document.body.classList.toggle("trk-zoom", z !== 1);
+    document.body.classList.toggle("trk-icon-fixed", iconsFixed);
+  }
+  fitStage();
+  if (persist) saveUserPrefs();
+  emit("uiscale", percent);
+  return percent;
+}
+
 const SCREENS = ["selectScreen", "settingsScreen", "pauseScreen", "endScreen"];
 function showScreen(id) {
   SCREENS.forEach(s => { $(s).hidden = s !== id; });
@@ -1640,7 +1707,7 @@ window.view = view;
 window.windows = windows;
 /* 領域（window.Trk.core）：コア状態の正規の場所。window直下の旧互換名は frozen js/fx.js が読む5件だけ。 */
 window.Trk = window.Trk || {};
-window.Trk.core = Object.assign(window.Trk.core || {}, { $, renderStoragePersist, storageLimitsIgnored, requestStoragePersist, storagePersistState, BEST_KEY, CAPTION_MS, CUSTOM_SKIN_MAX, KEY_PRESETS, PAD_DEFAULTS, SKIN_FORMAT, TRK_ENUM_VALUES, TV_PARAM_FAV_MAX, VIDEO_KEY_DEFAULTS, activeMascot, applyLanguage, applyNoteVars, baseName, buildSkinGrid, buildSkinNow, chartSummary, clampTvBlur, clampTvDim, cleanTvParamFavorites, closeSettings, ctx, customSkinDefs, downloadBlob, downloadJSON, el, emit, esc, extOf, fmtDate, fmtTime, fontFamily, formatKey, formatPadBind, fx, gameplayFxMultiplier, gameplayFxPower, hashString, idbStore, isPclMascot, keyCodeOf, keysLabel, laneCol, laneColor, laneName, modsUnranked, mulberry32, noteShape, num, on, openSettings, pick, prefsForSave, refreshSeedSecrets, rememberMusicVolume, renderAllStatuses, renderStatus, safeHttpUrl, safeLink, safeModeHref, safeName, saveCustomSkins, saveUserPrefs, savedSkinAtBoot, setPhase, setStatus, settings, showScreen, skin, slotLane, slotOfKey, stage, syncPickers, takeAmpReset, travelMs, updateChartButtons, updateKeyUI, updateTouchKeys, validCode, validPadBind, vctx, video, view, windows });
+window.Trk.core = Object.assign(window.Trk.core || {}, { $, applyUiScale, fitStage, uiScaleValue, UI_SCALES, renderStoragePersist, storageLimitsIgnored, requestStoragePersist, storagePersistState, BEST_KEY, CAPTION_MS, CUSTOM_SKIN_MAX, KEY_PRESETS, PAD_DEFAULTS, SKIN_FORMAT, TRK_ENUM_VALUES, TV_PARAM_FAV_MAX, VIDEO_KEY_DEFAULTS, activeMascot, applyLanguage, applyNoteVars, baseName, buildSkinGrid, buildSkinNow, chartSummary, clampTvBlur, clampTvDim, cleanTvParamFavorites, closeSettings, ctx, customSkinDefs, downloadBlob, downloadJSON, el, emit, esc, extOf, fmtDate, fmtTime, fontFamily, formatKey, formatPadBind, fx, gameplayFxMultiplier, gameplayFxPower, hashString, idbStore, isPclMascot, keyCodeOf, keysLabel, laneCol, laneColor, laneName, modsUnranked, mulberry32, noteShape, num, on, openSettings, pick, prefsForSave, refreshSeedSecrets, rememberMusicVolume, renderAllStatuses, renderStatus, safeHttpUrl, safeLink, safeModeHref, safeName, saveCustomSkins, saveUserPrefs, savedSkinAtBoot, setPhase, setStatus, settings, showScreen, skin, slotLane, slotOfKey, stage, syncPickers, takeAmpReset, travelMs, updateChartButtons, updateKeyUI, updateTouchKeys, validCode, validPadBind, vctx, video, view, windows });
 /* catch.js／stage.js はこの正規アクセサを差し替える（旧window.activeMods別名はtrk90で廃止）。 */
 Object.defineProperty(window.Trk.core, "activeMods", { configurable:true, get:() => activeMods, set:v => { activeMods = v; } });
 Object.defineProperty(window.Trk.core, "analysis", { configurable:true, get:() => analysis, set:v => { analysis = v; } });

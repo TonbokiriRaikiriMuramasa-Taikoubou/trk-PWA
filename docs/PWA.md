@@ -189,6 +189,18 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 `css/style.css` に足したのは、右上の切り替えボタン（`.uiModeBtn`）の見た目だけです。
 
+**trk222（2026-10-31 追加）**
+
+| 項目 | 実装 |
+| --- | --- |
+| 再生バーの既定 | `auto` → **`on`**（つねに表示。前回聞いていた曲をそのまま出せる） |
+| 拡大率 | `settings.uiScale`（**50／75／100／125%**、既定100%）。PC型の画面と再生バーに効く。ゲーム中は100%のまま |
+| アイコンの大きさ | `settings.fixedIconSize`（既定オン）。拡大してもアイコンだけは100%に保つ |
+| 画面の形の切り替え | 右上の 📱／🖥 を **PC型 ↔ スマホ型 の2択**に。❓ 謎設定「画面の形は、常に選んだものを使う」（`uiModeLock`・既定オン） |
+| エフェクトの欄 | スマホ型では **エフェクトのタブ**へ集約。`fxInLibrary`（既定オフ）でライブラリのタブにも出せる。DOM は動かさず CSS で切り替え |
+
+詳しくは `docs/UI-MODE-AND-PLAYER-BAR.md` §8。
+
 ## 10. Phase 3：iOS の詰め（実装済み・未実機）
 
 | 項目 | 変更 |
@@ -217,7 +229,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 ```sh
 npm ci
-npm run check                                  # 821 pass / 0 fail（trk220 の47件・trk221 の27件を追加）
+npm run check                                  # 835 pass / 0 fail（trk220 の47件・trk221 の27件・trk222 の13件を追加）
 node tools/check-repo.mjs                      # 0 failure / 0 warning
 ```
 

@@ -37,7 +37,13 @@
         /Android|iPhone|iPad|iPod|Mobile|Silk|Kindle/i.test(String(navigator.userAgent || ""));
     } catch (_) { return false; }
   }
-  function uiMode() { return UI_MODES.includes(core.settings.uiMode) ? core.settings.uiMode : "auto"; }
+  /* ❓謎設定「画面の形は、常に選んだものを使う」がオフのときの、その場だけの選択。
+     オフなら、開き直したときに端末へ合わせて選び直します（設定には書きません）。 */
+  let sessionMode = null;
+  function uiMode() {
+    const mode = sessionMode || core.settings.uiMode;
+    return UI_MODES.includes(mode) ? mode : "auto";
+  }
   /* いま、シェルを出すべきか（純粋な判断。テストで確認する） */
   function shellWanted(mode, mobileDevice) {
     if (mode === "mobile") return true;
@@ -169,7 +175,8 @@
     advanced.id = "trkEffectsAdvanced";
     advanced.className = "trk-effects-advanced";
     effects.append(heading, now, stageHost, sound, video, advanced);
-    if (grid) grid.append(effects);
+    /* エフェクトのタブでは、いちばん上に「いまの曲と音のつまみ」を出す（本物の欄はその下に続く） */
+    if (grid) grid.insertBefore(effects, grid.firstChild);
 
     buttons = items.map(([name, icon]) => {
       const button = document.createElement("button");
@@ -258,6 +265,19 @@
   }
   /* 🎬 GAME から戻ってきたとき、再生画面を開き直すための窓口 */
   window.TrkMobileReturnToPlayer = () => { if (state.enabled && isMediaOpen() && mediaEffects) navigate("player"); };
+
+  /* ---------- 🎛 エフェクトの欄を、どのタブで見せるか（trk222） ----------
+     トリガー（🎛 エフェクト・▶ TV）と、その後に続く本物の欄（くわし・TRKアンプ・TRKエフェクト・MIX）は
+     tv-dock.js・fx-dock.js・tv-rich.js が作ったもので、列の中で並べ替えもされます。
+     ここでは DOM を動かさず、body の印（data-trk-view と trk-fx-in-library）だけを切り替え、
+     見せる／隠すは css/mobile-shell.css に任せます（取り合いにならない）。
+     ・エフェクトのタブ … 欄をすべて見せる（曲リストは隠す）
+     ・ライブラリのタブ … 設定（🎛 ライブラリにもエフェクトの欄を出す）がオンなら見せる */
+  function fxSync() {
+    if (!state.enabled) return;
+    const mobile = document.body.classList.contains("trk-mobile");
+    document.body.classList.toggle("trk-fx-in-library", mobile && core.settings.fxInLibrary === true);
+  }
 
   /* ---------- 再生画面（メディアプレーヤー）の中に「ゲームモードへ」を置く ----------
      プレーヤーの窓は初めて開いたときに作られるので、出来たのを見つけてから足す。 */
@@ -376,6 +396,7 @@
     const summary = document.getElementById("trkImportSummary");
     if (summary) summary.textContent = text.import;
     syncEffects();
+    fxSync();
     syncRotate();
   }
 
@@ -393,9 +414,12 @@
   /* ---------- 画面の形（uiMode） ---------- */
   function uiButtonSync() {
     if (!modeButton) return;
-    const text = words(), mode = uiMode();
+    const text = words();
+    /* trk222：3択（自動・PC・スマホ）をやめて、いまの形の反対へ入れ替える2択にした。
+       押すたびに PC ↔ スマホ が入れ替わるので、行き先が読みやすい。 */
+    const mode = state.enabled ? "mobile" : "desktop";
     const tip = tr("uiModeButton");
-    modeButton.textContent = mode === "mobile" ? "📱" : mode === "desktop" ? "🖥" : (state.enabled ? "📱" : "🖥");
+    modeButton.textContent = mode === "mobile" ? "📱" : "🖥";
     const label = (text.uiNow || "{mode}").replace("{mode}", (text.modes && text.modes[mode]) || mode) + " — " + tip;
     modeButton.title = label;
     modeButton.setAttribute("aria-label", label);
@@ -403,8 +427,14 @@
   }
   function setUiMode(mode, { save = true, say = true } = {}) {
     const nextMode = UI_MODES.includes(mode) ? mode : "auto";
-    core.settings.uiMode = nextMode;
-    if (save) core.saveUserPrefs();
+    if (save) {
+      sessionMode = null;
+      core.settings.uiMode = nextMode;
+      if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
+    } else {
+      /* その場だけ（次に開いたら端末に合わせて選び直す） */
+      sessionMode = nextMode;
+    }
     applyMode();
     const select = document.getElementById("uiMode");
     if (select && select.value !== nextMode) select.value = nextMode;
@@ -416,6 +446,12 @@
       } catch (_) {}
     }
   }
+  /* 右上の 📱／🖥：押すたびに PC型 ↔ スマホ型 を入れ替える（trk222） */
+  function toggleUiMode() {
+    const next = state.enabled ? "desktop" : "mobile";
+    setUiMode(next, { save: core.settings.uiModeLock !== false });
+  }
+  /* 旧名（3択を回す）。設定や既存の呼び出しのために残す。 */
   function cycleUiMode() {
     const order = ["auto", "mobile", "desktop"];
     const i = order.indexOf(uiMode());
@@ -430,7 +466,7 @@
     modeButton.id = "uiModeBtn";
     modeButton.className = "uiModeBtn";
     modeButton.addEventListener("click", () => {
-      cycleUiMode();
+      toggleUiMode();
       syncUiControls();   /* 設定の欄（⚙ → 🖥 画面と再生バー）も同じ値を見せる */
     });
     tools.append(modeButton);
@@ -446,6 +482,8 @@
   function applyMode() {
     const wanted = shellWanted(uiMode(), deviceIsMobile());
     if (wanted) enable(); else disable();
+    /* 🖥 trk222：拡大率は PC型のときだけステージに効く。形が変わったら寸法を合わせ直す */
+    try { if (typeof core.fitStage === "function") core.fitStage(); } catch (_) {}
     ensureModeButton();
     uiButtonSync();
     /* 下部の再生バーは、ナビの高さぶん上に載る。形が変わったら測り直してもらう */
@@ -467,6 +505,7 @@
   function disable() {
     if (!state.enabled) return;
     restoreStage();
+    document.body.classList.remove("trk-fx-in-library");   /* 🎛 タブ分けの印も外す（PC の見た目を変えない） */
     if (nav && nav.parentNode) nav.remove();
     if (effects && effects.parentNode) effects.remove();
     if (rotate && rotate.parentNode) rotate.remove();
@@ -494,6 +533,12 @@
   for (const event of ["language", "screen", "phase", "studyOpen", "studyClose"]) core.on(event, sync);
   for (const event of ["fxRack", "tvChange", "songSelected", "mediaReady", "songTags", "skin", "lite"]) core.on(event, syncEffects);
   core.on("language", uiButtonSync);
+  /* 🎛 置き場所の設定が変わったら、その場で動かす（開き直さない） */
+  core.on("settings", () => { if (state.enabled) fxSync(); });
+  for (const field of ["fxInLibrary", "uiModeLock", "fixedIconSize"]) {
+    const input = document.getElementById(field);
+    if (input) input.addEventListener("change", () => { if (state.enabled) { fxSync(); applyMode(); } });
+  }
   if (core.video) for (const event of ["play", "pause", "ended"]) core.video.addEventListener(event, syncEffects);
   core.on("phase", syncRotate);
   try { window.matchMedia("(orientation: portrait)").addEventListener("change", syncRotate); } catch (_) { /* 古い Safari は addListener だけ */ }
@@ -513,6 +558,8 @@
     enabled: () => state.enabled,
     mode: uiMode,
     setMode: setUiMode,
+    toggle: toggleUiMode,
+    sync,
     cycle: cycleUiMode,
     navigate: name => { if (state.enabled) navigate(name); },
     view: () => view,

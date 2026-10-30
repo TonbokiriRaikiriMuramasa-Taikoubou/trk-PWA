@@ -154,3 +154,29 @@ body.ios button.ios-only, body.ios .iosHidden { display: inline-block !important
 .rotateHintCard { max-width: 420px; padding: 20px; border: 1px solid var(--ui-border); border-radius: 18px; background: var(--ui-panel); }
 .rotateHintCard strong { display: block; font-size: 20px; margin-bottom: 8px; }
 .rotateHintCard span { color: var(--ui-muted); font-size: 14px; line-height: 1.6; }
+
+/* ==========================================================================
+   🎛 trk222：エフェクトの欄は「エフェクト」のタブへ集める（ライブラリのタブを軽くする）
+   ・対象は、トリガー（#fxDock＝🎛 エフェクト・#tvDock＝▶ TV）と、その直後に続く本物の欄
+     （.dockMore＝くわしく(EQ・スキン・メニュー)／.tvMore＝くわしく(設定と映像の確認)／
+      #fxAmp＝TRKアンプ／#richPanel＝TRKエフェクト／#midiMixPanel＝TRK MIDI MIX）。
+   ・DOM は動かさない（tv-dock.js・fx-dock.js が列の中身を並べ替えるので、動かすと取り合いになる）。
+     「いまどのタブか」（body[data-trk-view]）で、見せる／隠すだけを切り替えます。
+   ・ライブラリのタブでは、設定（🎛 ライブラリにもエフェクトの欄を出す）がオフなら隠します。
+     オンなら、ライブラリのタブにも同じ欄が出ます（エフェクトのタブには、どちらでも出ます）。
+   ========================================================================== */
+/* エフェクトのタブ：曲リストの列を「エフェクトの欄だけ」に絞る（曲リスト・検索・追加は隠す）。
+   欄そのものは hide しない（display を上書きすると、#fxDock のような flex の見た目が崩れるため）。 */
+.trk-mobile[data-trk-view="effects"] .songCol { display: block; }
+.trk-mobile[data-trk-view="effects"] .songCol > *:not(#fxDock):not(#tvDock):not(.dockMore):not(.tvMore):not(#ampPanel):not(#richPanel):not(#midiMixPanel) { display: none; }
+
+/* ライブラリのタブ：設定（🎛 ライブラリにもエフェクトの欄を出す）がオフなら隠す */
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) #fxDock,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) #tvDock,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > .dockMore,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > .tvMore,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > #ampPanel,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > #richPanel,
+.trk-mobile[data-trk-view="library"]:not(.trk-fx-in-library) .songCol > #midiMixPanel { display: none; }
+/* ライブラリにも出す設定のときは、曲リストとの間に少し余白を入れる */
+.trk-mobile.trk-fx-in-library[data-trk-view="library"] #fxDock { margin-top: 14px; }

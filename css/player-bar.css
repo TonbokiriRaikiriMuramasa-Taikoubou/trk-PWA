@@ -139,3 +139,8 @@ body.trk-playerbar .plToast { bottom: calc(6% + var(--trk-playerbar-h, 60px)); }
 @media (prefers-reduced-motion: reduce) {
   .trk-pb-seek::-webkit-slider-thumb, .trk-pb-seek::-moz-range-thumb { transition: none; }
 }
+
+/* ---------- 🖥 trk222：拡大率（50／75／100／125%）は、再生バーにも効く ----------
+   バーの中の文字・アイコン・つまみが同じ比率で大きくなります（スキンの色はそのまま）。
+   `zoom` は Chrome／Safari／Firefox 126+ が対応。古いブラウザでは 100% のままです。 */
+body.trk-zoom .trk-playerbar { zoom: var(--trk-ui-zoom, 1); }

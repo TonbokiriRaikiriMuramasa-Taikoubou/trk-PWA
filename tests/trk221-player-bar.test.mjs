@@ -304,7 +304,8 @@ describe("trk221 見た目と配線", () => {
     const media = html.indexOf('<script src="js/media-player-mode.js"></script>');
     const bar = html.indexOf('<script src="js/player-bar.js"></script>');
     assert.ok(media > 0 && bar > media, "メディアプレーヤーの後に読む（窓口を使うため）");
-    assert.ok(swSrc.includes('const CACHE = "trk-v2026.10.31-trk221";'), "キャッシュ名を更新する");
+    /* 版ごとにキャッシュ名を上げる（今の名前は trk222。日付ではなく版の名前で見る） */
+    assert.ok(/const CACHE = "trk-v[0-9.]+-trk22[0-9]";/.test(swSrc), "キャッシュ名を版ごとに更新する");
     assert.ok(swSrc.includes("index.html"), "殻の一覧は index.html から読む（ファイルを足しても直さなくてよい）");
   });
 
@@ -312,6 +313,7 @@ describe("trk221 見た目と配線", () => {
     assert.equal(barSrc.includes("localStorage"), false, "保存は core.saveUserPrefs だけ");
     assert.equal(/shadow_taiko_preferences_v2/.test(barSrc), false, "保存キーの名前は書かない");
     assert.ok(!/new Audio\(/.test(barSrc), "音の通り道を増やさない（本体の video を使う）");
-    assert.ok(coreSrc.includes('playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "auto")'), "設定は core に載せる");
+    /* trk222 で既定を on に変更（前回聞いていた曲をそのままバーに出しておける） */
+    assert.ok(coreSrc.includes('playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "on")'), "設定は core に載せる（既定＝つねに表示）");
   });
 });

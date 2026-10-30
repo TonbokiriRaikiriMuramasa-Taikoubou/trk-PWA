@@ -110,12 +110,12 @@ function fire(node, name) {
   for (const fn of (node && node.__events && node.__events[name]) || []) fn({ target: node, preventDefault() {} });
 }
 
-function runShell({ mobile = false, uiMode = "auto", language = "ja" } = {}) {
+function runShell({ mobile = false, uiMode = "auto", uiModeLock = true, language = "ja" } = {}) {
   const dom = fakeDom();
   const events = [];
   let saves = 0;
   const core = {
-    settings: { language, uiMode },
+    settings: { language, uiMode, uiModeLock },
     phase: "title",
     on(name, fn) { events.push({ name, fn }); },
     video: null,
@@ -209,7 +209,8 @@ describe("trk221 PC でもスマホ型へ、その場で切り替えられる", 
     assert.equal(window.Trk.mobileShell.mode(), "mobile");
   });
 
-  test("選曲画面の右上のボタンで、自動 → スマホ型 → PC型 → 自動 と回る", () => {
+  /* trk222：3択（自動・PC・スマホ）をやめて、押すたびに PC ↔ スマホ が入れ替わる2択にした */
+  test("選曲画面の右上のボタンは、押すたびに PC型 ↔ スマホ型 を入れ替える", () => {
     const { dom, window } = runShell({ mobile: false, uiMode: "auto" });
     const button = dom.headTools.childNodes.find(n => n.id === "uiModeBtn");
     assert.ok(button, "右上に切り替えのボタンを置く");
@@ -217,19 +218,27 @@ describe("trk221 PC でもスマホ型へ、その場で切り替えられる", 
     assert.ok(String(button.attributes["aria-label"] || "").includes("T:uiModeButton"), "説明は読み上げ名にも入れる");
 
     const seen = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       fire(button, "click");
-      seen.push(window.Trk.mobileShell.mode());
+      seen.push(window.Trk.mobileShell.enabled() ? "mobile" : "desktop");
     }
-    assert.deepEqual(seen, ["mobile", "desktop", "auto"], "3回で一周する");
+    assert.deepEqual(seen, ["mobile", "desktop", "mobile", "desktop"], "2回で一往復する");
+  });
+
+  test("❓謎設定「常に選んだものを使う」がオフなら、その場だけ変えて保存しない", () => {
+    const { window, saves } = runShell({ mobile: false, uiMode: "desktop", uiModeLock: false });
+    const before = saves();
+    window.Trk.mobileShell.toggle();
+    assert.equal(window.Trk.mobileShell.enabled(), true, "その場ではスマホ型になる");
+    assert.equal(saves(), before, "保存はしない（次に開いたら端末に合わせて選び直す）");
   });
 });
 
 describe("trk221 設定と保存", () => {
-  test("設定の既定は auto（画面の形）と auto（再生バー）で、値は3つに限る", () => {
+  test("設定の既定は auto（画面の形）と on（再生バー）で、値は決まった選択肢だけ", () => {
     assert.ok(coreSrc.includes('uiMode: pick(prefs.uiMode, ["auto", "desktop", "mobile"], "auto")'), "画面の形：3つの値");
-    assert.ok(coreSrc.includes('playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "auto")'), "再生バー：3つの値");
-    assert.ok(coreSrc.includes('settings.uiMode = "auto"; settings.playerBar = "auto";'), "工場出荷状態では既定へ戻す");
+    assert.ok(coreSrc.includes('playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "on")'), "再生バー：既定はつねに表示");
+    assert.ok(coreSrc.includes('settings.uiMode = "auto"; settings.playerBar = "on";'), "工場出荷状態では既定へ戻す");
   });
 
   test("設定画面に「🖥 画面と再生バー」の欄がある（4言語そろっている）", () => {

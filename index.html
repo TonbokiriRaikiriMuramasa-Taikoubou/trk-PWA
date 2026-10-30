@@ -408,6 +408,22 @@
               </select>
             </label>
             <div class="hint" data-i18n="playerBarHint"></div>
+            <!-- 🖥 trk222：拡大率（画面と文字をまとめて大きく／小さく） -->
+            <label class="field">
+              <span data-i18n="uiScaleLabel"></span>
+              <select id="uiScale">
+                <option value="50">50%</option>
+                <option value="75">75%</option>
+                <option value="100" data-i18n="uiScaleNormal"></option>
+                <option value="125">125%</option>
+              </select>
+            </label>
+            <div class="hint" data-i18n="uiScaleHint"></div>
+            <label class="check"><input id="fixedIconSize" type="checkbox"><span data-i18n="fixedIconSize"></span></label>
+            <div class="hint" data-i18n="fixedIconSizeHint"></div>
+            <!-- 🎛 trk222：スマホ型で、エフェクトの欄をどのタブに置くか -->
+            <label class="check"><input id="fxInLibrary" type="checkbox"><span data-i18n="fxInLibrary"></span></label>
+            <div class="hint" data-i18n="fxInLibraryHint"></div>
           </details>
 
           <details class="panel" open>
@@ -923,6 +939,9 @@
             <div class="hint" data-i18n="showMasterDiffHint"></div>
 
             <h3 data-i18n="secMystery"></h3>
+            <!-- 🖥 trk222：画面の形は、常に選んだものを使う（オフなら開くたびに端末へ合わせて選び直す） -->
+            <label class="check"><input id="uiModeLock" type="checkbox"><span data-i18n="uiModeLock"></span></label>
+            <div class="hint" data-i18n="uiModeLockHint"></div>
             <label class="check"><input id="swayAllModes" type="checkbox"><span data-i18n="swayAllModes"></span></label>
             <div class="hint" data-i18n="swayAllModesHint"></div>
             <label class="check"><input id="escNoReturn" type="checkbox"><span data-i18n="escNoReturn"></span></label>
@@ -2056,6 +2075,8 @@
 <script src="js/mobile-settings-panels.js"></script>
 <!-- 🎵 画面の下に出す再生バー（曲名・再生・曲送り・位置・音量）。設定で on／auto／off -->
 <script src="js/player-bar.js"></script>
+<!-- 🖥 画面と再生バーの追加の設定（拡大率・アイコンの大きさ・画面の形の固定・エフェクト欄の置き場所） -->
+<script src="js/ui-prefs.js"></script>
 <!-- 🍎 iPhone / iPad の調整（インストール案内・音のセッション）。ほかの端末では何もしません -->
 <script src="js/ios-pwa.js"></script>
 </body>
