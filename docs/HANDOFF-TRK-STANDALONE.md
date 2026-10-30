@@ -27,24 +27,35 @@
 | 言語 | 日本語が既定。英語UIは既存のi18nに任せる |
 | ライセンス | GPL-3.0-or-later |
 
-## 3. 現在の状態（2026-10-30）
+## 3. 現在の状態（2026-10-30 夜）
 
 | 項目 | 状態 |
 | --- | --- |
 | 元リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA`（上流 `trk` 1.1.8 を履歴ごと取り込み済み） |
 | 上流 | `TonbokiriRaikiriMuramasa-Taikoubou/trk`（1.1.8、`06cef87`） |
-| 新リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone`（空。READMEのみ、Pages未設定） |
-| 作業ブランチ | `arena/01a1ef52-trk-pwa`（PR #2 オープン、docsのみ） |
-| main | `8d33db6`（PR #1 マージ済み） |
-| テスト | `npm run check` 747 pass / 0 fail（2026-10-30時点） |
-| Pages | `trk-PWA` で有効化済み（Source: GitHub Actions）。**初回デプロイはまだ成功していない** |
-| iPhone実機 | **未検証** |
+| 新リポジトリ | `TonbokiriRaikiriMuramasa-Taikoubou/trk-Standalone`（空。READMEのみ、Pages未設定。**まだ移していません**） |
+| 作業ブランチ | `arena/608b424c-trk-pwa`（Phase 2・3 の実装。PR を開く） |
+| main | `8d33db6`（PR #1 マージ済み）。PR #2（docs）はこのブランチに取り込み済み |
+| テスト | `npm run check` **792 pass / 0 fail**（2026-10-30、trk220 の45件を追加） |
+| Pages | `trk-PWA` で有効化済み（Source: GitHub Actions）。初回デプロイは `Configure Pages` で失敗（**Pages 有効化より前の実行**が原因。APIは `Not Found`）。有効化後の `main` への push で再実行される |
+| iPhone実機 | **未検証**（このセッションには端末がない） |
 
-### まだ移植していないもの
+### Phase 2・3 で入れたもの（2026-10-30）
 
-- **モバイル用シェル（約370行）**：Phase 2。上流のデスクトップ向けUIをiPhone幅に合わせる作業。
-- **iOS向けの調整**：Phase 3。`manifest` の `id` / `display: standalone`、`apple-touch-icon` 180、`navigator.audioSession`、インストール案内、アイコン一式、プリキャッシュ。
-- **公開告知**：Phase 4。オリジン確定後。
+- **モバイル用シェル**：`js/mobile-shell.js`・`css/mobile-shell.css`・`js/mobile-settings-panels.js`。
+  `trk-apk` の画面の組み方（下部ナビ・1画面1役割・取込の折りたたみ・設定の欄の記憶）を、
+  Capacitor の橋渡しを持たずに移植。PC では `body.trk-mobile` が付かないので何も変わりません。
+- **iOS向けの調整**：`js/ios-pwa.js`（インストール案内・`navigator.audioSession`・言い換え）、
+  manifest（`id`・`display: standalone`・`display_override`・アイコン一式）、
+  `apple-touch-icon` 180 と `apple-mobile-web-app-*`、⚙ の「🍎 iPhoneで使う」欄、
+  `sw.js` の precache（trk220）。詳細は `docs/PWA.md` §9・§10。
+
+### まだ残っているもの
+
+- **iPhone実機の確認**：Phase 0。`docs/IPHONE-PWA-BRAINSTORM-2026-10-30.md` §6 の18項目。**未実施**。
+- **初回デプロイの成功**：`main` にマージしたあと、Actions の `Deploy GitHub Pages` を見る。
+- **オリジンの確定と移行**：§4・§5。0円で分離するなら組織 `trk-agrg`。**告知前に決める。**
+- **公開告知**：Phase 4。バックアップ導線（書き出し／読み戻し）の案内もここで詰める。
 
 ## 4. URLとオリジン（最重要）
 
@@ -175,7 +186,7 @@
 
 ```sh
 npm ci
-npm run check          # 747 pass / 0 fail（2026-10-30時点）
+npm run check          # 792 pass / 0 fail（2026-10-30時点）
 node tools/check-repo.mjs
 node tools/check-security.mjs
 node tools/check-a11y.mjs
@@ -196,7 +207,7 @@ python3 -m http.server 8000 --bind 0.0.0.0
 - **manifestの無視項目**：`display: fullscreen`、`orientation`、`share_target`、`file_handlers` はiOSで効かない前提。横向き固定はできない。
 - **オーディオ**：画面ロック後の再生は、`navigator.audioSession.type = "playback"` をタップ起点で設定する必要がある。Chromiumには `audioSession` がない。
 - **フォルダ取込**：`webkitdirectory` はiOS 18.4以降。それ以前はフォルダ選択が限定的。
-- **Service Worker**：現行 `sw.js` はnetwork-firstでプリキャッシュなし。未訪問のままオフラインにすると503。Phase 3で改善。
+- **Service Worker**：通信優先＋install での殻のプリキャッシュ（trk220）。未使用の 3D（`assets/vendor`）・同梱デモ音源・`docs/`・`tools/` は、使ったときに初めて入ります。
 - **キャッシュ**：`sw.js` は `trk-` プレフィックスのキャッシュを版更新で消す。同じホストに別サイトを置くと干渉する。
 - **データ移行**：オリジン変更＝データ移行なし。バックアップ導線を先に用意する。
 

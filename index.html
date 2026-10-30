@@ -8,6 +8,8 @@
 <meta name="description" content="万能なブラウザ再生プレイヤー。完全無料。手持ちの音楽、画像、漫画、小説、そして音ゲーを楽しめます。データは、端末の中だけ。">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/study-room.css">
+<!-- 📱 スマホ用の画面シェル（body.trk-mobile が付いたときだけ効きます。PCの見た目は変わりません） -->
+<link rel="stylesheet" href="css/mobile-shell.css">
 <!-- SNSで共有したときのカード（画像は https:// から始まる完全なURLにする）。
      ⚠ 同じ名前のmeta・linkは1回だけ書く（trk129：同じ名前が2回あり、SNSが先の方の説明文を拾っていた）
      ※ 配布ZIP用ビルドでは og:url／og:image を外すが、GitHub Pages版は公開URLがあるので残す -->
@@ -23,8 +25,20 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-1024.png" sizes="1024x1024" type="image/png">
+<!-- 🍎 iPhone / iPad：ホーム画面のアイコンは 180×180。Safari は manifest の icons ではなくこちらを使う -->
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
 <meta name="theme-color" content="#07080d">
+<!-- 🍎 iOS のホーム画面アプリ（standalone）として開くための指定。
+     iOS 26 以降は manifest が無くても standalone で開きますが、古い iOS のために残します。 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="trk!">
+<meta name="application-name" content="trk!">
+<meta name="format-detection" content="telephone=no">
 
 <!-- VRMを使うときだけ読み込む3Dの部品（three-vrm 3.5.5 は three 0.180 に対応） -->
 <script type="importmap">
@@ -166,27 +180,32 @@
                 <button id="libSkinBtn" class="libSkinBtn" type="button" hidden></button>
               </span>
             </div>
-            <div class="miniActions">
-              <button id="libOpenBtn" type="button" data-i18n="libOpen"></button>
-              <!-- 📤 共有：端末に1回だけ許可して、ミュージックフォルダの中身を一気に取り込む（library.js） -->
-              <button id="libShareBtn" type="button" data-i18n="libShare"></button>
-              <button id="libReconnectBtn" type="button" hidden></button>
-              <button id="libRescanBtn" type="button" hidden data-i18n="libRescan"></button>
-              <label class="fileBtn small">
-                <input id="mediaFile" type="file" accept="video/*,audio/*,.mid,.midi,.mkv,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
-                <span data-i18n="libAddFile"></span>
-              </label>
-              <!-- 🎬 動画を読み込む：最初のフレームまで確かめて「映像つき」として記録し、そのまま全画面で流す -->
-              <label class="fileBtn small" id="libVideoLabel">
-                <input id="videoFile" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.mkv,.avi,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
-                <span data-i18n="libAddVideo"></span>
-              </label>
-              <label class="fileBtn small">
-                <input id="songPackFile" type="file" accept=".stpack,.zip" hidden>
-                <span data-i18n="libAddPack"></span>
-              </label>
-            </div>
-            <div class="hint" data-i18n="libOpenShareHint"></div>
+            <!-- 📱 スマホでは、この折りたたみを閉じた状態から始めます（js/mobile-shell.js）。
+                 中のボタンは今までどおり同じ id なので、配線（library.js）は変わりません。 -->
+            <details class="trk-import" id="trkImportDetails" open>
+              <summary id="trkImportSummary" data-i18n="libImportToggle"></summary>
+              <div class="miniActions">
+                <button id="libOpenBtn" type="button" data-i18n="libOpen"></button>
+                <!-- 📤 共有：端末に1回だけ許可して、ミュージックフォルダの中身を一気に取り込む（library.js） -->
+                <button id="libShareBtn" type="button" data-i18n="libShare"></button>
+                <button id="libReconnectBtn" type="button" hidden></button>
+                <button id="libRescanBtn" type="button" hidden data-i18n="libRescan"></button>
+                <label class="fileBtn small">
+                  <input id="mediaFile" type="file" accept="video/*,audio/*,.mid,.midi,.mkv,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
+                  <span data-i18n="libAddFile"></span>
+                </label>
+                <!-- 🎬 動画を読み込む：最初のフレームまで確かめて「映像つき」として記録し、そのまま全画面で流す -->
+                <label class="fileBtn small" id="libVideoLabel">
+                  <input id="videoFile" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.mkv,.avi,.mpg,.mpeg,.mpe,.m2v,.m2ts" multiple hidden>
+                  <span data-i18n="libAddVideo"></span>
+                </label>
+                <label class="fileBtn small">
+                  <input id="songPackFile" type="file" accept=".stpack,.zip" hidden>
+                  <span data-i18n="libAddPack"></span>
+                </label>
+              </div>
+              <div class="hint" data-i18n="libOpenShareHint"></div>
+            </details>
             <input id="libDirInput" type="file" webkitdirectory multiple hidden>
             <div class="libTools">
               <input id="libSearch" type="search" autocomplete="off" data-i18n-aria="libSearch">
@@ -1095,6 +1114,18 @@
             <div class="hint" data-i18n="ignoreLimitsHint"></div>
           </details>
 
+          <!-- 🍎 iPhone / iPad の案内（js/ios-pwa.js）。ほかの端末では hidden のまま出しません -->
+          <details class="panel ios-only" id="iosPanel">
+            <summary data-i18n="secIos"></summary>
+            <div class="hint" data-i18n="iosStorageHint"></div>
+            <div class="hint" data-i18n="iosAudioHint"></div>
+            <div class="miniActions">
+              <button id="iosInstallBtn" type="button" data-i18n="iosInstallBtn"></button>
+              <button id="iosUpdateBtn" type="button" data-i18n="iosUpdateBtn"></button>
+            </div>
+            <div id="iosUpdateStatus" class="hint status" role="status" aria-live="polite"></div>
+          </details>
+
           <!-- 🎵 明示的に保存した曲・動画だけを IndexedDB の仮想棚へ置く（trk1.0.4候補） -->
           <details class="panel" id="mediaKeepPanel">
             <summary data-i18n="mediaKeepTitle"></summary>
@@ -1993,5 +2024,11 @@
 <script src="js/zip-io.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/share-inbox.js"></script>
+<!-- 📱 スマホ用の画面シェル（下部ナビ・エフェクト画面・縦向きの案内）。PC では何もしません -->
+<script src="js/mobile-shell.js"></script>
+<!-- ⚙ 設定で開いた欄を覚える（スマホのときだけ） -->
+<script src="js/mobile-settings-panels.js"></script>
+<!-- 🍎 iPhone / iPad の調整（インストール案内・音のセッション）。ほかの端末では何もしません -->
+<script src="js/ios-pwa.js"></script>
 </body>
 </html>
