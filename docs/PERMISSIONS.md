@@ -25,7 +25,9 @@
 | GitHub Actionsの実行 | `Deploy GitHub Pages` の `workflow_dispatch` | `actions: write`、`pages: write`、`id-token: write` | **未実施**（ワークフローがmainに無いためdispatch不可） |
 | GitHub Pagesの有効化 | Actions配信（`build_type=workflow`）の設定 | リポジトリ管理（admin）＋Pages権限 | **未実施**（APIは403。人がSettingsで設定） |
 | 診断ページの追加 | `tools/ios-probe.html` | `contents: write` | 実施 |
-| プルリクエストの作成 | 作業ブランチ → `main`（レビュー用） | `pull_requests: write` | 任意 |
+| プルリクエストの作成 | 作業ブランチ → `main`（レビュー用） | `pull_requests: write` | 実施（PR #1） |
+| `main` へのマージ | PR #1（2026-10-30、マージコミット `8d33db6`） | 所有者が実施 | 完了 |
+| デプロイの再実行 | Pages有効化後に `Deploy GitHub Pages` を再実行 | `actions: write` | 待機 |
 
 ## 3. 実際のGitHub権限（2026-10-30に確認）
 

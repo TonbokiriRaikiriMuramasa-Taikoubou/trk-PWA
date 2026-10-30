@@ -20,7 +20,7 @@ trk! を **PWA（Webアプリ）として配布する**ためのリポジトリ�
 | フェーズ | 内容 | 状態 |
 | --- | --- | --- |
 | Phase 0 | 上流Pages版をiPhoneで触る（画面シェルの要否を判断） | **未実施（実機）** |
-| Phase 1 | 1.1.8の取り込み・Pages公開 | **このリポジトリで実施中** |
+| Phase 1 | 1.1.8の取り込み・Pages公開 | **取り込みとmainへのマージ済み／Pages有効化待ち** |
 | Phase 2 | `trk-apk` のモバイル画面シェル移植 | 未着手 |
 | Phase 3 | iOS向けの調整（manifest・インストール案内・保存説明・取込・音・向き） | 未着手 |
 | Phase 4 | 配布の最終判断（独自ドメイン／ストア／ネイティブ） | 未着手 |
@@ -66,12 +66,16 @@ git push origin <作業ブランチ>
 
 `.github/workflows/pages.yml`（上流から流用）が、リポジトリ直下をそのまま `_site/` にコピーしてGitHub Pagesへ出します。ビルドはありません。
 
-### 初回だけ人が必要な作業
+### 初回だけ人が必要な作業（現在のブロッカー）
 
 **Pagesの有効化は、リポジトリ設定で人が行う必要があります。**
 
-1. GitHubのリポジトリ → **Settings** → **Pages**
-2. **Build and deployment** → **Source** を **GitHub Actions** にする
+1. https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA/settings/pages を開く
+2. **Build and deployment** → **Source** のドロップダウンで **GitHub Actions** を選ぶ
+
+2026-10-30 時点で、`main` へのマージ後のデプロイ（[run 41086274414](https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA/actions/runs/41086274414)）は **`Configure Pages` で失敗**しています。ログは `Get Pages site failed. Please verify that the repository has Pages enabled and configured to build using GitHub Actions`。つまり、アプリ側のファイルやワークフローの不備ではなく、**Pagesが未有効**なだけです。
+
+有効化したあと、同じ実行を再実行するか、`Deploy GitHub Pages` を手動実行すれば公開されます。
 
 理由：
 
@@ -90,8 +94,9 @@ git push origin <作業ブランチ>
 
 - [x] 上流1.1.8を取り込み、`npm run check` が通る（747 pass）
 - [x] Pages用ワークフローがある
-- [ ] **Pagesを有効化**（Settings → Pages → Source: GitHub Actions。人が行う）
-- [ ] `main` へマージし、HTTPSのURLが出る
+- [ ] **Pagesを有効化**（Settings → Pages → Source: GitHub Actions。人が行う。現在のブロッカー）
+- [x] `main` へマージ（2026-10-30、PR #1。マージコミット `8d33db6`）
+- [ ] デプロイが成功し、HTTPSのURLが出る
 - [ ] `/` が開き、Service Workerが登録される（DevToolsのApplication）
 - [ ] `manifest.webmanifest` とアイコンが200で返る
 - [ ] オフラインで再読み込みできる（一度開いた後）
