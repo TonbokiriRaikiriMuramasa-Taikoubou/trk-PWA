@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>trk! iOS/PWA 診断</title>
+<style>
+  :root { color-scheme: dark; --bg:#07080d; --panel:#121726; --line:#2a3348; --text:#e8eefc; --muted:#9aa7bd; --ok:#6ce39a; --warn:#ffc879; --bad:#ff8f9c; --info:#7fd1ff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  body { padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); }
+  header { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
+  h1 { font-size:20px; margin:0; }
+  .sub { color:var(--muted); font-size:13px; }
+  .lead { color:var(--muted); font-size:14px; margin:0 0 14px; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  h2 { font-size:15px; margin:0 0 8px; letter-spacing:.02em; }
+  dl { display:grid; grid-template-columns: minmax(9em, 38%) 1fr; gap:6px 12px; margin:0; }
+  dt { color:var(--muted); font-size:13px; }
+  dd { margin:0; font-size:14px; overflow-wrap:anywhere; }
+  .ok { color:var(--ok); } .warn { color:var(--warn); } .bad { color:var(--bad); } .info { color:var(--info); } .muted { color:var(--muted); }
+  .actions { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0; }
+  button { font:600 14px/1.2 inherit; color:var(--text); background:#1b2438; border:1px solid #3a4a6a; border-radius:10px; padding:11px 14px; min-height:44px; }
+  button:active { background:#24304a; }
+  textarea { width:100%; min-height:180px; background:#0b0f1a; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px; font:12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .probe-safe { position:fixed; inset:0; pointer-events:none; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); visibility:hidden; }
+  .note { border-left:3px solid var(--info); padding-left:10px; color:var(--muted); font-size:13px; margin:8px 0 0; }
+  code { background:#0b0f1a; border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="probe-safe" id="safeProbe" aria-hidden="true"></div>
+
+<header>
+  <h1>trk! iOS/PWA 診断</h1>
+  <span class="sub">2026-10-30 版</span>
+</header>
+<p class="lead">このページは<b>診断用</b>で、trk! アプリの一部ではありません。iPhoneのSafari（またはホーム画面に追加したこのページ）で開くと、端末が何を許しているかを確認できます。結果は端末内で作るだけで、どこにも送信しません。</p>
+
+<div class="actions">
+  <button type="button" id="persistBtn">保存を固定してみる</button>
+  <button type="button" id="audioBtn">音を鳴らしてみる</button>
+  <button type="button" id="copyBtn">レポートをコピー</button>
+  <button type="button" id="reloadBtn">再読み込み</button>
+</div>
+
+<main id="out"></main>
+
+<section>
+  <h2>レポート（コピー用）</h2>
+  <textarea id="report" readonly aria-label="診断レポート"></textarea>
+  <p class="note">「ホーム画面に追加」の前後、Safariのタブとアプリで、それぞれ開いて比べてください。保存領域は別なので、表示が変わります。</p>
+</section>
+
+<script>
+(() => {
+  "use strict";
+  const out = document.getElementById("out");
+  const rows = [];
+  const text = (v) => (v === undefined || v === null ? "—" : String(v));
+
+  function section(title) {
+    const el = document.createElement("section");
+    const h = document.createElement("h2");
+    h.textContent = title;
+    const dl = document.createElement("dl");
+    el.append(h, dl);
+    out.append(el);
+    return dl;
+  }
+  function row(dl, label, value, note) {
+    const dt = document.createElement("dt");
+    dt.textContent = label;
+    const dd = document.createElement("dd");
+    if (value instanceof Node) dd.append(value);
+    else dd.innerHTML = value;
+    if (note) {
+      const small = document.createElement("div");
+      small.className = "muted";
+      small.style.fontSize = "12px";
+      small.textContent = note;
+      dd.append(small);
+    }
+    dl.append(dt, dd);
+    const plain = (value instanceof Node ? value.textContent : String(value)).replace(/\s+/g, " ").trim();
+    rows.push(`${label}: ${plain}${note ? ` (${note})` : ""}`);
+  }
+  const good = (s) => `<span class="ok">${s}</span>`;
+  const warn = (s) => `<span class="warn">${s}</span>`;
+  const bad = (s) => `<span class="bad">${s}</span>`;
+  const info = (s) => `<span class="info">${s}</span>`;
+  const muted = (s) => `<span class="muted">${s}</span>`;
+  const yes = (b, label = "あり") => (b ? good(label) : bad("なし"));
+
+  const ua = navigator.userAgent;
+  const iosMatch = ua.match(/OS (\d+)[._](\d+)(?:[._](\d+))?/);
+  const iosVersion = iosMatch ? `${iosMatch[1]}.${iosMatch[2]}${iosMatch[3] ? "." + iosMatch[3] : ""}` : null;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|Chrome/.test(ua);
+  const standaloneMedia = matchMedia("(display-mode: standalone)").matches;
+  const standalone = standaloneMedia || navigator.standalone === true;
+
+  /* ---------- 端末と表示 ---------- */
+  {
+    const dl = section("端末と表示");
+    row(dl, "iOS / iPadOS", iosVersion ? `iOS ${iosVersion}` : bad("iOSではない（または判定不能）"));
+    row(dl, "ブラウザ", isSafari ? "Safari" : (ua.includes("CriOS") ? "Chrome (iOS)" : ua.includes("FxiOS") ? "Firefox (iOS)" : "その他"));
+    row(dl, "表示モード", standalone ? good("standalone（アプリとして起動）") : warn("browser（Safariのタブ）"),
+      standalone ? "ホーム画面から起動しています" : "ホーム画面に追加すると standalone になります");
+    row(dl, "display-mode: standalone", matchMedia("(display-mode: standalone)").matches ? good("一致") : muted("一致しない"));
+    row(dl, "display-mode: fullscreen", matchMedia("(display-mode: fullscreen)").matches ? good("一致") : muted("一致しない"));
+    row(dl, "navigator.standalone", text(navigator.standalone), "iOS独自。undefinedなら非対応");
+    row(dl, "セキュアコンテキスト", isSecureContext ? good("https / localhost") : bad("違う（Service Worker・保存が制限）"));
+    row(dl, "画面", `${screen.width}×${screen.height} / DPR ${devicePixelRatio}`);
+    row(dl, "表示領域", `${innerWidth}×${innerHeight}`);
+    row(dl, "visualViewport", window.visualViewport ? `${Math.round(visualViewport.width)}×${Math.round(visualViewport.height)} (scale ${visualViewport.scale})` : muted("なし"));
+    row(dl, "向き", screen.orientation ? `${screen.orientation.type} / angle ${screen.orientation.angle}` : muted("APIなし"));
+    row(dl, "URL", location.href);
+  }
+
+  /* ---------- セーフエリア ---------- */
+  {
+    const dl = section("セーフエリア");
+    const probe = document.getElementById("safeProbe");
+    const cs = getComputedStyle(probe);
+    const vals = {
+      top: cs.paddingTop, right: cs.paddingRight, bottom: cs.paddingBottom, left: cs.paddingLeft
+    };
+    row(dl, "env(safe-area-inset-*)", `top ${vals.top} / right ${vals.right} / bottom ${vals.bottom} / left ${vals.left}`,
+      "ノッチ・ホームバーの余白。0なら非対応か、余白なしの画面");
+    row(dl, "viewport-fit=cover", document.querySelector('meta[name="viewport"]')?.content?.includes("viewport-fit=cover") ? good("指定あり") : warn("未指定"));
+  }
+
+  /* ---------- manifest / アイコン / Service Worker ---------- */
+  const swSection = section("PWA（manifest・Service Worker・キャッシュ）");
+  {
+    const link = document.querySelector('link[rel="manifest"]');
+    row(swSection, "manifest", link ? info(link.getAttribute("href")) : muted("このページには無い（アプリ側で確認）"));
+    row(swSection, "Service Worker", "serviceWorker" in navigator ? good("対応") : bad("非対応"));
+    row(swSection, "コントローラ", navigator.serviceWorker?.controller ? good("あり") : muted("なし（未登録または初回）"));
+    row(swSection, "beforeinstallprompt", "onbeforeinstallprompt" in window ? good("あり") : muted("なし（iOSは仕様で無し）"));
+    row(swSection, "Push API", "PushManager" in window ? good("あり") : muted("なし"));
+  }
+
+  /* ---------- 保存 ---------- */
+  const storageSection = section("保存（IndexedDB・永続化）");
+  {
+    row(storageSection, "localStorage", (() => { try { localStorage.setItem("trk-probe", "1"); localStorage.removeItem("trk-probe"); return good("読み書きOK"); } catch (e) { return bad("不可: " + e.name); } })());
+    row(storageSection, "IndexedDB", "indexedDB" in window ? good("あり") : bad("なし"));
+    row(storageSection, "navigator.storage", navigator.storage ? good("あり") : bad("なし"));
+    row(storageSection, "persist()", navigator.storage && typeof navigator.storage.persist === "function" ? good("あり") : bad("なし"));
+  }
+
+  /* ---------- 取込 ---------- */
+  {
+    const dl = section("ファイル取込");
+    const input = document.createElement("input");
+    input.type = "file";
+    row(dl, "input[type=file]", good("あり"));
+    row(dl, "webkitdirectory", "webkitdirectory" in input ? good("あり（フォルダ選択）") : bad("なし（1ファイルずつ）"),
+      "iOS 18.4以降でフル対応。以前はiCloud Drive中心の部分対応");
+    row(dl, "showDirectoryPicker", "showDirectoryPicker" in window ? good("あり") : bad("なし（Safariは非対応）"));
+    row(dl, "OPFS (getDirectory)", navigator.storage && typeof navigator.storage.getDirectory === "function" ? good("あり") : bad("なし"));
+    row(dl, "File API", "File" in window && "FileReader" in window ? good("あり") : bad("なし"));
+    row(dl, "Web Share API", navigator.share ? good("あり") : bad("なし"));
+  }
+
+  /* ---------- 音 ---------- */
+  const audioSection = section("音（Web Audio・セッション）");
+  {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    row(audioSection, "AudioContext", AC ? good("あり") : bad("なし"));
+    row(audioSection, "audioSession", navigator.audioSession ? good("あり") : muted("なし"),
+      "あれば背景再生の種類を指定できる（対応端末のみ）");
+    row(audioSection, "audioSession.type", navigator.audioSession ? text(navigator.audioSession.type) : "—");
+    row(audioSection, "Media Session", "mediaSession" in navigator ? good("あり") : muted("なし"));
+    row(audioSection, "Wake Lock", navigator.wakeLock ? good("あり") : muted("なし"));
+    const video = document.createElement("video");
+    row(audioSection, "audio/mpeg", video.canPlayType("audio/mpeg") || muted("たぶん再生可"));
+    row(audioSection, "audio/mp4", video.canPlayType("audio/mp4") || muted("—"));
+    row(audioSection, "video/mp4", video.canPlayType("video/mp4") || muted("—"));
+  }
+
+  /* ---------- 3D ---------- */
+  {
+    const dl = section("3D・その他");
+    let renderer = "—";
+    try {
+      const canvas = document.createElement("canvas");
+      const gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
+      if (!gl) renderer = bad("WebGLなし");
+      else {
+        const ext = gl.getExtension("WEBGL_debug_renderer_info");
+        renderer = good(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : "WebGLあり（詳細非公開）");
+      }
+    } catch (e) { renderer = bad("取得失敗: " + e.name); }
+    row(dl, "WebGL", renderer);
+    row(dl, "WebGPU", "gpu" in navigator ? good("あり") : muted("なし"));
+    row(dl, "言語", navigator.language);
+    row(dl, "メモリ（deviceMemory）", navigator.deviceMemory ? `${navigator.deviceMemory} GB` : muted("非公開"));
+  }
+
+  /* ---------- 非同期の保存情報 ---------- */
+  async function fillStorage() {
+    if (!navigator.storage) return;
+    try {
+      if (navigator.storage.persisted) {
+        const persisted = await navigator.storage.persisted();
+        row(storageSection, "persisted()", persisted ? good("固定済み") : warn("未固定"),
+          "ホーム画面アプリは7日削除の対象外。Safariのタブは対象");
+      }
+    } catch (e) { row(storageSection, "persisted()", bad(e.name)); }
+    try {
+      if (navigator.storage.estimate) {
+        const est = await navigator.storage.estimate();
+        const mb = (n) => (n / 1048576).toFixed(1) + " MB";
+        row(storageSection, "使用量 / 上限", `${mb(est.usage || 0)} / ${mb(est.quota || 0)}`);
+      }
+    } catch (e) { row(storageSection, "estimate()", bad(e.name)); }
+    try {
+      if (navigator.storage.getDirectory) {
+        const root = await navigator.storage.getDirectory();
+        row(storageSection, "OPFS", good("開ける") + muted(` (${root.name})`));
+      }
+    } catch (e) { row(storageSection, "OPFS", bad(e.name)); }
+    updateReport();
+  }
+
+  async function fillAsync() {
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      row(swSection, "登録数", String(regs.length) + (regs.length ? muted(" / " + regs.map(r => r.scope).join(", ")) : ""));
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        row(swSection, "CacheStorage", keys.length ? keys.join(", ") : muted("空"));
+      }
+    } catch (e) { row(swSection, "SW情報", bad(e.name)); }
+    updateReport();
+  }
+
+  async function fillManifest() {
+    const link = document.querySelector('link[rel="manifest"]');
+    if (!link) return;
+    try {
+      const res = await fetch(link.href, { cache: "no-cache" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const m = await res.json();
+      row(swSection, "manifest内容", `display=${text(m.display)} / orientation=${text(m.orientation)} / icons=${(m.icons || []).length} / share_target=${m.share_target ? "あり" : "なし"} / id=${text(m.id)}`);
+    } catch (e) { row(swSection, "manifest内容", bad(e.message)); }
+    updateReport();
+  }
+
+  /* ---------- 操作 ---------- */
+  document.getElementById("persistBtn").addEventListener("click", async () => {
+    if (!navigator.storage || !navigator.storage.persist) { alert("このブラウザには persist() がありません"); return; }
+    try {
+      const ok = await navigator.storage.persist();
+      alert(ok ? "保存を固定できました（ブラウザが許可）" : "固定は許可されませんでした（ブラウザの判断）");
+      location.reload();
+    } catch (e) { alert("失敗: " + e.name); }
+  });
+
+  document.getElementById("audioBtn").addEventListener("click", async () => {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) { alert("AudioContext がありません"); return; }
+    try {
+      if (navigator.audioSession) {
+        try { navigator.audioSession.type = "playback"; } catch (e) { /* 未対応の値は無視 */ }
+        row(audioSection, "audioSession.type（設定後）", text(navigator.audioSession.type));
+      }
+      const ctx = new AC();
+      const state0 = ctx.state;
+      if (ctx.state === "suspended") await ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      gain.gain.value = 0.08;
+      osc.frequency.value = 660;
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.2);
+      row(audioSection, "AudioContext", `${good(state0 + " → " + ctx.state)} / sampleRate ${ctx.sampleRate} Hz` + (ctx.baseLatency ? ` / baseLatency ${(ctx.baseLatency * 1000).toFixed(1)} ms` : "") + (ctx.outputLatency ? ` / outputLatency ${(ctx.outputLatency * 1000).toFixed(1)} ms` : ""));
+      updateReport();
+      setTimeout(() => { ctx.close().catch(() => {}); }, 500);
+    } catch (e) { alert("音のテストに失敗: " + e.name); }
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    updateReport();
+    const value = document.getElementById("report").value;
+    try {
+      await navigator.clipboard.writeText(value);
+      alert("コピーしました");
+    } catch (e) {
+      const ta = document.getElementById("report");
+      ta.removeAttribute("readonly");
+      ta.select();
+      ta.setSelectionRange(0, value.length);
+      alert("長押しでコピーしてください（自動コピー不可）");
+    }
+  });
+
+  document.getElementById("reloadBtn").addEventListener("click", () => location.reload());
+
+  function updateReport() {
+    const header = [
+      "trk! iOS/PWA 診断レポート",
+      new Date().toString(),
+      "---"
+    ].join("\n");
+    document.getElementById("report").value = header + "\n" + rows.join("\n") + "\n";
+  }
+
+  fillStorage();
+  fillAsync();
+  fillManifest();
+  updateReport();
+})();
+</script>
+</body>
+</html>
