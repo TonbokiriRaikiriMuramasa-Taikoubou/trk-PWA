@@ -143,7 +143,9 @@ describe("trk221 バーの中身と操作", () => {
   test("音量は本体の設定（musicVolume）と 設定画面のスライダーへ書き戻す", () => {
     const { dom, core, fire: press, calls } = runBar();
     const bar = barOf(dom);
-    const vol = bar.childNodes.find(n => n.className === "trk-pb-actions").childNodes[0].childNodes[1];
+    /* 位置ではなく名前で探す（trk226 でボタンが増えても壊れないように） */
+    const vol = bar.childNodes.find(n => n.className === "trk-pb-actions")
+      .childNodes.find(n => n.className === "trk-pb-vol").childNodes[1];
     vol.value = "0.25";
     press(vol, "input");
     assert.equal(core.settings.musicVolume, 0.25);
@@ -154,7 +156,8 @@ describe("trk221 バーの中身と操作", () => {
   test("✕ は「表示しない」にして、設定の欄にも同じ値を見せる", () => {
     const { dom, core, fire: press } = runBar();
     const bar = barOf(dom);
-    const hide = bar.childNodes.find(n => n.className === "trk-pb-actions").childNodes[2];
+    const hide = bar.childNodes.find(n => n.className === "trk-pb-actions")
+      .childNodes.find(n => n.className === "trk-pb-hide");
     press(hide, "click");
     assert.equal(core.settings.playerBar, "off");
     assert.equal(bar.hidden, true);
@@ -162,7 +165,8 @@ describe("trk221 バーの中身と操作", () => {
 
   test("⛶ は本体の再生画面を開く", () => {
     const { dom, fire: press, calls } = runBar();
-    const open = barOf(dom).childNodes.find(n => n.className === "trk-pb-actions").childNodes[1];
+    const open = barOf(dom).childNodes.find(n => n.className === "trk-pb-actions")
+      .childNodes.find(n => n.className === "trk-pb-open");
     press(open, "click");
     assert.equal(calls.openPlayer, 1);
   });

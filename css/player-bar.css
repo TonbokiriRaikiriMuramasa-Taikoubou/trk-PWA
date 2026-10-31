@@ -50,6 +50,12 @@
   width: 12px; height: 12px; border: 0; border-radius: 50%; background: var(--ui-accent);
   opacity: 0; transition: opacity .15s;
 }
+/* 🎵 trk226：触れる・なぞれることを、指の形と、太さで示す（PC でもライブラリの画面で動かせる） */
+.trk-pb-seek:not(:disabled) { cursor: pointer; }
+.trk-pb-seek:not(:disabled):hover::-webkit-slider-runnable-track { height: 5px; }
+.trk-pb-seek:not(:disabled):hover::-moz-range-track { height: 5px; }
+/* ❓謎設定「バーに触れても位置を移動しない」のときは、触れないことが分かる見た目に */
+.trk-pb-seek.is-locked { cursor: default; }
 .trk-pb-seek:hover::-webkit-slider-thumb, .trk-pb-seek:focus-visible::-webkit-slider-thumb { opacity: 1; }
 .trk-pb-seek:hover::-moz-range-thumb, .trk-pb-seek:focus-visible::-moz-range-thumb { opacity: 1; }
 
@@ -94,6 +100,16 @@
 }
 .trk-pb-play:hover { background: var(--ui-button-hover) !important; }
 
+/* ---------- 🎲 シャッフル・🔁 リピート（trk226） ----------
+   オンかどうかは「色」と「枠」で示します（絵文字の向きだけに頼らない）。
+   読み上げには aria-pressed を渡します（js/player-bar.js）。 */
+.trk-pb-shuffle, .trk-pb-repeat { color: var(--ui-muted); }
+.trk-pb-shuffle.is-on, .trk-pb-repeat.is-on {
+  color: var(--ui-accent);
+  border-color: var(--ui-accent) !important;
+  background: var(--ui-soft) !important;
+}
+
 /* ---------- 時間 ---------- */
 .trk-pb-time { flex: 0 0 auto; color: var(--ui-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .trk-pb-time .trk-pb-total::before { content: " / "; }
@@ -112,8 +128,18 @@
   .trk-pb-title { font-size: 13px; }
   .trk-pb-artist { font-size: 11px; }
 }
+@media (max-width: 520px) {
+  /* 🎵 trk226：🎲🔁⧉ が増えたぶん、狭い画面では詰める（曲名は省略記号で残す） */
+  .trk-pb-transport { gap: 2px; }
+  .trk-pb-actions { gap: 2px; }
+  .trk-pb-transport button, .trk-pb-actions button { min-width: 32px; }
+}
+@media (max-width: 430px) {
+  /* いちばん狭いところでは、飾りのジャケットを譲って操作ボタンを残す（曲名は必ず出す） */
+  .trk-pb-art { display: none; }
+}
 @media (max-width: 400px) {
-  .trk-pb-transport button { min-width: 34px; }
+  .trk-pb-transport button { min-width: 30px; }
   .trk-pb-play { min-width: 40px !important; min-height: 40px !important; }
 }
 

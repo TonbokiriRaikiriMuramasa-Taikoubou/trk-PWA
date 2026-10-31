@@ -629,16 +629,29 @@ function setRate(value) {
   core.saveUserPrefs();
   if (reverseActive && !reverseLoading) startReverseAt(core.video.currentTime || 0, true);
 }
+/* 🎵 trk226：下の再生バー（js/player-bar.js）と、この画面は同じ設定を共有する。
+   ここで変えたら core の合図（mediaOptions）を出し、バーの 🎲／🔁 も同じ値を見せる。
+   （イベント名は core.on に自由な名前を渡せる仕組み。新しい保存キーは増やさない） */
+function announceMediaOptions() {
+  try { if (typeof core.emit === "function") core.emit("mediaOptions"); } catch (_) {}
+}
 function setRepeat(value) {
   repeatMode = ["off", "one", "all"].includes(value) ? value : "off";
   core.settings.mediaRepeat = repeatMode;
-  core.saveUserPrefs(); renderMedia();
+  core.saveUserPrefs(); renderMedia(); announceMediaOptions();
 }
 function setShuffle(value) {
   shuffle = !!value;
   core.settings.mediaShuffle = shuffle;
-  core.saveUserPrefs(); renderMedia();
+  core.saveUserPrefs(); renderMedia(); announceMediaOptions();
 }
+/* バーや設定から変わった値を、この画面の手元（shuffle／repeatMode）にも写す */
+function pullMediaOptions() {
+  repeatMode = ["off", "one", "all"].includes(core.settings.mediaRepeat) ? core.settings.mediaRepeat : "off";
+  shuffle = core.settings.mediaShuffle === true;
+  renderMedia();
+}
+if (typeof core.on === "function") core.on("mediaOptions", pullMediaOptions);
 function stopSleepTimer(silent = true) {
   clearTimeout(sleepTimer); sleepTimer = 0; sleepUntil = 0;
   if (sleepFadeArm) { clearTimeout(sleepFadeArm); sleepFadeArm = 0; }
