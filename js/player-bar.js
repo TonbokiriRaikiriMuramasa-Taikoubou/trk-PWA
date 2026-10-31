@@ -72,11 +72,25 @@
     if (!ctx.ready || !(Number(ctx.duration) > 0)) return false;
     return ctx.phase === "title" || ctx.phase === "playing" || ctx.phase === "paused";
   }
-  /* リピートの3段（なし → 1曲 → 全曲 → なし） */
+  /* リピートの段（既定は なし → 1曲 → 全曲 → なし）
+     ❓trk227「リピートボタンを単曲リピートのみにする」がオンのときは なし ⇄ 1曲 の2段だけ */
   const REPEATS = ["off", "one", "all"];
-  const nextRepeat = value => REPEATS[(REPEATS.indexOf(value) + 1) % REPEATS.length] || "off";
-  const repeatNow = () => (REPEATS.includes(core.settings.mediaRepeat) ? core.settings.mediaRepeat : "off");
+  const repeatOneOnly = () => core.settings.playerBarRepeatOneOnly === true;
+  const repeatChoices = oneOnly => (oneOnly ? ["off", "one"] : REPEATS);
+  function nextRepeat(value, oneOnly) {
+    const list = repeatChoices(oneOnly === true);
+    const i = list.indexOf(value);
+    return list[(i + 1) % list.length] || "off";
+  }
+  /* いまのリピート。単曲のみの設定で「全曲」が残っていたら「なし」として扱う（押せば 1曲 へ） */
+  const repeatNow = () => {
+    const value = core.settings.mediaRepeat;
+    if (!REPEATS.includes(value)) return "off";
+    return repeatOneOnly() && value === "all" ? "off" : value;
+  };
   const shuffleNow = () => core.settings.mediaShuffle === true;
+  /* ❓trk227「シャッフルは、いまの一覧（プレイリスト）の中から選ぶ」（既定オフ＝ライブラリ全体から） */
+  const shuffleInList = () => core.settings.playerBarShuffleInList === true;
   /* シャッフルの ⏭ で選ぶ曲（純粋関数。テストで確かめる）
      ・シャッフルがオフ、または一覧が無ければ null（＝これまでどおり前後の曲）
      ・いまの曲を除いた中から選ぶ（1曲しか無ければその曲） */
@@ -404,8 +418,12 @@
     if (!lib) return;
     /* 🎲 シャッフル中は、一覧の前後ではなく「ほかの曲から1つ」を選ぶ（再生画面と同じ考え方） */
     let next = null;
-    if (shuffleNow() && typeof lib.allSongs === "function") {
-      next = shufflePick(lib.allSongs(), core.currentSong && core.currentSong.key);
+    if (shuffleNow()) {
+      /* ❓trk227：範囲の設定がオンなら「いまの一覧（プレイリスト）」から、オフなら全体から */
+      const pool = shuffleInList() && typeof lib.shufflePool === "function"
+        ? lib.shufflePool()
+        : (typeof lib.allSongs === "function" ? lib.allSongs() : []);
+      next = shufflePick(pool, core.currentSong && core.currentSong.key);
     }
     if (!next) next = direction < 0 ? lib.prevSong() : lib.nextSong();
     if (!next) return;
@@ -425,7 +443,7 @@
     sync();
   }
   function cycleRepeat() {
-    core.settings.mediaRepeat = nextRepeat(repeatNow());
+    core.settings.mediaRepeat = nextRepeat(repeatNow(), repeatOneOnly());
     if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
     const now = repeatNow();
     toast(word(now === "one" ? "barRepeatOneToast" : now === "all" ? "barRepeatAllToast" : "barRepeatOffToast"));
@@ -662,6 +680,9 @@
     seekEnabled,
     seekLocked,
     nextRepeat,
+    repeatChoices,
+    repeatOneOnly,
+    shuffleInList,
     shufflePick,
     panelAllowed,
     seekToRatio,

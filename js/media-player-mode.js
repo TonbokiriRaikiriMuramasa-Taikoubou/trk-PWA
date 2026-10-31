@@ -151,6 +151,15 @@ let overlay, dialog, powerButton;
 let mediaReturnFocus = null;   /* 🎥 基地から開いたときの戻り先（trk186） */
 let mediaOpen = false, holdTimer = 0, longPressed = false;
 let repeatMode = core.settings.mediaRepeat || "off", shuffle = !!core.settings.mediaShuffle;
+/* ❓trk227：バーの ❓謎設定を、この画面でも同じ値で使う
+   ・「リピートボタンを単曲リピートのみにする」＝選択肢を なし／1曲 の2つだけに
+   ・「シャッフルは、いまの一覧（プレイリスト）の中から選ぶ」＝🎲 の対象を一覧へ */
+const repeatOneOnly = () => core.settings.playerBarRepeatOneOnly === true;
+const shuffleInList = () => core.settings.playerBarShuffleInList === true;
+const repeatOptions = () => (repeatOneOnly()
+  ? [["off", "mediaRepeatOff"], ["one", "mediaRepeatOne"]]
+  : [["off", "mediaRepeatOff"], ["one", "mediaRepeatOne"], ["all", "mediaRepeatAll"]]);
+if (repeatOneOnly() && repeatMode === "all") repeatMode = "off";
 let mediaRate = Number(core.settings.mediaRate) || 1, sleepTimer = 0, sleepUntil = 0, tickTimer = 0;
 let seeking = false, queueFilter = "", videoBinding = null;
 let reverseActive = false, reverseLoading = false, reverseTimer = 0, reverseSource = null, reverseGain = null;
@@ -637,6 +646,8 @@ function announceMediaOptions() {
 }
 function setRepeat(value) {
   repeatMode = ["off", "one", "all"].includes(value) ? value : "off";
+  /* ❓trk227：単曲リピートのみの設定なら「全曲」は受けない（なしへ） */
+  if (repeatOneOnly() && repeatMode === "all") repeatMode = "off";
   core.settings.mediaRepeat = repeatMode;
   core.saveUserPrefs(); renderMedia(); announceMediaOptions();
 }
@@ -648,10 +659,30 @@ function setShuffle(value) {
 /* バーや設定から変わった値を、この画面の手元（shuffle／repeatMode）にも写す */
 function pullMediaOptions() {
   repeatMode = ["off", "one", "all"].includes(core.settings.mediaRepeat) ? core.settings.mediaRepeat : "off";
+  /* ❓trk227：単曲リピートのみの設定に変えたら、「全曲」は「なし」として扱い、保存も合わせる */
+  if (repeatOneOnly() && repeatMode === "all") repeatMode = "off";
+  if (core.settings.mediaRepeat !== repeatMode) { core.settings.mediaRepeat = repeatMode; core.saveUserPrefs(); }
   shuffle = core.settings.mediaShuffle === true;
+  fillRepeatOptions();
   renderMedia();
 }
 if (typeof core.on === "function") core.on("mediaOptions", pullMediaOptions);
+/* 🔁 の選択肢を、いまの設定に合わせて作り直す（❓trk227：単曲リピートのみなら2つだけ） */
+function fillRepeatOptions() {
+  if (!repeatNode) return;
+  const list = repeatOptions();
+  const have = Array.from(repeatNode.childNodes || []).map(o => o.value).join(",");
+  const want = list.map(([value]) => value).join(",");
+  if (have !== want) {
+    while (repeatNode.firstChild) repeatNode.removeChild(repeatNode.firstChild);
+    for (const [value, key] of list) {
+      const o = document.createElement("option");
+      o.value = value; o.dataset.i18n = key; o.textContent = tr(key);
+      repeatNode.append(o);
+    }
+  }
+  if (repeatNode.value !== repeatMode) repeatNode.value = repeatMode;
+}
 function stopSleepTimer(silent = true) {
   clearTimeout(sleepTimer); sleepTimer = 0; sleepUntil = 0;
   if (sleepFadeArm) { clearTimeout(sleepFadeArm); sleepFadeArm = 0; }
@@ -725,13 +756,23 @@ async function setSleep(minutes) {
   }
   renderMedia();
 }
+/* 🎲 の対象（❓trk227「シャッフルは、いまの一覧（プレイリスト）の中から選ぶ」）
+   ・設定がオフ（既定）＝これまでどおり全曲から
+   ・設定がオン＝ライブラリに表示している一覧（プレイリスト）から。一覧が空なら全曲へ戻す */
+function shuffleCandidates(list) {
+  if (!shuffleInList()) return list;
+  const lib = window.Trk && window.Trk.library;
+  const pool = lib && typeof lib.shufflePool === "function" ? lib.shufflePool().filter(Boolean) : [];
+  return pool.length ? pool : list;
+}
 function mediaCandidates() {
   const list = mpSongs();
   if (!list.length) return [];
   if (shuffle) {
+    const pool = shuffleCandidates(list);
     const cur = core.currentSong && core.currentSong.key;
-    const other = list.filter(x => x.key !== cur);
-    return other.length ? other : list;
+    const other = pool.filter(x => x.key !== cur);
+    return other.length ? other : pool;
   }
   return list;
 }
@@ -1687,7 +1728,7 @@ function buildMedia() {
   shuffleNode = makeButton("mediaShuffle", "mediaSmallBtn"); shuffleNode.addEventListener("click", () => setShuffle(!shuffle));
   const repeatLabel = core.el("label", "mediaOption"); repeatLabel.append(tx("span", "mediaRepeat"));
   repeatNode = document.createElement("select");
-  for (const [value, key] of [["off", "mediaRepeatOff"], ["one", "mediaRepeatOne"], ["all", "mediaRepeatAll"]]) { const o = document.createElement("option"); o.value = value; o.dataset.i18n = key; o.textContent = tr(key); repeatNode.append(o); }
+  fillRepeatOptions();
   repeatLabel.append(repeatNode); repeatNode.addEventListener("change", () => setRepeat(repeatNode.value));
   const rateLabel = core.el("label", "mediaOption"); rateLabel.append(tx("span", "mediaRate"));
   rateNode = document.createElement("select"); for (const v of [.5, .75, 1, 1.25, 1.5, 2]) { const o = document.createElement("option"); o.value = v; o.textContent = `${v.toFixed(2)}x`; rateNode.append(o); }

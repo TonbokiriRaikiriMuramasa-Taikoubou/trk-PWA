@@ -55,6 +55,8 @@ const TEXT = {
     fxInLibrary:"スマホ型で、エフェクトの欄をライブラリにも出す", fxInLibraryHint:"オフのときは、エフェクトの欄（音楽・映像・くわし・TRKアンプ・TRKエフェクト・MIX）をエフェクトのタブにまとめます。ライブラリのタブのまま触りたい人はオンにしてください。エフェクトのタブには、どちらでも同じ欄が出ます。",
     uiModeLock:"画面の形は、常に選んだものを使う", uiModeLockHint:"オフにすると、開くたびに端末へ合わせて選び直します（スマホならスマホ型、PCならPC型）。右上の 📱／🖥 は押すたびに PC ↔ スマホ を入れ替え、オンなら次に開いたときも同じ形で始まります。",
     playerBarSeekLock:"バーに触れても位置を移動しない", playerBarSeekLockHint:"オンにすると、下の再生バーの線（再生位置）に触っても、曲の位置が動かなくなります。誤って触れてしまい、頭へ飛ぶのを防ぎたいときにどうぞ。オフ（既定）なら、バーの線を押す・なぞると、その位置へ移動します（ライブラリの試聴中でも動かせます）。",
+    playerBarRepeatOneOnly:"リピートボタンを、単曲リピートのみにする", playerBarRepeatOneOnlyHint:"オンにすると、下の再生バーの 🔁 が「なし ⇄ 1曲」だけを回ります（全曲は出てきません）。メディアプレイヤーの画面のリピートの選択肢も、なし／1曲の2つだけになります。オフ（既定）なら、なし → 1曲 → 全曲 → なし と回ります。",
+    playerBarShuffleInList:"シャッフルは、いまの一覧（プレイリスト）の中から選ぶ", playerBarShuffleInListHint:"オンにすると、シャッフル中の ⏮⏭ が「ライブラリに表示している一覧（プレイリスト）」の中から選ばれます。絞り込んだ曲だけをランダムに聴きたいときにどうぞ。一覧が空のときは全曲から選びます。オフ（既定）なら、ライブラリの全曲から選びます。",
     barSeekLocked:"バーは「触れても位置を移動しない」設定です（⚙ → ❓ 謎設定）",
     /* 🖥 画面の形・底の再生バー（js/mobile-shell.js・js/player-bar.js。trk221） */
     secUi:"🖥 画面と再生バー",
@@ -496,6 +498,8 @@ const TEXT = {
     fxInLibrary:"On the phone layout, also show the effect panels in Library", fxInLibraryHint:"When off, the effect panels (audio, video, advanced, TRK amp, TRK effects, MIX) are gathered in the Effects tab. Turn this on if you would rather tweak them while staying in the Library tab. Either way, the Effects tab always shows the same panels.",
     uiModeLock:"Always use the layout you chose", uiModeLockHint:"When off, trk! picks the layout again on every launch (phone layout on a phone, desktop on a PC). The 📱／🖥 button at the top right swaps PC ↔ Phone; when this is on, the next launch starts in the same layout.",
     playerBarSeekLock:"Touching the bar never moves the position", playerBarSeekLockHint:"When on, touching the position line on the bottom player bar no longer moves the song. Useful if you keep skipping to the start by accident. When off (default), pressing or dragging the line jumps to that position — even while a song is previewing in the library.",
+    playerBarRepeatOneOnly:"Repeat button: one song only", playerBarRepeatOneOnlyHint:"When on, 🔁 on the bottom bar cycles only between “off ⇄ one song” (all songs no longer appears). The Repeat choices on the player screen also shrink to off / one song. When off (default) it cycles off → one song → all → off.",
+    playerBarShuffleInList:"Shuffle picks from the current list (playlist)", playerBarShuffleInListHint:"When on, ⏮⏭ while shuffling picks from the list currently shown in the library (your playlist) — handy when you want to shuffle only the songs you have filtered down to. If that list is empty, all songs are used. When off (default), it picks from every song in the library.",
     barSeekLocked:"The bar is set to “touching never moves the position” (⚙ → ❓ Mystery settings)",
     /* 🖥 screen shape and the bottom player bar (js/mobile-shell.js, js/player-bar.js; trk221) */
     secUi:"🖥 Layout and player bar",
@@ -929,6 +933,8 @@ const TEXT = {
     fxInLibrary:"手机版时，在媒体库中也显示效果栏", fxInLibraryHint:"关闭时，效果栏（音乐、映像、详细、TRK 放大器、TRK 特效、MIX）会集中到「音效」标签页。若想留在媒体库标签页操作，请开启。无论哪种，音效标签页都会显示同样的栏。",
     uiModeLock:"始终使用所选的画面布局", uiModeLockHint:"关闭时，每次打开都会按设备重新选择（手机用手机版，电脑用电脑版）。右上角的 📱／🖥 按一次即可在电脑 ↔ 手机之间切换；开启时，下次打开也会沿用相同的布局。",
     playerBarSeekLock:"触摸播放条也不移动播放位置", playerBarSeekLockHint:"开启后，触摸底部播放条上的进度线不会改变歌曲位置。适合不小心碰到就跳回开头的情况。关闭（默认）时，按住或拖动进度线就会跳到该位置——在媒体库试听时也可以拖动。",
+    playerBarRepeatOneOnly:"循环按钮只切换单曲循环", playerBarRepeatOneOnlyHint:"开启后，底部播放条的 🔁 只在「不循环 ⇄ 单曲」之间切换（不再出现全部）。播放器画面上的循环选项也只剩「不循环／单曲」两项。关闭（默认）时，按 不循环 → 单曲 → 全部 → 不循环 依次切换。",
+    playerBarShuffleInList:"随机播放从当前列表（播放列表）中选择", playerBarShuffleInListHint:"开启后，随机播放时的 ⏮⏭ 会从「媒体库中当前显示的列表（播放列表）」中选择。想只听筛选出来的歌曲时请使用。列表为空时从全部歌曲中选择。关闭（默认）时，从媒体库的全部歌曲中选择。",
     barSeekLocked:"播放条已设为「触摸也不移动位置」（⚙ → ❓ 神秘设置）",
     /* 🖥 画面布局与底部播放条（js/mobile-shell.js、js/player-bar.js；trk221） */
     secUi:"🖥 画面与播放条",
@@ -1360,6 +1366,8 @@ const TEXT = {
     fxInLibrary:"휴대폰형에서 이펙트栏을 라이브러리에도 표시", fxInLibraryHint:"끄면 이펙트栏(음악·영상·상세·TRK 앰프·TRK 이펙트·MIX)을 효과 탭에 모읍니다. 라이브러리 탭에 머문 채 만지고 싶다면 켜세요. 효과 탭에는 어느 쪽이든 같은 栏이 나옵니다.",
     uiModeLock:"화면 형태는 항상 선택한 것을 사용", uiModeLockHint:"끄면 열 때마다 기기에 맞춰 다시 고릅니다(휴대폰은 휴대폰형, PC는 PC형). 오른쪽 위의 📱／🖥 는 누를 때마다 PC ↔ 휴대폰을 바꾸며, 켜져 있으면 다음에 열 때도 같은 형태로 시작합니다.",
     playerBarSeekLock:"바를 만져도 재생 위치를 이동하지 않음", playerBarSeekLockHint:"켜면 아래쪽 재생 바의 위치선을 만져도 곡의 위치가 바뀌지 않습니다. 실수로 눌러 처음으로 돌아가는 것을 막고 싶을 때 사용하세요. 끄면(기본) 바의 선을 누르거나 끌면 그 위치로 이동합니다(라이브러리 미리듣기 중에도 이동할 수 있습니다).",
+    playerBarRepeatOneOnly:"반복 버튼을 한 곡 반복만으로", playerBarRepeatOneOnlyHint:"켜면 아래쪽 재생 바의 🔁 이 ‘없음 ⇄ 한 곡’만 순환합니다(전체는 나오지 않습니다). 플레이어 화면의 반복 선택지도 없음／한 곡 두 가지가 됩니다. 끄면(기본) 없음 → 한 곡 → 전체 → 없음 순서로 순환합니다.",
+    playerBarShuffleInList:"셔플은 지금 목록(재생목록) 안에서 선택", playerBarShuffleInListHint:"켜면 셔플 중 ⏮⏭이 ‘라이브러리에 지금 표시된 목록(재생목록)’ 안에서 선택됩니다. 걸러 낸 곡만 무작위로 듣고 싶을 때 사용하세요. 목록이 비어 있으면 전체 곡에서 선택합니다. 끄면(기본) 라이브러리의 전체 곡에서 선택합니다.",
     barSeekLocked:"재생 바가 ‘만져도 위치를 이동하지 않음’ 설정입니다 (⚙ → ❓ 수수께끼 설정)",
     /* 🖥 화면 형태와 아래쪽 재생 바（js/mobile-shell.js, js/player-bar.js; trk221） */
     secUi:"🖥 화면과 재생 바",
