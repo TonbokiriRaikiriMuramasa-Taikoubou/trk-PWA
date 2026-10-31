@@ -583,6 +583,143 @@ const SKINS = {
     game:{don:"#8fd3b0",ka:"#d7ecd9",stage:"#1d3a33",lane:"rgba(255,255,255,.05)",track:"rgba(233,243,238,.22)",ink:"#e9f3ee",
       inkShadow:"rgba(0,0,0,.6)",noteBorder:"rgba(233,243,238,.5)",panel:"rgba(29,58,51,.94)",perfect:"#d8e8a0",good:"#e9f3ee",miss:"#8fa89e",glow:false},
     shapes:["circle","circle"], video:"saturate(.85) brightness(.9)"
+  },
+  /* ---------- 書体（フォント）スキン：trk228 で追加 ----------
+     端末に入っている書体だけで見た目を変えます（フォントは同梱せず、外部からも読みません）。
+     書体そのものが無い端末でも違いが出るよう、type に太さ・字間・行間・大文字化を持たせています。
+       type.weight        本文の太さ      type.lh          本文の行間
+       type.title         見出しの書体（省略時は本文と同じ）
+       type.titleWeight   見出しの太さ    type.titleSpace  見出しの字間
+       type.titleTransform 見出しの大文字化（none／uppercase）
+       type.mark          棚カードに出す見本の文字 */
+  "typeMincho": {
+    cat:["type","light"],
+    label:{ja:"明朝の本",en:"Mincho book",zh:"明朝书卷",ko:"명조 책"},
+    desc:{ja:"縦組みの本のような、明朝体の静けさ",en:"Quiet Mincho serif, like a printed book",zh:"如印刷书页般安静的明朝体",ko:"인쇄된 책 같은 조용한 명조체"},
+    font:'"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","Noto Serif CJK JP","Noto Serif SC","Noto Serif KR",serif',
+    type:{lh:"1.75",weight:"400",titleWeight:"600",titleSpace:".06em",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#f6f1e6","--ui-panel":"rgba(255,253,247,.96)","--ui-soft":"rgba(140,47,57,.06)","--ui-text":"#241c14",
+      "--ui-muted":"#5d5044","--ui-border":"rgba(36,28,20,.18)","--ui-button":"#efe7d8","--ui-button-hover":"#e2d7c4",
+      "--ui-field":"#fffdf7","--ui-accent":"#8c2f39","--ui-on-accent":"#fff6f0","--ui-gold":"#a8762a",
+      "--ui-shadow":"0 18px 60px rgba(74,54,34,.18)","--ui-glow":"rgba(140,47,57,.14)"},
+    game:{don:"#8c2f39",ka:"#2f5d7c",stage:"#f6f1e6",lane:"rgba(36,28,20,.05)",track:"rgba(36,28,20,.25)",ink:"#241c14",
+      inkShadow:"rgba(255,255,255,.7)",noteBorder:"rgba(36,28,20,.55)",panel:"rgba(255,253,247,.95)",perfect:"#8c2f39",good:"#241c14",miss:"#8a7d6d",glow:false},
+    shapes:["circle","circle"], video:"sepia(.18) brightness(1.02)"
+  },
+  "typeNewspaper": {
+    cat:["type","light"],
+    label:{ja:"新聞の活字",en:"Newsprint",zh:"报纸铅字",ko:"신문 활자"},
+    desc:{ja:"極太の見出しと、詰まった明朝の本文",en:"Heavy headlines over tight Mincho body text",zh:"粗黑标题配紧密的明朝正文",ko:"굵은 제목과 촘촘한 명조 본문"},
+    font:'"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","Noto Serif CJK JP","Noto Serif SC","Noto Serif KR",serif',
+    type:{lh:"1.6",weight:"400",title:'"Hiragino Kaku Gothic StdN","Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif',
+      titleWeight:"900",titleSpace:"-.02em",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#f2efe8","--ui-panel":"rgba(255,255,255,.97)","--ui-soft":"rgba(20,18,14,.05)","--ui-text":"#14120e",
+      "--ui-muted":"#4e4a42","--ui-border":"rgba(20,18,14,.28)","--ui-button":"#e8e4da","--ui-button-hover":"#dad4c7",
+      "--ui-field":"#ffffff","--ui-accent":"#b3261e","--ui-on-accent":"#ffffff","--ui-gold":"#6b5b1e",
+      "--ui-shadow":"0 0 0 1px rgba(20,18,14,.12),0 10px 40px rgba(20,18,14,.14)","--ui-glow":"rgba(179,38,30,.12)"},
+    game:{don:"#b3261e",ka:"#12406e",stage:"#f2efe8",lane:"rgba(20,18,14,.05)",track:"rgba(20,18,14,.3)",ink:"#14120e",
+      inkShadow:"rgba(255,255,255,.75)",noteBorder:"#14120e",panel:"rgba(255,255,255,.96)",perfect:"#b3261e",good:"#14120e",miss:"#7d7770",glow:false},
+    shapes:["square","square"], video:"contrast(1.05) saturate(.9)"
+  },
+  "typeMarugo": {
+    cat:["type","dark","fun"],
+    label:{ja:"丸ゴのお茶目",en:"Maru gothic",zh:"圆体俏皮",ko:"둥근 고딕"},
+    desc:{ja:"角の取れた丸ゴシックと、桃色の夜",en:"Rounded gothic in a peachy night",zh:"圆润的圆体与桃色夜晚",ko:"모서리 둥근 고딕과 복숭아빛 밤"},
+    font:'"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","HG丸ｺﾞｼｯｸM-PRO","M PLUS Rounded 1c","Noto Sans JP","Noto Sans SC","Noto Sans KR",sans-serif',
+    type:{lh:"1.5",weight:"500",titleWeight:"800",titleSpace:".02em",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#241a2a","--ui-panel":"rgba(58,40,67,.95)","--ui-soft":"rgba(255,179,210,.07)","--ui-text":"#fdf2f8",
+      "--ui-muted":"#d9c4d0","--ui-border":"rgba(253,242,248,.2)","--ui-button":"#3a2843","--ui-button-hover":"#483253",
+      "--ui-field":"#231a29","--ui-accent":"#ffb3d2","--ui-on-accent":"#3c0f24","--ui-gold":"#ffe27a",
+      "--ui-shadow":"0 22px 70px rgba(0,0,0,.5)","--ui-glow":"rgba(255,179,210,.18)"},
+    game:{don:"#ffb3d2",ka:"#a7e8ff",stage:"#241a2a",lane:"rgba(255,255,255,.05)",track:"rgba(253,242,248,.22)",ink:"#fdf2f8",
+      inkShadow:"rgba(0,0,0,.65)",noteBorder:"rgba(60,15,36,.6)",panel:"rgba(36,26,42,.94)",perfect:"#ffe27a",good:"#fdf2f8",miss:"#a08f9a",glow:true},
+    shapes:["circle","circle"], video:"saturate(1.05) brightness(.95)"
+  },
+  "typePop": {
+    cat:["type","light","fun"],
+    label:{ja:"ポップ看板",en:"Pop signboard",zh:"波普招牌",ko:"팝 간판"},
+    desc:{ja:"黄色い地に、太くて元気な文字",en:"Bold cheerful type on a sunny yellow field",zh:"黄色底上的粗壮活字",ko:"노란 바탕에 굵고 발랄한 글자"},
+    font:'"Hiragino Maru Gothic ProN","Hiragino Maru Gothic Pro","M PLUS Rounded 1c","Hiragino Kaku Gothic StdN","Noto Sans JP","Noto Sans SC","Noto Sans KR",sans-serif',
+    type:{lh:"1.45",weight:"700",titleWeight:"900",titleSpace:".04em",titleTransform:"none",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#fff7d6","--ui-panel":"rgba(255,253,245,.97)","--ui-soft":"rgba(216,27,96,.06)","--ui-text":"#2b1a00",
+      "--ui-muted":"#644300","--ui-border":"rgba(43,26,0,.18)","--ui-button":"#ffe9a8","--ui-button-hover":"#ffdc78",
+      "--ui-field":"#fffdf5","--ui-accent":"#d81b60","--ui-on-accent":"#ffffff","--ui-gold":"#c2410c",
+      "--ui-shadow":"0 6px 0 rgba(43,26,0,.18)","--ui-glow":"rgba(216,27,96,.16)"},
+    game:{don:"#d81b60",ka:"#0e7c66",stage:"#fff7d6",lane:"rgba(43,26,0,.05)",track:"rgba(43,26,0,.25)",ink:"#2b1a00",
+      inkShadow:"rgba(255,255,255,.8)",noteBorder:"rgba(43,26,0,.6)",panel:"rgba(255,253,245,.95)",perfect:"#d81b60",good:"#2b1a00",miss:"#9a8a63",glow:false},
+    shapes:["square","circle"], video:"saturate(1.15) brightness(1.03)"
+  },
+  "typeKyokasho": {
+    cat:["type","light"],
+    label:{ja:"教科書の字",en:"Textbook letters",zh:"教科书字体",ko:"교과서 글자"},
+    desc:{ja:"とめ・はねの分かる、読みやすい教科書体",en:"Legible textbook strokes with clear stops and hooks",zh:"笔顺清晰的教科书体，易读",ko:"끝과 갈고리가 분명한 읽기 쉬운 교과서체"},
+    font:'"Yu Kyokasho","YuKyokasho","Hiragino Kyokasho ProN","Klee One","Noto Serif JP","Noto Serif CJK JP",serif',
+    type:{lh:"1.85",weight:"400",titleWeight:"600",titleSpace:".04em",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#eef6fb","--ui-panel":"rgba(255,255,255,.97)","--ui-soft":"rgba(31,111,235,.06)","--ui-text":"#10283a",
+      "--ui-muted":"#40596d","--ui-border":"rgba(16,40,58,.18)","--ui-button":"#e2eef7","--ui-button-hover":"#cfe3f2",
+      "--ui-field":"#ffffff","--ui-accent":"#1f6feb","--ui-on-accent":"#ffffff","--ui-gold":"#b45309",
+      "--ui-shadow":"0 16px 50px rgba(31,111,235,.12)","--ui-glow":"rgba(31,111,235,.14)"},
+    game:{don:"#1f6feb",ka:"#0f766e",stage:"#eef6fb",lane:"rgba(16,40,58,.05)",track:"rgba(16,40,58,.22)",ink:"#10283a",
+      inkShadow:"rgba(255,255,255,.8)",noteBorder:"rgba(16,40,58,.5)",panel:"rgba(255,255,255,.95)",perfect:"#1f6feb",good:"#10283a",miss:"#7d8f9d",glow:false},
+    shapes:["circle","circle"], video:"brightness(1.03) saturate(.95)"
+  },
+  "typeTypewriter": {
+    cat:["type","light"],
+    label:{ja:"タイプライター",en:"Typewriter",zh:"打字机",ko:"타자기"},
+    desc:{ja:"等幅の活字と、少し広い字間",en:"Monospaced letters with generous spacing",zh:"等宽铅字与宽松字距",ko:"고정폭 활자와 넉넉한 자간"},
+    font:'"Courier New",Courier,"Cascadia Mono",Consolas,"Noto Sans Mono",monospace',
+    type:{lh:"1.7",weight:"400",title:'"Courier New",Courier,"Cascadia Mono",Consolas,monospace',
+      titleWeight:"700",titleSpace:".14em",titleTransform:"uppercase",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#efe6d4","--ui-panel":"rgba(255,250,240,.96)","--ui-soft":"rgba(138,75,31,.06)","--ui-text":"#2a2118",
+      "--ui-muted":"#574734","--ui-border":"rgba(42,33,24,.22)","--ui-button":"#e6dbc6","--ui-button-hover":"#d8c9ae",
+      "--ui-field":"#fffaf0","--ui-accent":"#8a4b1f","--ui-on-accent":"#fff3e2","--ui-gold":"#7a5c1e",
+      "--ui-shadow":"0 14px 40px rgba(42,33,24,.16)","--ui-glow":"rgba(138,75,31,.14)"},
+    game:{don:"#8a4b1f",ka:"#37546b",stage:"#efe6d4",lane:"rgba(42,33,24,.05)",track:"rgba(42,33,24,.25)",ink:"#2a2118",
+      inkShadow:"rgba(255,250,240,.75)",noteBorder:"rgba(42,33,24,.55)",panel:"rgba(255,250,240,.95)",perfect:"#8a4b1f",good:"#2a2118",miss:"#8a7a63",glow:false},
+    shapes:["square","square"], video:"sepia(.35) contrast(1.05)"
+  },
+  "typeKaisho": {
+    cat:["type","dark"],
+    label:{ja:"楷書の便箋",en:"Kaisho letter",zh:"楷书信笺",ko:"해서 편지지"},
+    desc:{ja:"筆の流れが残る楷書と、紺の便箋",en:"Brush-stroke Kaisho on navy writing paper",zh:"带笔锋的楷书与深蓝信笺",ko:"붓결이 남는 해서와 남색 편지지"},
+    font:'"DFKai-SB","KaiTi","STKaiti","Kaiti SC","BiauKai","Yu Mincho","Hiragino Mincho ProN","Noto Serif JP",serif',
+    type:{lh:"1.75",weight:"400",titleWeight:"600",titleSpace:".1em",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#141a2e","--ui-panel":"rgba(35,44,74,.95)","--ui-soft":"rgba(240,201,135,.07)","--ui-text":"#f3efe2",
+      "--ui-muted":"#c6bfa9","--ui-border":"rgba(243,239,226,.2)","--ui-button":"#232c4a","--ui-button-hover":"#2e3a5e",
+      "--ui-field":"#111730","--ui-accent":"#f0c987","--ui-on-accent":"#2b2210","--ui-gold":"#f0c987",
+      "--ui-shadow":"0 22px 70px rgba(0,0,0,.5)","--ui-glow":"rgba(240,201,135,.16)"},
+    game:{don:"#f0c987",ka:"#9fd8ff",stage:"#141a2e",lane:"rgba(255,255,255,.05)",track:"rgba(243,239,226,.22)",ink:"#f3efe2",
+      inkShadow:"rgba(0,0,0,.7)",noteBorder:"rgba(20,26,46,.7)",panel:"rgba(20,26,46,.94)",perfect:"#f0c987",good:"#f3efe2",miss:"#8d8a7d",glow:true},
+    shapes:["circle","circle"], video:"saturate(.9) brightness(.95)"
+  },
+  "typeOldstyle": {
+    cat:["type","dark"],
+    label:{ja:"活字の古典",en:"Old-style serif",zh:"古典铅字",ko:"고전 활자"},
+    desc:{ja:"パラティーノ系の、ゆったりした欧文",en:"A relaxed Palatino-style old-style serif",zh:"帕拉蒂诺风格的从容西文",ko:"팔라티노 계열의 여유로운 서양 활자"},
+    font:'"Palatino Linotype","Book Antiqua",Palatino,Georgia,"Times New Roman","Noto Serif JP",serif',
+    type:{lh:"1.65",weight:"400",titleWeight:"600",titleSpace:".02em",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#191315","--ui-panel":"rgba(42,34,36,.95)","--ui-soft":"rgba(224,176,122,.07)","--ui-text":"#efe8e0",
+      "--ui-muted":"#c3b5a6","--ui-border":"rgba(239,232,224,.2)","--ui-button":"#2a2224","--ui-button-hover":"#382d30",
+      "--ui-field":"#171214","--ui-accent":"#e0b07a","--ui-on-accent":"#221607","--ui-gold":"#e0b07a",
+      "--ui-shadow":"0 22px 70px rgba(0,0,0,.55)","--ui-glow":"rgba(224,176,122,.15)"},
+    game:{don:"#e0b07a",ka:"#a8c6c0",stage:"#191315",lane:"rgba(255,255,255,.05)",track:"rgba(239,232,224,.2)",ink:"#efe8e0",
+      inkShadow:"rgba(0,0,0,.7)",noteBorder:"rgba(25,19,21,.7)",panel:"rgba(25,19,21,.94)",perfect:"#e0b07a",good:"#efe8e0",miss:"#8b8078",glow:false},
+    shapes:["circle","circle"], video:"sepia(.3) saturate(.85) brightness(.9)"
+  },
+  "typeGothicHeavy": {
+    cat:["type","dark","fun"],
+    label:{ja:"極太ゴシック",en:"Ultra gothic",zh:"超粗黑体",ko:"극태 고딕"},
+    desc:{ja:"詰めた字間と、蛍光のアクセント",en:"Tight tracking with a fluorescent accent",zh:"紧凑字距与荧光点缀",ko:"좁힌 자간과 형광 포인트"},
+    font:'"Impact","Haettenschweiler","Arial Black","Hiragino Kaku Gothic StdN","Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif',
+    type:{lh:"1.35",weight:"700",title:'"Impact","Haettenschweiler","Arial Black","Hiragino Kaku Gothic StdN","Hiragino Sans","Noto Sans JP",sans-serif',
+      titleWeight:"900",titleSpace:"-.03em",titleTransform:"none",mark:"あア漢 Aa 12"},
+    ui:{"--ui-bg":"#101013","--ui-panel":"rgba(35,35,43,.96)","--ui-soft":"rgba(216,255,62,.06)","--ui-text":"#f7f7fa",
+      "--ui-muted":"#bcbcc8","--ui-border":"rgba(247,247,250,.22)","--ui-button":"#23232b","--ui-button-hover":"#2f2f39",
+      "--ui-field":"#15151a","--ui-accent":"#d8ff3e","--ui-on-accent":"#11130a","--ui-gold":"#d8ff3e",
+      "--ui-shadow":"0 0 0 2px #000,0 18px 0 #000","--ui-glow":"rgba(216,255,62,.18)"},
+    game:{don:"#d8ff3e",ka:"#59d7ff",stage:"#101013",lane:"rgba(255,255,255,.04)",track:"rgba(247,247,250,.25)",ink:"#f7f7fa",
+      inkShadow:"rgba(0,0,0,.85)",noteBorder:"#000000",panel:"rgba(16,16,19,.95)",perfect:"#d8ff3e",good:"#f7f7fa",miss:"#8a8a96",glow:true},
+    shapes:["square","square"], video:"contrast(1.2) saturate(1.1)"
   }
 };
 

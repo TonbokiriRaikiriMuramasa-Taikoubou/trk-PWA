@@ -36,8 +36,8 @@ function contrast(fg, bg) {
 const ids = Object.keys(SKINS);
 
 describe("game UI contrast across the skin catalogue", () => {
-  test("includes the 40 built-in themes and four optional Miku themes", () => {
-    assert.equal(ids.length, 44);
+  test("includes the 49 built-in themes and four optional Miku themes", () => {
+    assert.equal(ids.length, 53);
     for (const id of ["miku39", "mikuNoir", "mikuClassic", "mikuIdol"]) assert.ok(SKINS[id], id);
   });
 
@@ -100,7 +100,7 @@ describe("game UI contrast across the skin catalogue", () => {
     assert.match(shelfCount, /color:var\(--ui-muted\)/, "#skinShelfCount must use solid --ui-muted");
     assert.doesNotMatch(shelfCount, /opacity\s*:/, "#skinShelfCount must not use opacity");
 
-    // Verify text on field contrast across all 44 skins
+    // Verify text on field contrast across all 53 skins
     for (const [id, skin] of Object.entries(SKINS)) {
       const ui = skin.ui;
       assert.ok(contrast(ui["--ui-text"], ui["--ui-field"]) >= 4.5,

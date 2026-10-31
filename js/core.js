@@ -1189,8 +1189,23 @@ function applyLanguage(code) {
 }
 
 /* ---------- スキン ---------- */
-const SKIN_CATS = [["all","catAll"],["basic","catBasic"],["miku","catMiku"],["dark","catDark"],["light","catLight"],["grad","catGrad"],["fun","catFun"],["access","catAccess"],["life","catLife"],["custom","catCustom"]];
+const SKIN_CATS = [["all","catAll"],["basic","catBasic"],["type","catType"],["miku","catMiku"],["dark","catDark"],["light","catLight"],["grad","catGrad"],["fun","catFun"],["access","catAccess"],["life","catLife"],["custom","catCustom"]];
 const skinCatList = s => (s.custom || s.pack) ? ["custom"] : (Array.isArray(s.cat) && s.cat.length ? s.cat : ["basic"]);
+/* 🔤 書体スキン（trk228）：棚カードの中だけに書体・太さ・字間を効かせる。書体見本の文字も添える */
+function skinCardType(b, s) {
+  if (s.font) b.style.setProperty("--sk-font", s.font);
+  const t = s.type; if (!t) return;
+  /* 書体スキンの説明文だけは、読みやすいよう本文の書体に戻す（12px の明朝は読みにくいため） */
+  b.style.setProperty("--sk-note", "var(--font)");
+  if (t.title) b.style.setProperty("--sk-title", t.title);
+  if (t.titleWeight) b.style.setProperty("--sk-weight", t.titleWeight);
+  if (t.titleSpace) b.style.setProperty("--sk-space", t.titleSpace);
+  if (t.titleTransform) b.style.setProperty("--sk-transform", t.titleTransform);
+}
+function skinSpecNode(s) {
+  const t = s.type; if (!t || !t.mark) return null;
+  return el("span", "skinSpec", t.mark);
+}
 /* 今 使っているスキン（棚を閉じていても見える）。押すと棚が開く */
 function buildSkinNow() {
   const now = $("skinNow"); if (!now) return;
@@ -1198,10 +1213,12 @@ function buildSkinNow() {
   const b = el("button", "skinCard"); b.type = "button";
   b.style.setProperty("--sk-bg", s.game.stage); b.style.setProperty("--sk-text", s.ui["--ui-text"]);
   b.style.setProperty("--sk-border", s.ui["--ui-border"]);
-  if (s.font) b.style.fontFamily = s.font;
+  skinCardType(b, s);
   const dots = el("span", "dots");
   for (const c of [s.ui["--ui-accent"], s.ui["--ui-gold"], s.ui["--ui-text"]]) { const d = el("i", "dot square"); d.style.background = c; dots.append(d); }
-  b.append(dots, el("b", "", s.label[lang] || s.label.en), el("small", "", (s.desc && (s.desc[lang] || s.desc.en)) || ""));
+  b.append(dots, el("b", "", s.label[lang] || s.label.en));
+  const spec = skinSpecNode(s); if (spec) b.append(spec);
+  b.append(el("small", "", (s.desc && (s.desc[lang] || s.desc.en)) || ""));
   b.title = tr("skinShelf"); b.setAttribute("aria-label", tr("skinShelf"));
   b.addEventListener("click", () => { const shelf = $("skinShelf"); if (shelf) shelf.open = true; });
   now.append(b);
@@ -1235,11 +1252,13 @@ function buildSkinGrid() {
     const b = el("button", "skinCard"); b.type = "button"; b.dataset.skin = id;
     b.style.setProperty("--sk-bg", s.game.stage); b.style.setProperty("--sk-text", s.ui["--ui-text"]);
     b.style.setProperty("--sk-border", s.ui["--ui-border"]);
-    if (s.font) b.style.fontFamily = s.font;
+    skinCardType(b, s);
     if (s.custom || s.pack) b.append(el("span", "skinTag", s.pack ? "PACK" : tr("customTag")));
     const dots = el("span", "dots");
     for (const c of [s.ui["--ui-accent"], s.ui["--ui-gold"], s.ui["--ui-text"]]) { const d = el("i", "dot square"); d.style.background = c; dots.append(d); }
-    b.append(dots, el("b", "", s.label[lang] || s.label.en), el("small", "", (s.desc && (s.desc[lang] || s.desc.en)) || ""));
+    b.append(dots, el("b", "", s.label[lang] || s.label.en));
+    const spec = skinSpecNode(s); if (spec) b.append(spec);
+    b.append(el("small", "", (s.desc && (s.desc[lang] || s.desc.en)) || ""));
     b.classList.toggle("selected", id === settings.skin); b.setAttribute("aria-pressed", id === settings.skin);
     b.addEventListener("click", () => applySkin(id));
     grid.append(b);
@@ -1273,6 +1292,14 @@ function applySkin(id, persist = true) {
   root.setProperty("--ui-accent-ink", window.Trk.data.accentInk(s.ui));
   root.setProperty("--stage-bg", s.game.stage); root.setProperty("--hud-text", s.game.ink);
   root.setProperty("--hud-shadow", s.game.inkShadow); root.setProperty("--font", s.font || window.Trk.data.FONT_DEFAULT);
+  /* 🔤 書体スキン（trk228）：見出しの書体・太さ・字間・行間。持っていないスキンは inherit（＝これまで通り） */
+  const ty = s.type || null;
+  root.setProperty("--font-title", (ty && ty.title) || "inherit");
+  root.setProperty("--font-title-weight", (ty && ty.titleWeight) || "revert");   /* revert＝h1/h2 はブラウザ既定の太字に戻す */
+  root.setProperty("--font-title-space", (ty && ty.titleSpace) || "inherit");
+  root.setProperty("--font-title-transform", (ty && ty.titleTransform) || "none");
+  root.setProperty("--font-weight", (ty && ty.weight) || "inherit");
+  root.setProperty("--font-lh", (ty && ty.lh) || "inherit");
   root.setProperty("--j-perfect", s.game.perfect); root.setProperty("--j-good", s.game.good); root.setProperty("--j-miss", s.game.miss);
   applyNoteVars();
   document.documentElement.dataset.skin = settings.skin;

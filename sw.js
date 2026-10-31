@@ -26,7 +26,7 @@
    🧭 trk225（2026-10-31）：下の再生バーの置き場所（画面のいちばん下／操作パネルの上）と、
    「隠さない」設定を足しました。js/player-bar.js・css/player-bar.css・index.html が変わったので、
    これまでどおり版の名前を上げます。 */
-const CACHE = "trk-v2026.10.31-trk227";
+const CACHE = "trk-v2026.10.31-trk228";
 const CACHE_PREFIX = "trk-";
 const SCOPE = new URL(self.registration.scope);
 const VENDOR_PREFIX = "assets/vendor/";

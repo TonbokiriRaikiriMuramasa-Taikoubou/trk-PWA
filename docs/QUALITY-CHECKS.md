@@ -62,7 +62,7 @@
 4. **押せるものの role を消していない**（`role="presentation"` / `"none"`）
 5. **`role="tablist"` の中身がタブだけ**（＋ボタンを混ぜない。`js/library.js` の `libTabsList` を見る）
 6. **見出しの飛びが無い** — 許可リストは空。`h1→h3` は 2026-10-08 に解消（飛びが出たら FAIL）
-7. **色コントラストは別のNodeテスト** — `tests/skin-contrast.test.mjs` が44スキンの固定HEXペアを確認する。計算スタイル／DOM opacity／実hover状態／背景合成は測らないため、axeの代わりではない。
+7. **色コントラストは別のNodeテスト** — `tests/skin-contrast.test.mjs` が53スキンの固定HEXペアを確認する。計算スタイル／DOM opacity／実hover状態／背景合成は測らないため、axeの代わりではない。
 
 ## 5. もう一度やりたいとき（手順）
 
@@ -86,4 +86,4 @@ node -e 'import("html-validate").then(async ({HtmlValidate})=>{const r=await new
 
 ---
 
-最終更新: 2026-10-09（44スキンの固定色ペアのNode検査を追加。実DOM／axeでの再確認は未実施）
+最終更新: 2026-10-31（trk228 の書体スキン9種を足して 53 スキンに。実DOM／axeでの再確認は未実施）
