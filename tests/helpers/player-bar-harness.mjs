@@ -39,6 +39,7 @@ export function fakeDom() {
       appendChild(kid) { node.append(kid); return kid; },
       remove() { if (node.parentNode) node.parentNode.childNodes = node.parentNode.childNodes.filter(k => k !== node); },
       setAttribute(name, value) { node.attributes[name] = String(value); },
+      getAttribute(name) { return name in node.attributes ? node.attributes[name] : null; },
       removeAttribute(name) { delete node.attributes[name]; },
       blur() {},
       /* 既定は「画面に出ている大きさ＝設計の大きさ」。テストで上書きする。
@@ -81,10 +82,11 @@ export function fire(node, name) {
    navHeight を与えると下部ナビ（.trk-mobile-nav）を置く（trk225：バーとの前後）
    controls を与えると、設定の欄（#playerBarMode／#playerBarPos／#playerBarLock）を置く */
 export function runBar({ playerBar = "auto", phase = "title", hasSong = true, media = false, study = false, stage = null, mobile = false,
-  playerBarPos, playerBarLock, navHeight = null, controls = false } = {}) {
+  playerBarPos, playerBarLock, playerBarSeekLock, mediaShuffle, mediaRepeat, songs = null, panel = null,
+  navHeight = null, controls = false } = {}) {
   const dom = fakeDom();
   const events = [];
-  const calls = { save: 0, seek: [], select: [], openPlayer: 0, bannerClick: 0, toast: [] };
+  const calls = { save: 0, seek: [], select: [], openPlayer: 0, bannerClick: 0, toast: [], emitted: [] };
   const banner = dom.makeNode("button");
   banner.className = "bannerPlayBtn";
   banner.textContent = "▶";
@@ -100,6 +102,10 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
   const settings = { language: "ja", playerBar, musicVolume: 0.5 };
   if (playerBarPos !== undefined) settings.playerBarPos = playerBarPos;
   if (playerBarLock !== undefined) settings.playerBarLock = playerBarLock;
+  if (playerBarSeekLock !== undefined) settings.playerBarSeekLock = playerBarSeekLock;
+  /* 🎵 trk226：シャッフル／リピートの値（再生画面と共有する設定） */
+  if (mediaShuffle !== undefined) settings.mediaShuffle = mediaShuffle;
+  if (mediaRepeat !== undefined) settings.mediaRepeat = mediaRepeat;
   const core = {
     settings,
     phase,
@@ -107,6 +113,7 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
     videoReady: true,
     video,
     on(name, fn) { events.push({ name, fn }); },
+    emit(name, value) { calls.emitted.push({ name, value }); },
     saveUserPrefs() { calls.save += 1; },
     rememberMusicVolume() {}
   };
@@ -120,7 +127,8 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
         selectSong: async it => { calls.select.push(it.key); },
         songDisplayMeta: it => ({ title: `${it.base}（表示）`, artist: it.artist || "" }),
         loadSongArtwork: () => Promise.resolve(null),
-        plToast(message) { calls.toast.push(String(message)); }
+        plToast(message) { calls.toast.push(String(message)); },
+        allSongs: () => (songs || []).slice()
       }
     },
     TrkMediaPlayer: { open: () => { calls.openPlayer += 1; }, close() {}, isOpen: () => media },
@@ -162,6 +170,7 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
     for (const node of [mode, pos, lock]) dom.body.append(node);
     dom.controls = { mode, pos, lock };
   }
+  if (panel) window.Trk.playerPanel = panel;
   if (mobile) dom.body.classList.add("trk-mobile");
   if (study) dom.body.classList.add("study-room-open");
 

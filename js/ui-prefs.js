@@ -19,8 +19,11 @@
   const fields = {
     fixedIconSize: "fixedIconSize",
     uiModeLock: "uiModeLock",
-    fxInLibrary: "fxInLibrary"
+    fxInLibrary: "fxInLibrary",
+    playerBarSeekLock: "playerBarSeekLock"      /* 🎵 trk226：バーに触れても位置を移動しない（既定オフ） */
   };
+  /* 既定が「オン」の設定と「オフ」の設定が混ざっているので、どちらかを明示する */
+  const DEFAULT_ON = new Set(["fixedIconSize", "uiModeLock"]);
 
   /* 設定の欄へ、いまの値を写す（起動時・言語やスキンの切り替え・設定を開いたとき） */
   function sync() {
@@ -32,7 +35,7 @@
     for (const [id, key] of Object.entries(fields)) {
       const input = document.getElementById(id);
       if (input) {
-        const on = id === "fxInLibrary" ? core.settings[key] === true : core.settings[key] !== false;
+        const on = DEFAULT_ON.has(id) ? core.settings[key] !== false : core.settings[key] === true;
         if (input.checked !== on) input.checked = on;
       }
     }

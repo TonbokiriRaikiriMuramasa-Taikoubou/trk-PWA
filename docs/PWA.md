@@ -205,7 +205,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 | 項目 | 実装 |
 | --- | --- |
-| cache の名前 | `trk-v2026.10.31-trk225@<スコープ>`（`/trk-PWA/` なら `@trk-pwa`、ルート `/` なら `@root`）。activate は**自分のスコープのものだけ**を削除（同じオリジンに2つ置いても取り違えない） |
+| cache の名前 | `trk-v2026.10.31-trk226@<スコープ>`（`/trk-PWA/` なら `@trk-pwa`、ルート `/` なら `@root`）。activate は**自分のスコープのものだけ**を削除（同じオリジンに2つ置いても取り違えない） |
 | 殻の先読み | `fetch(…, { cache: "no-cache" })` で古い JS を拾わない。`verified.json` と `assets/mmd/lat-miku/preset.json` も先に入れる |
 | 通信優先 | ナビゲーションだけ **3 秒**で打ち切ってキャッシュへ（`AbortController`）。セーフモードは今までどおりキャッシュを使わない |
 | 共有の受け口 | `SHARE_CACHE_NAME` もスコープごと（`js/share-inbox.js` と同じ印） |
@@ -239,7 +239,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 ```sh
 npm ci
-npm run check                                  # 861 pass / 0 fail（trk220 の47件・trk221 の27件・trk222 の13件・trk223 の25件を追加）
+npm run check                                  # 923 pass / 0 fail（trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件を追加）
 node tools/check-repo.mjs                      # 0 failure / 0 warning
 ```
 

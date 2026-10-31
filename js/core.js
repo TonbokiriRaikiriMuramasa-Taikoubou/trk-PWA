@@ -279,6 +279,8 @@ const settings = {
   playerBarPos: pick(prefs.playerBarPos, ["bottom", "above"], "bottom"),
   /* 🔒 trk225：再生バーを隠さない（バーの ✕ を出さない。誤って消す対策。既定オフ） */
   playerBarLock: prefs.playerBarLock === true,
+  /* ❓ trk226：バーに触れても位置を移動しない（既定オフ＝触れれば動く。❓謎設定） */
+  playerBarSeekLock: prefs.playerBarSeekLock === true,
   /* 🖥 trk222：画面の拡大率（%）。50／75／100／125 の4つだけ。ゲーム中は 100% のまま */
   uiScale: pick(prefs.uiScale, [50, 75, 100, 125], 100),
   /* 🖥 trk222：拡大率を変えても、アイコンの大きさは 100% のまま固定する（既定オン） */
@@ -709,7 +711,7 @@ function resetAllPrefs() {
   settings.uiMode = "auto"; settings.playerBar = "on";
   settings.uiScale = 100; settings.fixedIconSize = true; settings.uiModeLock = true; settings.fxInLibrary = false;
   /* 🎵 trk225：バーの置き場所（いちばん下）と、隠さない設定（オフ）も工場出荷状態へ */
-  settings.playerBarPos = "bottom"; settings.playerBarLock = false;
+  settings.playerBarPos = "bottom"; settings.playerBarLock = false; settings.playerBarSeekLock = false;
 }
 function exportPrefs(kind) {
   const out = {};

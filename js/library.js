@@ -4313,9 +4313,16 @@ function previewContinue() {
   return true;
 }
 video.addEventListener("canplay", () => { if (previewPending) { previewPending = false; startPreview(); } });
+/* 🎵 trk226：試聴が終わったときに戻る位置。リピートが「1曲」なら頭から、
+   それ以外は試聴の開始位置（プレビューの仕様）。下の再生バーの 🔁 と同じ設定を見ます。
+   （純粋関数として切り出し、テストから直接動かせるようにしています） */
+function previewRestartFor(repeat, start) {
+  const at = Number(start);
+  return repeat === "one" ? 0 : (Number.isFinite(at) ? at : 0);
+}
 video.addEventListener("ended", () => {
   if (window._trkMediaPlayerMode || core.phase !== "title" || !core.currentSong || !core.settings.previewEnabled) return;
-  try { video.currentTime = previewStartFor(); } catch (_) {}
+  try { video.currentTime = previewRestartFor(core.settings.mediaRepeat, previewStartFor()); } catch (_) {}
   video.play().catch(() => {});
 });
 on("beforePlay", () => { previewPending = false; stopPreview(); startBarClose(); });   /* trk193：開始位置バーも閉じる */
@@ -5993,7 +6000,7 @@ window.Trk = window.Trk || {};
 core.on("phase", () => core.emit("nowPlaying", nowPlaying()));
 core.on("mediaReady", () => core.emit("nowPlaying", nowPlaying()));
 
-window.Trk.library = Object.assign(window.Trk.library || {}, { LIB_SHOW, MEDIA_EXT, VIDEO_EXT, addSongFiles, addVideoFiles, allSongs, bannerRandomBtn, bannerVolTip, ensureTrkDistributionPlaylists, ensureTrkOstPlaylist, trkOstPlaylistId: TRK_OST_ID, trkRestoreRemoved, initLibrary, nextSong, noteMediaPlayed, onLongPress, setStartFromZero, syncStartZeroInputs, startBarOpen, syncPreviewSetBtn, restoreFolderAccess, folderReadPlan, plToast, prevSong, previewStartFor, previewContinue, pruneFolderRefsOnce, refreshPackSongs, saveSongPrefs, selectSong, setAddonSongs, songInfo, songDisplayTitle, songDisplayMeta, songTagsOf, loadSongTags, srcLabel, nowPlaying, startPreview, trySongChart, plTitleKeys, plSongMatchKeys, plWishTitleKeys, plIsClassicalTitle, plClassicalTitleKey, plDecoratedTitleKeys, plWishDecoratedKeys, plHasVersionTag, plWishMediaMatches });
+window.Trk.library = Object.assign(window.Trk.library || {}, { LIB_SHOW, MEDIA_EXT, VIDEO_EXT, addSongFiles, addVideoFiles, allSongs, bannerRandomBtn, bannerVolTip, ensureTrkDistributionPlaylists, ensureTrkOstPlaylist, trkOstPlaylistId: TRK_OST_ID, trkRestoreRemoved, initLibrary, nextSong, noteMediaPlayed, onLongPress, setStartFromZero, syncStartZeroInputs, startBarOpen, syncPreviewSetBtn, restoreFolderAccess, folderReadPlan, plToast, prevSong, previewStartFor, previewContinue, pruneFolderRefsOnce, refreshPackSongs, saveSongPrefs, selectSong, setAddonSongs, songInfo, songDisplayTitle, songDisplayMeta, songTagsOf, loadSongTags, srcLabel, nowPlaying, startPreview, trySongChart, plTitleKeys, plSongMatchKeys, plWishTitleKeys, plIsClassicalTitle, plClassicalTitleKey, plDecoratedTitleKeys, plWishDecoratedKeys, plHasVersionTag, plWishMediaMatches, previewRestartFor });
 Object.defineProperty(window.Trk.library, "addonSongs", { configurable:true, get:() => addonSongs, set:v => { addonSongs = v; } });
 Object.defineProperty(window.Trk.library, "libView", { configurable:true, get:() => libView, set:v => { libView = v; } });
 Object.defineProperty(window.Trk.library, "renderBanner", { configurable:true, get:() => renderBanner, set:v => { renderBanner = v; } });

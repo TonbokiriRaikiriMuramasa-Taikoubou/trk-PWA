@@ -54,6 +54,8 @@ const TEXT = {
     fixedIconSize:"アイコンの大きさを100%で固定する", fixedIconSizeHint:"オンにすると、拡大してもアイコン（絵文字）の大きさは変わりません。字だけを大きくしたいときに便利です。",
     fxInLibrary:"スマホ型で、エフェクトの欄をライブラリにも出す", fxInLibraryHint:"オフのときは、エフェクトの欄（音楽・映像・くわし・TRKアンプ・TRKエフェクト・MIX）をエフェクトのタブにまとめます。ライブラリのタブのまま触りたい人はオンにしてください。エフェクトのタブには、どちらでも同じ欄が出ます。",
     uiModeLock:"画面の形は、常に選んだものを使う", uiModeLockHint:"オフにすると、開くたびに端末へ合わせて選び直します（スマホならスマホ型、PCならPC型）。右上の 📱／🖥 は押すたびに PC ↔ スマホ を入れ替え、オンなら次に開いたときも同じ形で始まります。",
+    playerBarSeekLock:"バーに触れても位置を移動しない", playerBarSeekLockHint:"オンにすると、下の再生バーの線（再生位置）に触っても、曲の位置が動かなくなります。誤って触れてしまい、頭へ飛ぶのを防ぎたいときにどうぞ。オフ（既定）なら、バーの線を押す・なぞると、その位置へ移動します（ライブラリの試聴中でも動かせます）。",
+    barSeekLocked:"バーは「触れても位置を移動しない」設定です（⚙ → ❓ 謎設定）",
     /* 🖥 画面の形・底の再生バー（js/mobile-shell.js・js/player-bar.js。trk221） */
     secUi:"🖥 画面と再生バー",
     uiModeLabel:"画面の形", uiModeAuto:"自動（端末に合わせる）", uiModeDesktop:"PC型（広い画面）", uiModeMobile:"スマホ型（縦長・指で操作）",
@@ -66,6 +68,11 @@ const TEXT = {
     uiModeButton:"画面の形を PC型 ↔ スマホ型 に入れ替える",
     barLabel:"再生バー", barNoSong:"曲を選ぶと、ここに曲名が出ます。", barPrev:"前の曲", barNext:"次の曲", barPlay:"再生／一時停止",
     barSeek:"再生位置", barVolume:"音量", barOpenPlayer:"再生画面を開く", barHide:"下の再生バーを隠す（設定で戻せます）",
+    barShuffle:"シャッフル", barShuffleOn:"オン", barShuffleOff:"オフ",
+    barRepeat:"リピート", barRepeatOff:"なし", barRepeatOne:"1曲", barRepeatAll:"全曲",
+    barPanel:"操作パネルを別窓に出す（PCのみ）", barPanelClose:"パネルを閉じる",
+    barShuffleOnToast:"🎲 シャッフル：オン（曲送りがランダムになります）", barShuffleOffToast:"🎲 シャッフル：オフ",
+    barRepeatOneToast:"🔂 リピート：1曲（この曲を繰り返します）", barRepeatAllToast:"🔁 リピート：全曲", barRepeatOffToast:"🔁 リピート：なし",
     barHidden:"下の再生バーを隠しました（設定 → 🖥 画面と再生バー で戻せます）",
     barLocked:"再生バーは「隠さない」設定です（設定 → 🖥 画面と再生バー で変えられます）",
     /* 🍎 iPhone / iPad（js/ios-pwa.js・js/mobile-shell.js） */
@@ -488,6 +495,8 @@ const TEXT = {
     fixedIconSize:"Keep icons at 100%", fixedIconSizeHint:"When on, icons (emoji) stay the same size while the text grows. Useful when you only want bigger text.",
     fxInLibrary:"On the phone layout, also show the effect panels in Library", fxInLibraryHint:"When off, the effect panels (audio, video, advanced, TRK amp, TRK effects, MIX) are gathered in the Effects tab. Turn this on if you would rather tweak them while staying in the Library tab. Either way, the Effects tab always shows the same panels.",
     uiModeLock:"Always use the layout you chose", uiModeLockHint:"When off, trk! picks the layout again on every launch (phone layout on a phone, desktop on a PC). The 📱／🖥 button at the top right swaps PC ↔ Phone; when this is on, the next launch starts in the same layout.",
+    playerBarSeekLock:"Touching the bar never moves the position", playerBarSeekLockHint:"When on, touching the position line on the bottom player bar no longer moves the song. Useful if you keep skipping to the start by accident. When off (default), pressing or dragging the line jumps to that position — even while a song is previewing in the library.",
+    barSeekLocked:"The bar is set to “touching never moves the position” (⚙ → ❓ Mystery settings)",
     /* 🖥 screen shape and the bottom player bar (js/mobile-shell.js, js/player-bar.js; trk221) */
     secUi:"🖥 Layout and player bar",
     uiModeLabel:"Screen layout", uiModeAuto:"Auto (match this device)", uiModeDesktop:"Desktop (wide screen)", uiModeMobile:"Phone (tall, touch)",
@@ -500,6 +509,11 @@ const TEXT = {
     uiModeButton:"Swap between the desktop and phone layouts",
     barLabel:"Player bar", barNoSong:"Choose a song and its title appears here.", barPrev:"Previous song", barNext:"Next song", barPlay:"Play or pause",
     barSeek:"Playback position", barVolume:"Volume", barOpenPlayer:"Open the player screen", barHide:"Hide the bottom player bar (you can bring it back in settings)",
+    barShuffle:"Shuffle", barShuffleOn:"on", barShuffleOff:"off",
+    barRepeat:"Repeat", barRepeatOff:"off", barRepeatOne:"one song", barRepeatAll:"all",
+    barPanel:"Open the control panel in its own window (desktop only)", barPanelClose:"Close the panel",
+    barShuffleOnToast:"🎲 Shuffle: on (next/previous picks a random song)", barShuffleOffToast:"🎲 Shuffle: off",
+    barRepeatOneToast:"🔂 Repeat: one song", barRepeatAllToast:"🔁 Repeat: all", barRepeatOffToast:"🔁 Repeat: off",
     barHidden:"The bottom player bar is hidden (settings → 🖥 Layout and player bar)",
     barLocked:"The player bar is set to “never hide” (settings → 🖥 Layout and player bar)",
     /* 🍎 iPhone / iPad (js/ios-pwa.js, js/mobile-shell.js) */
@@ -914,6 +928,8 @@ const TEXT = {
     fixedIconSize:"图标大小固定为 100%", fixedIconSizeHint:"开启后，即使放大，图标（表情符号）的大小也不变。只想放大文字时很方便。",
     fxInLibrary:"手机版时，在媒体库中也显示效果栏", fxInLibraryHint:"关闭时，效果栏（音乐、映像、详细、TRK 放大器、TRK 特效、MIX）会集中到「音效」标签页。若想留在媒体库标签页操作，请开启。无论哪种，音效标签页都会显示同样的栏。",
     uiModeLock:"始终使用所选的画面布局", uiModeLockHint:"关闭时，每次打开都会按设备重新选择（手机用手机版，电脑用电脑版）。右上角的 📱／🖥 按一次即可在电脑 ↔ 手机之间切换；开启时，下次打开也会沿用相同的布局。",
+    playerBarSeekLock:"触摸播放条也不移动播放位置", playerBarSeekLockHint:"开启后，触摸底部播放条上的进度线不会改变歌曲位置。适合不小心碰到就跳回开头的情况。关闭（默认）时，按住或拖动进度线就会跳到该位置——在媒体库试听时也可以拖动。",
+    barSeekLocked:"播放条已设为「触摸也不移动位置」（⚙ → ❓ 神秘设置）",
     /* 🖥 画面布局与底部播放条（js/mobile-shell.js、js/player-bar.js；trk221） */
     secUi:"🖥 画面与播放条",
     uiModeLabel:"画面布局", uiModeAuto:"自动（跟随设备）", uiModeDesktop:"电脑版（宽屏）", uiModeMobile:"手机版（竖屏・触控）",
@@ -926,6 +942,11 @@ const TEXT = {
     uiModeButton:"在电脑版和手机版之间切换",
     barLabel:"播放条", barNoSong:"选择曲目后，这里会显示曲名。", barPrev:"上一首", barNext:"下一首", barPlay:"播放／暂停",
     barSeek:"播放位置", barVolume:"音量", barOpenPlayer:"打开播放画面", barHide:"隐藏底部播放条（可在设置中恢复）",
+    barShuffle:"随机播放", barShuffleOn:"开", barShuffleOff:"关",
+    barRepeat:"循环", barRepeatOff:"不循环", barRepeatOne:"单曲", barRepeatAll:"全部",
+    barPanel:"在独立窗口中打开控制面板（仅电脑版）", barPanelClose:"关闭面板",
+    barShuffleOnToast:"🎲 随机播放：开（切歌会随机选择）", barShuffleOffToast:"🎲 随机播放：关",
+    barRepeatOneToast:"🔂 循环：单曲", barRepeatAllToast:"🔁 循环：全部", barRepeatOffToast:"🔁 循环：关闭",
     barHidden:"已隐藏底部播放条（设置 → 🖥 画面与播放条）",
     barLocked:"播放条已设为「不隐藏」（可在 设置 → 🖥 画面与播放条 中更改）",
     /* 🍎 iPhone / iPad（js/ios-pwa.js、js/mobile-shell.js） */
@@ -1338,6 +1359,8 @@ const TEXT = {
     fixedIconSize:"아이콘 크기를 100%로 고정", fixedIconSizeHint:"켜면 확대해도 아이콘(이모지) 크기는 그대로입니다. 글자만 크게 하고 싶을 때 편리합니다.",
     fxInLibrary:"휴대폰형에서 이펙트栏을 라이브러리에도 표시", fxInLibraryHint:"끄면 이펙트栏(음악·영상·상세·TRK 앰프·TRK 이펙트·MIX)을 효과 탭에 모읍니다. 라이브러리 탭에 머문 채 만지고 싶다면 켜세요. 효과 탭에는 어느 쪽이든 같은 栏이 나옵니다.",
     uiModeLock:"화면 형태는 항상 선택한 것을 사용", uiModeLockHint:"끄면 열 때마다 기기에 맞춰 다시 고릅니다(휴대폰은 휴대폰형, PC는 PC형). 오른쪽 위의 📱／🖥 는 누를 때마다 PC ↔ 휴대폰을 바꾸며, 켜져 있으면 다음에 열 때도 같은 형태로 시작합니다.",
+    playerBarSeekLock:"바를 만져도 재생 위치를 이동하지 않음", playerBarSeekLockHint:"켜면 아래쪽 재생 바의 위치선을 만져도 곡의 위치가 바뀌지 않습니다. 실수로 눌러 처음으로 돌아가는 것을 막고 싶을 때 사용하세요. 끄면(기본) 바의 선을 누르거나 끌면 그 위치로 이동합니다(라이브러리 미리듣기 중에도 이동할 수 있습니다).",
+    barSeekLocked:"재생 바가 ‘만져도 위치를 이동하지 않음’ 설정입니다 (⚙ → ❓ 수수께끼 설정)",
     /* 🖥 화면 형태와 아래쪽 재생 바（js/mobile-shell.js, js/player-bar.js; trk221） */
     secUi:"🖥 화면과 재생 바",
     uiModeLabel:"화면 형태", uiModeAuto:"자동(기기에 맞춤)", uiModeDesktop:"PC형(넓은 화면)", uiModeMobile:"휴대폰형(세로・터치)",
@@ -1350,6 +1373,11 @@ const TEXT = {
     uiModeButton:"PC형 ↔ 휴대폰형 전환",
     barLabel:"재생 바", barNoSong:"곡을 고르면 여기에 곡 이름이 나옵니다.", barPrev:"이전 곡", barNext:"다음 곡", barPlay:"재생／일시정지",
     barSeek:"재생 위치", barVolume:"음량", barOpenPlayer:"재생 화면 열기", barHide:"아래쪽 재생 바 숨기기 (설정에서 되돌릴 수 있습니다)",
+    barShuffle:"셔플", barShuffleOn:"켜짐", barShuffleOff:"꺼짐",
+    barRepeat:"반복", barRepeatOff:"없음", barRepeatOne:"한 곡", barRepeatAll:"전체",
+    barPanel:"조작 패널을 별도 창으로 열기 (PC 전용)", barPanelClose:"패널 닫기",
+    barShuffleOnToast:"🎲 셔플: 켜짐 (곡 넘김이 무작위가 됩니다)", barShuffleOffToast:"🎲 셔플: 꺼짐",
+    barRepeatOneToast:"🔂 반복: 한 곡", barRepeatAllToast:"🔁 반복: 전체", barRepeatOffToast:"🔁 반복: 없음",
     barHidden:"아래쪽 재생 바를 숨겼습니다 (설정 → 🖥 화면과 재생 바)",
     barLocked:"재생 바는 ‘숨기지 않기’ 설정입니다 (설정 → 🖥 화면과 재생 바에서 바꿀 수 있습니다)",
     /* 🍎 iPhone / iPad（js/ios-pwa.js, js/mobile-shell.js） */

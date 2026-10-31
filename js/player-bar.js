@@ -16,6 +16,13 @@
      独自の再生状態や保存キーは増やしません（設定は core.settings.playerBar だけ）。
    ・キーボードやゲームの入力は奪いません（バーはゲーム中には出ないため）。
 
+   🎵 trk226：バーそのものを、もう少し「プレイヤー」にしました。
+     ・再生位置の線を、ライブラリの画面でも触って動かせます（映像はそのまま、位置だけ動きます）。
+       「触れたくない」人のために、❓謎設定「バーに触れても位置を移動しない」を用意しました（既定オフ）。
+     ・🎲 シャッフルと 🔁 リピート（なし／1曲／全曲）を足しました。値は本体の設定
+       （mediaShuffle／mediaRepeat）だけを使い、再生画面（js/media-player-mode.js）と同じ1つを共有します。
+     ・⧉ 操作パネルを別窓に出す（PC型のみ。trk226 の js/player-panel.js。Document PiP が無ければ予備の小窓）。
+
    🎵 trk225：置き場所と「隠さない」を設定できるようにしました。
      ・settings.playerBarPos … スマホ型での置き場所。bottom（既定）＝画面のいちばん下（操作パネルはその上へ）／
        above＝操作パネルの上（trk221〜trk224 までと同じ）。PC型は下部ナビが無いので、どちらでも同じ（いちばん下）。
@@ -54,13 +61,40 @@
   }
   /* バーを隠さない設定か（true なら ✕ を出さず、✕ からの「表示しない」もしない） */
   const barLocked = () => core.settings.playerBarLock === true;
+  /* ❓謎設定「バーに触れても位置を移動しない」（trk226。既定オフ＝触れれば動く） */
+  const seekLocked = () => core.settings.playerBarSeekLock === true;
+  /* 再生位置の線を触れる状態か（純粋関数。テストで確かめる）
+     ・位置が分かっている（duration > 0・読み込み済み）
+     ・謎設定で止めていない
+     ・プレイ中・一時停止中・曲を選んだタイトル画面のとき（リザルトでは動かさない） */
+  function seekEnabled(ctx) {
+    if (!ctx || ctx.locked) return false;
+    if (!ctx.ready || !(Number(ctx.duration) > 0)) return false;
+    return ctx.phase === "title" || ctx.phase === "playing" || ctx.phase === "paused";
+  }
+  /* リピートの3段（なし → 1曲 → 全曲 → なし） */
+  const REPEATS = ["off", "one", "all"];
+  const nextRepeat = value => REPEATS[(REPEATS.indexOf(value) + 1) % REPEATS.length] || "off";
+  const repeatNow = () => (REPEATS.includes(core.settings.mediaRepeat) ? core.settings.mediaRepeat : "off");
+  const shuffleNow = () => core.settings.mediaShuffle === true;
+  /* シャッフルの ⏭ で選ぶ曲（純粋関数。テストで確かめる）
+     ・シャッフルがオフ、または一覧が無ければ null（＝これまでどおり前後の曲）
+     ・いまの曲を除いた中から選ぶ（1曲しか無ければその曲） */
+  function shufflePick(list, currentKey, random = Math.random) {
+    const items = Array.isArray(list) ? list.filter(Boolean) : [];
+    if (!items.length) return null;
+    const other = items.filter(it => String(it.key) !== String(currentKey));
+    const pool = other.length ? other : items;
+    const index = Math.min(pool.length - 1, Math.max(0, Math.floor(Number(random()) * pool.length) || 0));
+    return pool[index];
+  }
   const barMode = () => (MODES.includes(core.settings.playerBar) ? core.settings.playerBar : "auto");
 
   /* ---------- DOM（はじめて必要になったときだけ作る） ---------- */
   let bar = null, artImg = null, artFallback = null, titleNode = null, artistNode = null;
   let prevButton = null, playButton = null, nextButton = null;
   let elapsedNode = null, totalNode = null, seekInput = null, volInput = null;
-  let openButton = null, hideButton = null;
+  let openButton = null, hideButton = null, shuffleButton = null, repeatButton = null, panelButton = null;
   let seekDragging = false, artUrl = "", artKey = "", built = false;
 
   const make = (tag, className, text) => {
@@ -105,7 +139,12 @@
     prevButton = makeButton("trk-pb-prev", "⏮");
     playButton = makeButton("trk-pb-play", "▶");
     nextButton = makeButton("trk-pb-next", "⏭");
-    transport.append(prevButton, playButton, nextButton);
+    /* 🎲 シャッフル・🔁 リピート（trk226）。値は再生画面と同じ設定を1つだけ使う */
+    shuffleButton = makeButton("trk-pb-shuffle", "🎲");
+    shuffleButton.setAttribute("aria-pressed", "false");
+    repeatButton = makeButton("trk-pb-repeat", "🔁");
+    repeatButton.setAttribute("aria-pressed", "false");
+    transport.append(prevButton, playButton, nextButton, shuffleButton, repeatButton);
 
     const time = make("div", "trk-pb-time");
     elapsedNode = make("span", "trk-pb-elapsed", "0:00");
@@ -121,13 +160,19 @@
     volInput.min = "0"; volInput.max = "1"; volInput.step = "0.01"; volInput.value = "0.7";
     volWrap.append(volIcon, volInput);
     openButton = makeButton("trk-pb-open", "⛶");
+    /* ⧉ 操作パネルを別窓に出す（PC型のみ。trk226） */
+    panelButton = makeButton("trk-pb-panel", "⧉");
+    panelButton.hidden = true;
     hideButton = makeButton("trk-pb-hide", "✕");
-    actions.append(volWrap, openButton, hideButton);
+    actions.append(volWrap, openButton, panelButton, hideButton);
 
     bar.append(seekInput, art, meta, transport, time, actions);
 
     prevButton.addEventListener("click", () => step(-1));
     nextButton.addEventListener("click", () => step(1));
+    shuffleButton.addEventListener("click", toggleShuffle);
+    repeatButton.addEventListener("click", cycleRepeat);
+    panelButton.addEventListener("click", openPanel);
     playButton.addEventListener("click", togglePlay);
     openButton.addEventListener("click", openPlayer);
     hideButton.addEventListener("click", hideBar);
@@ -254,6 +299,8 @@
     if (posSelect && posSelect.value !== barPos()) posSelect.value = barPos();
     const lockBox = document.getElementById("playerBarLock");
     if (lockBox && lockBox.checked !== barLocked()) lockBox.checked = barLocked();
+    const seekLockBox = document.getElementById("playerBarSeekLock");
+    if (seekLockBox && seekLockBox.checked !== seekLocked()) seekLockBox.checked = seekLocked();
   }
   function render() {
     if (!bar) return;
@@ -281,6 +328,31 @@
     hideButton.title = word("barHide");
     hideButton.setAttribute("aria-label", hideButton.title);
     openButton.disabled = !(window.TrkMediaPlayer && window.TrkMediaPlayer.open);
+    /* 🎲 シャッフル（trk226）：押されている状態を見た目と読み上げの両方に出す */
+    const shuffled = shuffleNow();
+    shuffleButton.setAttribute("aria-pressed", String(shuffled));
+    shuffleButton.title = word("barShuffle") + (shuffled ? `（${word("barShuffleOn")}）` : `（${word("barShuffleOff")}）`);
+    shuffleButton.setAttribute("aria-label", shuffleButton.title);
+    shuffleButton.classList.toggle("is-on", shuffled);
+    /* 🔁 リピート（trk226）：なし／1曲／全曲の3段。アイコンに段を出す */
+    const repeat = repeatNow();
+    repeatButton.textContent = repeat === "one" ? "🔂" : "🔁";
+    repeatButton.setAttribute("aria-pressed", String(repeat !== "off"));
+    repeatButton.classList.toggle("is-on", repeat !== "off");
+    const repeatWord = word(repeat === "one" ? "barRepeatOne" : repeat === "all" ? "barRepeatAll" : "barRepeatOff");
+    repeatButton.title = `${word("barRepeat")}（${repeatWord}）`;
+    repeatButton.setAttribute("aria-label", repeatButton.title);
+    /* ⧉ 別窓の操作パネル（PC型のみ。js/player-panel.js） */
+    const canPanel = panelAvailable();
+    panelButton.hidden = !canPanel;
+    if (canPanel) {
+      panelButton.title = word("barPanel");
+      panelButton.setAttribute("aria-label", panelButton.title);
+      panelButton.setAttribute("aria-pressed", String(panelOpen()));
+      panelButton.classList.toggle("is-on", panelOpen());
+    }
+    seekInput.disabled = !seekEnabled({ phase: core.phase, ready: core.videoReady, duration: core.video ? core.video.duration : 0, locked: seekLocked() });
+    seekInput.classList.toggle("is-locked", seekLocked());
     syncControls();
     /* 🔒 隠さない設定のときは ✕ を出さない（押せないボタンより、無いほうが迷わない） */
     hideButton.hidden = barLocked();
@@ -309,8 +381,9 @@
     const position = video && Number.isFinite(video.currentTime) ? video.currentTime : 0;
     elapsedNode.textContent = fmtTime(position);
     totalNode.textContent = duration ? fmtTime(duration) : "--:--";
-    const playing = core.phase === "playing" || core.phase === "paused";
-    seekInput.disabled = !(playing && core.videoReady && duration > 0);
+    /* 🎵 trk226：位置の線は、ライブラリの画面（試聴中）でも触れる。
+       触れたくない人は ❓謎設定「バーに触れても位置を移動しない」で止められる。 */
+    seekInput.disabled = !seekEnabled({ phase: core.phase, ready: core.videoReady, duration, locked: seekLocked() });
     if (seekDragging) return;
     const ratio = duration > 0 ? Math.min(1, Math.max(0, position / duration)) : 0;
     const value = Math.round(ratio * 1000);
@@ -329,9 +402,60 @@
     if (core.phase !== "title") return;
     const lib = window.Trk.library;
     if (!lib) return;
-    const next = direction < 0 ? lib.prevSong() : lib.nextSong();
+    /* 🎲 シャッフル中は、一覧の前後ではなく「ほかの曲から1つ」を選ぶ（再生画面と同じ考え方） */
+    let next = null;
+    if (shuffleNow() && typeof lib.allSongs === "function") {
+      next = shufflePick(lib.allSongs(), core.currentSong && core.currentSong.key);
+    }
+    if (!next) next = direction < 0 ? lib.prevSong() : lib.nextSong();
     if (!next) return;
     try { await lib.selectSong(next); } catch (_) {}
+    sync();
+  }
+  /* ---------- 🎲 シャッフル・🔁 リピート（trk226。値は再生画面と同じ設定を1つだけ使う） ---------- */
+  function announceOptions() {
+    /* 再生画面（js/media-player-mode.js）と別窓のパネルへ「設定が変わった」を知らせる */
+    try { if (typeof core.emit === "function") core.emit("mediaOptions"); } catch (_) {}
+  }
+  function toggleShuffle() {
+    core.settings.mediaShuffle = !shuffleNow();
+    if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
+    toast(word(core.settings.mediaShuffle ? "barShuffleOnToast" : "barShuffleOffToast"));
+    announceOptions();
+    sync();
+  }
+  function cycleRepeat() {
+    core.settings.mediaRepeat = nextRepeat(repeatNow());
+    if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
+    const now = repeatNow();
+    toast(word(now === "one" ? "barRepeatOneToast" : now === "all" ? "barRepeatAllToast" : "barRepeatOffToast"));
+    announceOptions();
+    sync();
+  }
+  /* ---------- ⧉ 操作パネルを別窓に出す（PC型のみ） ---------- */
+  function panelApi() { return window.Trk && window.Trk.playerPanel ? window.Trk.playerPanel : null; }
+  function panelOpen() { const panel = panelApi(); return !!(panel && typeof panel.isOpen === "function" && panel.isOpen()); }
+  /* 別窓を出せるか（純粋関数。テストで確かめる）
+     ・スマホ型では出さない（下部ナビと重なるうえ、Document PiP は端末で使えない）
+     ・js/player-panel.js が読めている
+     ・窓を開く手段がある（Document PiP か、小窓） */
+  function panelAllowed(ctx) {
+    return !!(ctx && ctx.desktop && ctx.panel && ctx.openable);
+  }
+  function panelAvailable() {
+    const panel = panelApi();
+    if (!panel) return false;
+    return panelAllowed({
+      desktop: document.body ? !document.body.classList.contains("trk-mobile") : true,
+      panel: true,
+      openable: typeof panel.available === "function" ? panel.available() : false
+    });
+  }
+  function openPanel() {
+    const panel = panelApi();
+    if (!panel || typeof panel.open !== "function") return;
+    if (panel.isOpen && panel.isOpen()) { panel.close(); return; }
+    try { panel.open(); } catch (_) {}
     sync();
   }
   function openPlayer() {
@@ -355,10 +479,17 @@
   function seekToValue() {
     const video = core.video;
     const duration = video && Number.isFinite(video.duration) ? video.duration : 0;
-    if (!duration || !(core.phase === "playing" || core.phase === "paused")) return;
+    if (!seekEnabled({ phase: core.phase, ready: core.videoReady, duration, locked: seekLocked() })) return;
     const target = (Number(seekInput.value) / 1000) * duration;
     if (!Number.isFinite(target)) return;
-    if (window.Trk.play && typeof window.Trk.play.seekTo === "function") window.Trk.play.seekTo(target);
+    if (core.phase === "playing" || core.phase === "paused") {
+      if (window.Trk.play && typeof window.Trk.play.seekTo === "function") window.Trk.play.seekTo(target);
+      return;
+    }
+    /* 🎵 trk226：ライブラリの画面（試聴中・一時停止中）は、映像の位置だけを動かす。
+       再生中ならそのまま鳴り続け、止まっていれば止まったまま位置だけ変わる。 */
+    try { video.currentTime = target; } catch (_) {}
+    tick();
   }
   /* ポインタが外へ出たまま離されたときも、いつかは再生位置の追従へ戻す */
   let seekReleaseTimer = 0;
@@ -381,6 +512,42 @@
     if (say && nextMode === "off") toast(word("barHidden"));
     sync();
   }
+
+  /* ---------- 別窓のパネルに渡す、いまの様子（trk226） ----------
+     js/player-panel.js は、この1つの関数だけを見て絵を描き直します（状態を二重に持たない）。 */
+  function snapshot() {
+    const it = core.currentSong || null;
+    const labels = songLabels(it);
+    const video = core.video || null;
+    const duration = video && Number.isFinite(video.duration) ? video.duration : 0;
+    const position = video && Number.isFinite(video.currentTime) ? video.currentTime : 0;
+    const canSeek = seekEnabled({ phase: core.phase, ready: core.videoReady, duration, locked: seekLocked() });
+    return {
+      title: labels.title, artist: labels.artist,
+      elapsed: fmtTime(position), total: duration ? fmtTime(duration) : "--:--",
+      ratio: duration > 0 ? Math.min(1, Math.max(0, position / duration)) : 0,
+      playing: !!(video && !video.paused && !video.ended),
+      shuffle: shuffleNow(), repeat: repeatNow(),
+      volume: Math.min(1, Math.max(0, Number(core.settings.musicVolume) || 0)),
+      canSeek, seekLocked: seekLocked(), canStep: core.phase === "title",
+      hasSong: !!it
+    };
+  }
+  /* 別窓のパネルからの操作（どれもバーと同じ道を通る） */
+  function seekToRatio(ratio) {
+    const video = core.video;
+    const duration = video && Number.isFinite(video.duration) ? video.duration : 0;
+    if (!seekEnabled({ phase: core.phase, ready: core.videoReady, duration, locked: seekLocked() })) return false;
+    const value = Math.min(1, Math.max(0, Number(ratio) || 0));
+    if (core.phase === "playing" || core.phase === "paused") {
+      if (window.Trk.play && typeof window.Trk.play.seekTo === "function") window.Trk.play.seekTo(value * duration);
+    } else {
+      try { video.currentTime = value * duration; } catch (_) { return false; }
+    }
+    tick();
+    return true;
+  }
+  function playPause() { togglePlay(); render(); }
 
   /* ---------- まとめ ---------- */
   function sync() {
@@ -474,7 +641,7 @@
   }
 
   /* 🖥 trk223（レビュー②）：拡大率が変わるとステージの設計サイズが変わるので、測り直が要ります */
-  for (const name of ["language", "settings", "settingsClose", "phase", "screen", "songSelected", "songTags", "nowPlaying", "mediaReady", "studyOpen", "studyClose", "skin", "lite", "uiscale"]) {
+  for (const name of ["language", "settings", "settingsClose", "phase", "screen", "songSelected", "songTags", "nowPlaying", "mediaReady", "studyOpen", "studyClose", "skin", "lite", "uiscale", "mediaOptions"]) {
     core.on(name, sync);
   }
   if (core.video) for (const name of ["play", "pause", "ended", "timeupdate", "loadedmetadata", "durationchange"]) core.video.addEventListener(name, tick);
@@ -491,6 +658,22 @@
     position: barPos,
     locked: barLocked,
     positions: POSITIONS,
+    /* 🎵 trk226：位置の線・シャッフル・リピート・別窓のパネル */
+    seekEnabled,
+    seekLocked,
+    nextRepeat,
+    shufflePick,
+    panelAllowed,
+    seekToRatio,
+    snapshot,
+    playPause,
+    step,
+    setVolume,
+    shuffle: toggleShuffle,
+    repeat: cycleRepeat,
+    shuffled: shuffleNow,
+    repeatMode: repeatNow,
+    panelOpen: openPanel,
     formatTime: fmtTime,
     mode: barMode,
     setMode,
