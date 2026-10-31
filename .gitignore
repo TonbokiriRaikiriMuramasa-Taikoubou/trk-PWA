@@ -39,3 +39,6 @@ Thumbs.db
 
 # 配布ZIPの組み立て（tools/prepare-release.mjs）の出力・Git外
 dist/
+
+# Google Drive から落とした受け取りファイル（作業用・Git外）
+google_drive/

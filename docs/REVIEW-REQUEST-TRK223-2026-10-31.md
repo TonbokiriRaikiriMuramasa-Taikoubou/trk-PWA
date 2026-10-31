@@ -1,20 +1,22 @@
 # 実際の端末で見てほしいこと（trk223・2026-10-31）
 
-> **対象**：trk223（trk222 レビューへの対応）／PR #4（ブランチ `arena/6ff4f502-trk-pwa`）
+> **対象**：**trk224**（trk223＋trk223 レビュー F1・F2 の修正）／PR #5（ブランチ `arena/01baad78-trk-pwa`）
 > **読む人**：実機で触ってくれる人。コードを見たい人は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)（指摘ごとの対応）と [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) §1 を先にどうぞ。
 > **この文書の立ち位置**：前回のレビューで挙がった点のうち、**計算と自動検査では確かめたが、実機では見ていない**ものを集めたものです。ここに書いた「期待」と違ったら、それが不具合です。
 
 ## 0. 30秒でわかること
 
-- **直したこと**：12項目（①②③④⑤＋推奨）。一覧と根拠は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)。
-- **自動で確かめたこと**：`npm run check` **861 pass / 0 fail**、`node tools/check-repo.mjs` 0 failure / 0 warning。CSS は規則として、再生バーは数値で検査しています。
+- **直したこと**：trk223 で12項目（①②③④⑤＋推奨）。一覧と根拠は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)。
+- **そのレビューで見つかった2件（trk224）**：F1＝配布ZIPの時刻がタイムゾーン依存（`npm run check` が UTC 以外で落ちる）、F2＝この依頼書に古いZIPのハッシュが残っていた。対応は [`REVIEW-FIX-TRK224-2026-10-31.md`](REVIEW-FIX-TRK224-2026-10-31.md)。
+- **自動で確かめたこと**：`npm run check` **874 pass / 0 fail**（UTC・日本・米国西海岸のどれでも同じ。ZIPの時刻は +14・+5:30 も含む5つのタイムゾーンで照合）、`node tools/check-repo.mjs` 0 failure / 0 warning。CSS は規則として、再生バーは数値で検査しています。
 - **確かめていないこと**：**実機の見た目と操作感**。この作業環境にブラウザも端末もありません。とくに §2 の4点。
-- **使うもの**：Drive の `trk-standalone-2026-10-31-trk223.zip`（264ファイル・7,515,649 bytes・`sha256 a6134a0c5d35c6a2fb2ebabd91c6559fee345b849391e789540ce9d83ee36dbb`）。
+- **使うもの**：Drive の手渡しフォルダにある **`trk-standalone-2026-10-31-trk224.zip`**（ファイル数と `sha256` は、同じフォルダの `README-まず読む-2026-10-31-trk224.txt` に書いてあります）。
+  **この文書（と `HANDOFF.md`）はZIPの中に入るため、ZIP自身のハッシュは書きません**（書くと、固めた瞬間に古くなります。F2 はこれが原因でした）。
 - **配り方は変えていません**：公開URLの配布物は差し替えていません。実機の確認が済んでから、`/trk/` への移設と Pages の更新に進みます。
 
 ## 1. 準備
 
-1. Drive の手渡しフォルダから `trk-standalone-2026-10-31-trk223.zip` を落とし、**新しいフォルダ**へ展開する（前回のフォルダに重ねない）。
+1. Drive の手渡しフォルダから `trk-standalone-2026-10-31-trk224.zip` を落とし、**新しいフォルダ**へ展開する（前回の trk223 のフォルダに重ねない）。落としたら、同じフォルダの `README-まず読む-2026-10-31-trk224.txt` に書いた `sha256` と照合する（`sha256sum <ファイル>`／macOS は `shasum -a 256`／Windows は `certutil -hashfile <ファイル> SHA256`）。
 2. `index.html` を開く。オフラインも試すなら、展開したフォルダで `python3 -m http.server 8000` を実行して `http://127.0.0.1:8000/` を開く（Service Worker は `file://` では動きません）。
 3. 記録は「§番号・端末・OS・ブラウザ・拡大率・スキン名」で。例：`2-2 × / Pixel 8 / Android 15 / Chrome 141 / 125% / shadow`。
 
