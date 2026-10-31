@@ -14,7 +14,14 @@
    ・色はスキンが書き換える CSS変数（--ui-*）だけを使います。バー専用の色は持ちません。
    ・音と再生は、本体の仕組み（バナーの再生ボタン・Trk.play・TrkMediaPlayer）をそのまま呼びます。
      独自の再生状態や保存キーは増やしません（設定は core.settings.playerBar だけ）。
-   ・キーボードやゲームの入力は奪いません（バーはゲーム中には出ないため）。 */
+   ・キーボードやゲームの入力は奪いません（バーはゲーム中には出ないため）。
+
+   🎵 trk225：置き場所と「隠さない」を設定できるようにしました。
+     ・settings.playerBarPos … スマホ型での置き場所。bottom（既定）＝画面のいちばん下（操作パネルはその上へ）／
+       above＝操作パネルの上（trk221〜trk224 までと同じ）。PC型は下部ナビが無いので、どちらでも同じ（いちばん下）。
+       これまではナビの上に載せていたため、ナビのぶんバーが押し上げられ、途中に浮いているように見えました。
+     ・settings.playerBarLock … オンにすると ✕ を出さない（誤ってバーを消してしまう対策）。
+       設定の「表示しない」は本人が選んだ操作なので、こちらは止めません（✕ だけを止める）。 */
 (() => {
   "use strict";
   const core = window.Trk && window.Trk.core;
@@ -32,11 +39,21 @@
     if (ctx.mode === "on") return true;
     return !!ctx.hasSong;                                     /* auto：曲を選んだら出す */
   }
-  /* スマホのシェルでは、下部ナビの上に載せる（ナビの高さをそのまま下の余白にする） */
-  function barOffset(navHeight) {
-    const h = Number(navHeight);
-    return Number.isFinite(h) && h > 0 ? Math.round(h) : 0;
+  /* バーの置き場所（スマホ型）。bottom＝画面のいちばん下、above＝下部ナビの上。
+     未設定・知らない値は bottom（trk225 の既定）。 */
+  const POSITIONS = ["bottom", "above"];
+  function barPos() {
+    return POSITIONS.includes(core.settings.playerBarPos) ? core.settings.playerBarPos : "bottom";
   }
+  /* バーの bottom（px）。下部ナビの上に置くときだけ、ナビの高さぶん持ち上げる。
+     position を省いたときは「ナビの上」（呼び出し側の取り違えでバーがナビに重ならないように）。 */
+  function barOffset(navHeight, position) {
+    const h = Number(navHeight);
+    const nav = Number.isFinite(h) && h > 0 ? Math.round(h) : 0;
+    return position === "above" ? nav : 0;
+  }
+  /* バーを隠さない設定か（true なら ✕ を出さず、✕ からの「表示しない」もしない） */
+  const barLocked = () => core.settings.playerBarLock === true;
   const barMode = () => (MODES.includes(core.settings.playerBar) ? core.settings.playerBar : "auto");
 
   /* ---------- DOM（はじめて必要になったときだけ作る） ---------- */
@@ -161,15 +178,22 @@
   function measure() {
     if (!bar) return;
     const root = document.documentElement;
+    /* 🎵 trk225：置き場所を **測る前に** body の印へ反映する。
+       印が付くと「いちばん下」用に、バー自身が env(safe-area-inset-bottom) のぶん下余白を空けるので、
+       先に測ると、その分だけ高さを低く見積もってしまう（iPhone でナビがバーに重なる）。 */
+    const atBottom = barPos() === "bottom";
+    if (document.body) document.body.classList.toggle("trk-playerbar-at-bottom", atBottom);
     /* 拡大率（CSS の zoom）がかかっていると offsetHeight は拡大前の値なので、実寸を測る */
     const rectNow = typeof bar.getBoundingClientRect === "function" ? bar.getBoundingClientRect() : null;
     const height = (rectNow && rectNow.height > 0 ? rectNow.height : bar.offsetHeight) || 60;
     root.style.setProperty("--trk-playerbar-h", `${Math.round(height)}px`);
-    /* スマホのシェルでは、下部ナビの上に載せる（ナビの高さをそのまま下の余白にする） */
+    /* スマホのシェルでは、下部ナビとの前後を設定で選べる（trk225）。
+       bottom＝画面のいちばん下（ナビはバーの高さぶん上へ。css/player-bar.css が動かす）
+       above ＝下部ナビの上（ナビの高さをそのまま下の余白にする＝trk221〜trk224 までと同じ） */
     const nav = document.querySelector(".trk-mobile-nav");
     const navRect = nav && !nav.hidden && typeof nav.getBoundingClientRect === "function" ? nav.getBoundingClientRect() : null;
     const navHeight = nav && !nav.hidden ? ((navRect && navRect.height > 0 ? navRect.height : nav.offsetHeight) || 66) : 0;
-    root.style.setProperty("--trk-playerbar-offset", `${barOffset(navHeight)}px`);
+    root.style.setProperty("--trk-playerbar-offset", `${barOffset(navHeight, atBottom ? "bottom" : "above")}px`);
     /* PC は 1920×1080 のステージを縮小して見せる。余白は縮小前の座標に直して渡す。
        🖥 trk223（2026-10-31 レビュー②）：拡大率を入れたので、ステージの「設計の高さ」は 1080 とは限らない
        （125% なら 864px、50% なら 2160px）。/1080 で割ると 125% では余白が足りず、50% では余りすぎるので、
@@ -221,6 +245,16 @@
     const artist = (meta && meta.artist) || it.artist || "";
     return { title: String(title), artist: String(artist) };
   }
+  /* 設定の欄（⚙ → 🖥 画面と再生バー）に、いまの値を見せる。
+     バーを出していないとき（表示しない・プレイ中）にも呼べるよう、バーの中身には触りません。 */
+  function syncControls() {
+    const select = document.getElementById("playerBarMode");
+    if (select && select.value !== barMode()) select.value = barMode();
+    const posSelect = document.getElementById("playerBarPos");
+    if (posSelect && posSelect.value !== barPos()) posSelect.value = barPos();
+    const lockBox = document.getElementById("playerBarLock");
+    if (lockBox && lockBox.checked !== barLocked()) lockBox.checked = barLocked();
+  }
   function render() {
     if (!bar) return;
     const it = core.currentSong || null;
@@ -247,9 +281,9 @@
     hideButton.title = word("barHide");
     hideButton.setAttribute("aria-label", hideButton.title);
     openButton.disabled = !(window.TrkMediaPlayer && window.TrkMediaPlayer.open);
-    /* 設定の欄（⚙ → 🖥 画面と再生バー）も、いまの値を見せる（工場出荷状態などで変わったとき） */
-    const select = document.getElementById("playerBarMode");
-    if (select && select.value !== barMode()) select.value = barMode();
+    syncControls();
+    /* 🔒 隠さない設定のときは ✕ を出さない（押せないボタンより、無いほうが迷わない） */
+    hideButton.hidden = barLocked();
     syncArt(it);
     tick();
   }
@@ -304,6 +338,8 @@
     if (window.TrkMediaPlayer && window.TrkMediaPlayer.open) window.TrkMediaPlayer.open();
   }
   function hideBar() {
+    /* 🔒 「再生バーを隠さない」がオンのときは、✕ を出していない（念のためここでも止める） */
+    if (barLocked()) { toast(word("barLocked")); return; }
     setMode("off", { say: true });
   }
   function setVolume(raw) {
@@ -354,7 +390,8 @@
     const show = barVisible(contextNow());
     bar.hidden = !show;
     document.body.classList.toggle("trk-playerbar", show);
-    if (!show) return;
+    syncControls();
+    if (!show) { document.body.classList.remove("trk-playerbar-at-bottom"); return; }
     measure();
     render();
   }
@@ -410,6 +447,25 @@
       select.value = barMode();
       select.addEventListener("change", () => setMode(select.value));
     }
+    /* 🎵 trk225：置き場所（スマホ型）と、隠さない設定 */
+    const posSelect = document.getElementById("playerBarPos");
+    if (posSelect) {
+      posSelect.value = barPos();
+      posSelect.addEventListener("change", () => {
+        core.settings.playerBarPos = POSITIONS.includes(posSelect.value) ? posSelect.value : "bottom";
+        if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
+        sync();
+      });
+    }
+    const lockBox = document.getElementById("playerBarLock");
+    if (lockBox) {
+      lockBox.checked = barLocked();
+      lockBox.addEventListener("change", () => {
+        core.settings.playerBarLock = lockBox.checked === true;
+        if (typeof core.saveUserPrefs === "function") core.saveUserPrefs();
+        sync();
+      });
+    }
     watchOverlay();
     watchShell();
     sync();
@@ -432,6 +488,9 @@
     /* テストで確かめる純粋な判断 */
     decide: barVisible,
     offset: barOffset,
+    position: barPos,
+    locked: barLocked,
+    positions: POSITIONS,
     formatTime: fmtTime,
     mode: barMode,
     setMode,

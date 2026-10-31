@@ -8,6 +8,7 @@
    スキンを変えるとバーも同じ色になります（バー専用の色は持ちません）。
 
    body.trk-playerbar … js/player-bar.js が、バーを出しているあいだだけ付けます。
+   body.trk-playerbar-at-bottom … バーを画面のいちばん下に置いているあいだ（trk225）。
    --trk-playerbar-h        … バーの高さ（実ピクセル。JS が測って入れます）
    --trk-playerbar-offset   … バーの下の余白（スマホのシェルでは下部ナビのぶん）
    --trk-playerbar-stage-h  … 高さをステージ座標（1920×1080 の縮小前）に直したもの
@@ -84,6 +85,9 @@
 }
 .trk-pb-transport button:hover, .trk-pb-actions button:hover { background: var(--ui-button-hover); }
 .trk-pb-transport button:disabled, .trk-pb-actions button:disabled { opacity: .38; cursor: default; background: transparent; }
+/* 🎵 trk225：`display: grid` が `[hidden]`（ブラウザ既定の display:none）に勝ってしまうので、
+   「隠さない」設定で ✕ を出さないときは、こちらで確実に消す */
+.trk-pb-actions button[hidden] { display: none !important; }
 .trk-pb-play {
   min-width: 42px !important; min-height: 42px !important; font-size: 18px !important;
   border-color: var(--ui-border) !important; background: var(--ui-soft) !important;
@@ -126,6 +130,19 @@
 body.trk-playerbar:not(.trk-mobile) #stage .screen { padding-bottom: calc(30px + var(--trk-playerbar-stage-h, 64px)); }
 body.trk-playerbar:not(.trk-mobile) #stage .card { max-height: 100%; }
 
+/* 🎵 trk225：バーを「画面のいちばん下」に置くとき（既定）は、下部ナビをバーの高さぶん上へ動かす。
+   こうすると「操作パネルが上・曲のバーが下」になり、バーが画面の途中に浮いているように見えません。
+   ナビは position: fixed; bottom: 0 なので、その bottom だけを差し替えます（高さ・並びはそのまま）。 */
+body.trk-playerbar.trk-playerbar-at-bottom .trk-playerbar {
+  /* バーがいちばん下に来るので、iPhone のホームバー（safe-area）のぶんを自分で空ける */
+  padding-bottom: calc(9px + env(safe-area-inset-bottom, 0px));
+}
+body.trk-playerbar.trk-playerbar-at-bottom .trk-mobile-nav {
+  /* --trk-playerbar-h は safe-area を含めた実寸（getBoundingClientRect）なので、足し直さない */
+  bottom: var(--trk-playerbar-h, 56px);
+  /* ナビはもう画面の下端ではないので、そのための safe-area の余白は残さない（すき間になるため） */
+  padding-bottom: 5px;
+}
 /* スマホ型：カードの下余白に、バーの高さを足す（下部ナビの 100px はそのまま） */
 body.trk-playerbar.trk-mobile #stage[data-phase="title"] .card {
   padding-bottom: calc(100px + var(--trk-playerbar-h, 56px) + env(safe-area-inset-bottom));

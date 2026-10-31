@@ -205,7 +205,7 @@ CSS はすべて `.trk-mobile` の下に置いています。デスクトップ�
 
 | 項目 | 実装 |
 | --- | --- |
-| cache の名前 | `trk-v2026.10.31-trk224@<スコープ>`（`/trk-PWA/` なら `@trk-pwa`、ルート `/` なら `@root`）。activate は**自分のスコープのものだけ**を削除（同じオリジンに2つ置いても取り違えない） |
+| cache の名前 | `trk-v2026.10.31-trk225@<スコープ>`（`/trk-PWA/` なら `@trk-pwa`、ルート `/` なら `@root`）。activate は**自分のスコープのものだけ**を削除（同じオリジンに2つ置いても取り違えない） |
 | 殻の先読み | `fetch(…, { cache: "no-cache" })` で古い JS を拾わない。`verified.json` と `assets/mmd/lat-miku/preset.json` も先に入れる |
 | 通信優先 | ナビゲーションだけ **3 秒**で打ち切ってキャッシュへ（`AbortController`）。セーフモードは今までどおりキャッシュを使わない |
 | 共有の受け口 | `SHARE_CACHE_NAME` もスコープごと（`js/share-inbox.js` と同じ印） |
