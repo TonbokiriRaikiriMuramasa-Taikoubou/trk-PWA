@@ -241,7 +241,7 @@ if (/棚スキン11種|・11種類/.test(read("css/style.css") + skins)) {
   fail("stale shelf skin count (11) remains in source comments");
 }
 
-// Overall look skins: 33 presets in data.js (incl. the locked 🎓 reward skin, 3 見やすさ skins and 6 生活 skins, 4 ゲーム画面 skins) + 4 Miku skins = 44.
+// Overall look skins: 49 presets in data.js (incl. the locked 🎓 reward skin, 3 見やすさ skins and 6 生活 skins, 4 ゲーム画面 skins, 9 書体 skins from trk228) + 4 Miku skins = 53.
 const dataJs = read("js/data.js");
 const skinsStart = dataJs.indexOf("const SKINS = {");
 const skinsEnd = dataJs.indexOf("\n};", skinsStart);
@@ -250,7 +250,7 @@ if (skinsStart < 0 || skinsEnd < 0) {
 } else {
   const presetCount = (dataJs.slice(skinsStart, skinsEnd).match(/label:\{ja:/g) || []).length;
   const mikuCount = (read("js/characters/miku.js").match(/^ {2}(?:window\.Trk\.data\.)?SKINS\.[A-Za-z0-9]+ = \{/gm) || []).length;
-  if (presetCount + mikuCount !== 44) fail(`expected 44 overall skins, found ${presetCount + mikuCount}`);
+  if (presetCount + mikuCount !== 53) fail(`expected 53 overall skins, found ${presetCount + mikuCount}`);
   else ok("overall skin count is 44");
   /* 🎓 ごほうびスキン（グラデュエーション）は、スタンプ5つで解禁まで鍵がかかっていること */
   if (!/graduation:\s*\{[\s\S]*?locked:\s*true/.test(dataJs.slice(skinsStart, skinsEnd)) ||

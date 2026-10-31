@@ -1,6 +1,6 @@
 # trk! 開発引き継ぎ
 
-> **最終更新：2026-10-31**（`trk-PWA` の **trk227**）。アプリ本体は trk227（trk226 のバーをプレイヤーにする変更に加えて、❓謎設定「リピートボタンを単曲リピートのみにする」と「シャッフルは、いまの一覧（プレイリスト）の中から選ぶ」）、`npm run check` は **940 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk227`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
+> **最終更新：2026-10-31**（`trk-PWA` の **trk228**）。アプリ本体は trk228（trk227 のリピートの段・シャッフルの範囲に加えて、**書体（フォント）スキン 9 種**と、スキンの棚の「書体」カテゴリ・見本の文字）、`npm run check` は **949 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk228`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
 >
 > 現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`../README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`../NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md)。**レビューと実機確認のお願いは [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)**、その指摘への対応は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)、trk223 を実際の端末で見る手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
 
@@ -24,6 +24,7 @@
 
 | 版 | trk番号 | 中身（1行） | 日付 |
 | --- | --- | --- | --- |
+| （trk-PWA） | trk228 | 書体（フォント）スキン 9 種（端末の書体だけを使い、太さ・字間・行間も変える）＋ 棚の「書体」カテゴリと見本の文字 | 2026-10-31 |
 | （trk-PWA） | trk227 | リピートの段（なし⇄1曲だけ）と、シャッフルの範囲（いまの一覧から）を ❓謎設定で選べるように | 2026-10-31 |
 | （trk-PWA） | trk226 | 下の再生バーをプレイヤーにする（触れてシーク・❓「触れても位置を移動しない」・🎲 シャッフル・🔁 リピート・⧉ 別窓の操作パネル） | 2026-10-31 |
 | （trk-PWA） | trk225 | 下の再生バーの置き場所（画面のいちばん下／操作パネルの上）と「隠さない」設定（実機の相談から） | 2026-10-31 |
@@ -63,9 +64,10 @@
 | 配り方 | GitHub Pages（`.github/workflows/pages.yml`）＋ `manifest.webmanifest` ＋ `sw.js`。配布ZIPは作りません |
 | 画面の形 | `settings.uiMode`（PC型／スマホ型の2択）＋❓謎設定「画面の形は、常に選んだものを使う」。詳しくは [`UI-MODE-AND-PLAYER-BAR.md`](UI-MODE-AND-PLAYER-BAR.md) |
 | trk222〜trk227 の設定 | `uiScale`（50/75/100/125）・`fixedIconSize`・`uiModeLock`・`fxInLibrary`・`playerBar`・`playerBarPos`・`playerBarLock`（trk225 まで**新しい保存キーなし**）・`playerBarSeekLock`（trk226、既定オフ）・`playerBarRepeatOneOnly`・`playerBarShuffleInList`（trk227、どちらも既定オフ） |
-| テスト | `npm run check` **940 pass / 0 fail**（trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件・trk227 の17件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning。**`TZ=Asia/Tokyo` でも同じ**（CI も両方で流します） |
-| Service Worker | cache は **`trk-v2026.10.31-trk227@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
-| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。trk227 の確認項目は [`PLAYER-BAR-TRK227-2026-10-31.md`](PLAYER-BAR-TRK227-2026-10-31.md) §5、trk226 は [`PLAYER-BAR-TRK226-2026-10-31.md`](PLAYER-BAR-TRK226-2026-10-31.md) §6、trk225 は [`PLAYER-BAR-TRK225-2026-10-31.md`](PLAYER-BAR-TRK225-2026-10-31.md) §5、trk223 の確認項目は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) |
+| スキン | 53 種（本体 49＋ミク 4）。trk228 で**書体スキン 9 種**と、棚の **`type`（書体）** カテゴリ・カード内の見本の文字（`あア漢 Aa 12`）を追加。詳しくは [`FONT-SKINS-TRK228-2026-10-31.md`](FONT-SKINS-TRK228-2026-10-31.md) |
+| テスト | `npm run check` **949 pass / 0 fail**（trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件・trk227 の17件・trk228 の9件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning。**`TZ=Asia/Tokyo` でも同じ**（CI も両方で流します） |
+| Service Worker | cache は **`trk-v2026.10.31-trk228@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
+| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。trk228 の確認項目は [`FONT-SKINS-TRK228-2026-10-31.md`](FONT-SKINS-TRK228-2026-10-31.md) §7、trk227 の確認項目は [`PLAYER-BAR-TRK227-2026-10-31.md`](PLAYER-BAR-TRK227-2026-10-31.md) §5、trk226 は [`PLAYER-BAR-TRK226-2026-10-31.md`](PLAYER-BAR-TRK226-2026-10-31.md) §6、trk225 は [`PLAYER-BAR-TRK225-2026-10-31.md`](PLAYER-BAR-TRK225-2026-10-31.md) §5、trk223 の確認項目は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) |
 | 移行 | 新リポジトリ `trk-Standalone` はまだ空。Pages の有効化と初回デプロイは未実施 |
 
 **この系統で変えてはいけないこと**：§3 の条件に加えて、**実行時に外部へ通信しない**（CDN・外部API・解析タグを足さない）、**端末内データだけ**、**GPL-3.0-or-later のクレジットを消さない**、**保存キーを変えるときは移行を書く**（[`MIGRATIONS.md`](MIGRATIONS.md)）。
@@ -593,6 +595,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | ▶🎲 バーの置き場所と「隠さない」（trk225） | `js/player-bar.js`（`barOffset`・`barPos`・`barLocked`・`measure()`）、`css/player-bar.css`（`body.trk-playerbar-at-bottom .trk-mobile-nav { bottom: var(--trk-playerbar-h) }`）、`js/core.js`（`playerBarPos`・`playerBarLock`）、`tests/trk225-player-bar-settings.test.mjs`、[`PLAYER-BAR-TRK225-2026-10-31.md`](PLAYER-BAR-TRK225-2026-10-31.md) |
 | 🎵 バーをプレイヤーにする（trk226） | `js/player-bar.js`（`seekEnabled`・`shufflePick`・`nextRepeat`・`panelAllowed`・`snapshot`・`seekToRatio`・`playPause`・🎲🔁⧉ のボタン）、**`js/player-panel.js`（新規）**（Document PiP／小窓の鏡パネル・`Trk.playerPanel`）、`js/media-player-mode.js`（`announceMediaOptions`／`pullMediaOptions`）、`js/library.js`（`previewRestartFor`）、`js/core.js`（`playerBarSeekLock`）、`css/player-bar.css`、`tests/trk226-player-bar-player.test.mjs`、[`PLAYER-BAR-TRK226-2026-10-31.md`](PLAYER-BAR-TRK226-2026-10-31.md) |
 | ❓ リピートの段・シャッフルの範囲（trk227） | `js/player-bar.js`（`repeatChoices`・`repeatOneOnly`・`shuffleInList`・`nextRepeat(value, oneOnly)`）、`js/library.js`（`shufflePool`＝表示順の一覧か全曲）、`js/media-player-mode.js`（`repeatOptions`・`fillRepeatOptions`・`shuffleCandidates`）、`js/ui-prefs.js`・`index.html`（2つの欄）、`tests/trk227-repeat-shuffle-options.test.mjs`、[`PLAYER-BAR-TRK227-2026-10-31.md`](PLAYER-BAR-TRK227-2026-10-31.md) |
+| 🔤 書体（フォント）スキン 9 種（trk228） | `js/data.js`（`SKINS` に `cat:["type",…]` の 9 種・`font`・`type`）、`js/core.js`（`SKIN_CATS` の `type`・`skinCardType`・`skinSpecNode`・`applySkin` の `--font-*`）、`css/style.css`（`--font-title`／`--font-weight`／`--font-lh` と `.skinSpec`）、`js/i18n.js`（`catType` 4言語）、`tests/type-skins.test.mjs`、[`FONT-SKINS-TRK228-2026-10-31.md`](FONT-SKINS-TRK228-2026-10-31.md) |
 | 🧭 trk223：テストの道具 | `tests/helpers/css-rules.mjs`（CSS を規則として当てる）、`tests/helpers/player-bar-harness.mjs`（偽 DOM）、`tests/trk223-review.test.mjs`（33件） |
 | 📝 レビューと実機確認の依頼（2026-10-31） | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)（trk220〜trk222：レビューしてほしいコード・実機で見てほしいこと・判断してほしいこと）、[`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)（指摘ごとの対応）、[`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)（trk223 を実機で見る手順） |
 | 全体・安全検査 | `tools/check-repo.mjs`、`tools/check-security.mjs`、`tools/check-a11y.mjs`、`tools/check-lite.mjs` |
@@ -603,7 +606,8 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 | 検査 | 結果 | 範囲・注意 |
 |---|---|---|
-| `npm run check` | **940 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件・trk227 の17件を足して 940。Static 0 failure・0 warning・Security 64/0。`TZ=Asia/Tokyo`・`TZ=America/Los_Angeles` でも同じ（F1 の再発防止） |
+| `npm run check` | **949 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件・trk227 の17件・trk228 の9件を足して 949。Static 0 failure・0 warning・Security 64/0。`TZ=Asia/Tokyo`・`TZ=America/Los_Angeles` でも同じ（F1 の再発防止） |
+| 書体（フォント）スキン（trk228） | **OK（9件）** | `tests/type-skins.test.mjs`。9 種の登録・カテゴリ `type`・見本の文字（和文＋欧文）・**外部URL／`@font-face` を含まない**こと・太さ／字間／行間／大文字化の値・`catType` の 4 言語・棚カードへの書体の受け渡し・`applySkin` の `--font-*`・既存 44 種に `type` が付かないこと。配色は `tests/skin-contrast.test.mjs` が 53 種すべてで AA を検査 |
 | リピートの段・シャッフルの範囲（trk227） | **OK（17件）** | `tests/trk227-repeat-shuffle-options.test.mjs`。`nextRepeat` の段（3段／2段・全曲は「なし」へ）、オンで 🔁 が1曲⇄なしを往復し全曲にならないこと、シャッフル中の ⏭ が一覧の中だけから選ぶこと（オフなら外も選ぶ）、`shufflePool` の写し、再生画面の選択肢が2つになること、4言語 × 4キー |
 | 下の再生バーを触ってシーク（trk226） | **OK（27件）** | `tests/trk226-player-bar-player.test.mjs`。触れる条件（画面・読み込み・長さ・謎設定）の純粋関数、謎設定オンで `currentTime` が動かないこと、`previewRestartFor`、`shufflePick` の乱数の位置、🎲🔁 の設定共有と合図、別窓の組み立て（11部品）と描き直し・小窓が二重に開かないこと・PC型だけ ⧉ を出すこと |
 | `node tools/check-repo.mjs` | **0 failure / 0 warning** | 文書・`sw.js` の cache 名・読み込み順・名前空間の検査を含む |
@@ -763,6 +767,14 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 ## 7. 最近の変更
 
+- **🔤 trk228：書体（フォント）スキン 9 種（2026-10-31）**：trk227 の報告への返信。「ネッスン・ドルマのフォントの変化が人気なので、他のフォント違いのスキンも欲しい。久々なので多めでよい／贅沢に調べてよい」。
+  - **調べたこと**：2025〜2026 の日本語サイト（coliss・321web・inte-action・ffont・Canva）の「無料フォント」記事を読み、定番の系統（Noto／源ノ、Zen Maru・M PLUS Rounded、Shippori Mincho・Zen Old Mincho、Yusei Magic・Klee One、Dela Gothic One、BIZ UD）を確認。**すべて OFL で無料・商用可**。ただしこのアプリは CDN・外部API を使わない方針なので、**Google Fonts を実行時に読む形は採らない**。
+  - **同梱の重さ（実測）**：`@fontsource` の woff2 は 1 書体 **0.9〜1.5 MB**。かな＋英数に絞ると 28 KB だが漢字が全部欠け、漢字を全部入れると約 1.4 MB で元とほぼ同じ。→ **今回は同梱せず、端末にある書体を名前で指定**（追加 0 バイト・オフラインで動く）。
+  - **足した 9 種**：`typeMincho`（明朝の本）・`typeNewspaper`（新聞の活字）・`typeMarugo`（丸ゴのお茶目）・`typePop`（ポップ看板）・`typeKyokasho`（教科書の字）・`typeTypewriter`（タイプライター）・`typeKaisho`（楷書の便箋）・`typeOldstyle`（活字の古典）・`typeGothicHeavy`（極太ゴシック）。`cat` は新しい **`type`（書体）**。
+  - **書体が無い端末でも差が出るように**：`type` に `weight`・`lh`・`title`・`titleWeight`・`titleSpace`・`titleTransform`・`mark` を持たせ、`applySkin` が CSS 変数（`--font-title`／`--font-title-weight`／`--font-title-space`／`--font-title-transform`／`--font-weight`／`--font-lh`）に流します。**`type` を持たない既存 44 種は `inherit` に戻るので、見た目は trk227 と同じ**。
+  - **棚**：`SKIN_CATS` の `basic` の次に `type`。カードの中だけに書体を効かせる `--sk-font`／`--sk-title` と、**見本の文字 `あア漢 Aa 12`**（和文と欧文を並べて、和文書体でも欧文書体でも違いが見える）。`catType` は 4 言語（ja 書体／en Type／zh 字体／ko 서체）。
+  - テストは `tests/type-skins.test.mjs`（**9件**）。9 種の登録・カテゴリ・見本の文字・**外部URL／`@font-face` を含まないこと**・値の形・`catType` 4 言語・棚カードへの受け渡し・`applySkin` の変数・既存 44 種に `type` が付かないこと。`npm run check` は **949 pass / 0 fail**（日本・米国西海岸の両方）。`sw.js` の cache は **`trk-v2026.10.31-trk228@<スコープ>`**。`tools/check-repo.mjs` のスキン数は 44 → 53。
+  - **未確認**：実ブラウザ・実機での見え方（端末ごとに、どの書体で表示されるか・見出しの字間と大文字化・行間 1.85 で設定画面が崩れないか・棚カードの見本の収まり）。手順は [`FONT-SKINS-TRK228-2026-10-31.md`](FONT-SKINS-TRK228-2026-10-31.md) §7。**同梱するかどうかは利用者の返事待ち**（§5 に手順）。
 - **❓ trk227：リピートの段と、シャッフルの範囲を選べるように（2026-10-31）**：trk226 の報告への返信。「シャッフルではなく **リピート** に好みがある（既定の『なし → 1曲 → 全曲 → なし』はそのままでよい）」「『なし → 1曲 → なし』の体験ができるように、❓謎設定『リピートボタンを単曲リピートのみにする』を作り、既定オフに」「プレイリスト内のシャッフルも選べるように」。
   - **`playerBarRepeatOneOnly`（既定オフ）**：オンにすると、バーの 🔁 は **なし ⇄ 1曲** の2段だけ（全曲を出さない）。**メディアプレイヤーの画面のリピートの選択肢も「なし／1曲」**に作り直します。保存に「全曲」が残っているときは、オンにした瞬間に「なし」へ寄せて保存します。
   - **`playerBarShuffleInList`（既定オフ）**：オンにすると、シャッフル中の ⏮⏭ が**ライブラリに表示している一覧（`libView`＝TV の ◀▶ と曲送りが進む順番）**の中から選ばれます。一覧が空なら全曲。オフ（既定）は、これまでどおり全曲から。

@@ -37,7 +37,7 @@ function ratio(a, b) {
 }
 
 describe("見やすさのスキン（access）", () => {
-  test("3種が登録され、カテゴリ access に入る", () => {
+  test("3種が登録され、カテゴリ access に入る（書体スキンは trk228 で type カテゴリに分けた）", () => {
     assert.deepEqual(ACCESS.sort(), ["cbDark", "cbLight", "hc"]);
   });
 
