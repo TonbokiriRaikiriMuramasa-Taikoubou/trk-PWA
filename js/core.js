@@ -281,6 +281,10 @@ const settings = {
   playerBarLock: prefs.playerBarLock === true,
   /* ❓ trk226：バーに触れても位置を移動しない（既定オフ＝触れれば動く。❓謎設定） */
   playerBarSeekLock: prefs.playerBarSeekLock === true,
+  /* ❓ trk227：リピートボタンを単曲リピートのみにする（既定オフ＝なし→1曲→全曲→なし） */
+  playerBarRepeatOneOnly: prefs.playerBarRepeatOneOnly === true,
+  /* ❓ trk227：シャッフルは、いまの一覧（プレイリスト）の中から選ぶ（既定オフ＝ライブラリ全体から） */
+  playerBarShuffleInList: prefs.playerBarShuffleInList === true,
   /* 🖥 trk222：画面の拡大率（%）。50／75／100／125 の4つだけ。ゲーム中は 100% のまま */
   uiScale: pick(prefs.uiScale, [50, 75, 100, 125], 100),
   /* 🖥 trk222：拡大率を変えても、アイコンの大きさは 100% のまま固定する（既定オン） */
@@ -712,6 +716,8 @@ function resetAllPrefs() {
   settings.uiScale = 100; settings.fixedIconSize = true; settings.uiModeLock = true; settings.fxInLibrary = false;
   /* 🎵 trk225：バーの置き場所（いちばん下）と、隠さない設定（オフ）も工場出荷状態へ */
   settings.playerBarPos = "bottom"; settings.playerBarLock = false; settings.playerBarSeekLock = false;
+  /* ❓ trk227：リピートの段（単曲のみ）と、シャッフルの範囲（いまの一覧）も既定へ */
+  settings.playerBarRepeatOneOnly = false; settings.playerBarShuffleInList = false;
 }
 function exportPrefs(kind) {
   const out = {};

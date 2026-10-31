@@ -20,7 +20,9 @@
     fixedIconSize: "fixedIconSize",
     uiModeLock: "uiModeLock",
     fxInLibrary: "fxInLibrary",
-    playerBarSeekLock: "playerBarSeekLock"      /* 🎵 trk226：バーに触れても位置を移動しない（既定オフ） */
+    playerBarSeekLock: "playerBarSeekLock",     /* 🎵 trk226：バーに触れても位置を移動しない（既定オフ） */
+    playerBarRepeatOneOnly: "playerBarRepeatOneOnly",   /* 🎵 trk227：リピートは なし⇄1曲 だけ（既定オフ） */
+    playerBarShuffleInList: "playerBarShuffleInList"    /* 🎵 trk227：シャッフルはいまの一覧から（既定オフ） */
   };
   /* 既定が「オン」の設定と「オフ」の設定が混ざっているので、どちらかを明示する */
   const DEFAULT_ON = new Set(["fixedIconSize", "uiModeLock"]);
@@ -66,6 +68,15 @@
           if (id === "uiModeLock" && window.Trk.mobileShell && window.Trk.mobileShell.applyMode) window.Trk.mobileShell.applyMode();
           if (id === "fxInLibrary" && window.Trk.mobileShell && window.Trk.mobileShell.sync) window.Trk.mobileShell.sync();
         } catch (_) {}
+        /* 🎵 trk227：リピートの段を単曲だけにしたら、残っていた「全曲」は「なし」へ寄せる。
+           どちらの設定も、バーと再生画面へ合図を出して、開き直さずに反映する */
+        if (id === "playerBarRepeatOneOnly" || id === "playerBarShuffleInList") {
+          if (id === "playerBarRepeatOneOnly" && core.settings.playerBarRepeatOneOnly === true && core.settings.mediaRepeat === "all") {
+            core.settings.mediaRepeat = "off";
+            save();
+          }
+          try { if (typeof core.emit === "function") core.emit("mediaOptions"); } catch (_) {}
+        }
       });
     }
   }

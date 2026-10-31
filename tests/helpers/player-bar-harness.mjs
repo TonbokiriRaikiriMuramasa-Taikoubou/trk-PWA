@@ -82,7 +82,8 @@ export function fire(node, name) {
    navHeight を与えると下部ナビ（.trk-mobile-nav）を置く（trk225：バーとの前後）
    controls を与えると、設定の欄（#playerBarMode／#playerBarPos／#playerBarLock）を置く */
 export function runBar({ playerBar = "auto", phase = "title", hasSong = true, media = false, study = false, stage = null, mobile = false,
-  playerBarPos, playerBarLock, playerBarSeekLock, mediaShuffle, mediaRepeat, songs = null, panel = null,
+  playerBarPos, playerBarLock, playerBarSeekLock, mediaShuffle, mediaRepeat,
+  repeatOneOnly, shuffleInList, songs = null, view = null, panel = null,
   navHeight = null, controls = false } = {}) {
   const dom = fakeDom();
   const events = [];
@@ -106,6 +107,9 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
   /* 🎵 trk226：シャッフル／リピートの値（再生画面と共有する設定） */
   if (mediaShuffle !== undefined) settings.mediaShuffle = mediaShuffle;
   if (mediaRepeat !== undefined) settings.mediaRepeat = mediaRepeat;
+  /* 🎵 trk227：リピートの段（単曲のみ）と、シャッフルの範囲（いまの一覧から） */
+  if (repeatOneOnly !== undefined) settings.playerBarRepeatOneOnly = repeatOneOnly;
+  if (shuffleInList !== undefined) settings.playerBarShuffleInList = shuffleInList;
   const core = {
     settings,
     phase,
@@ -128,7 +132,9 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
         songDisplayMeta: it => ({ title: `${it.base}（表示）`, artist: it.artist || "" }),
         loadSongArtwork: () => Promise.resolve(null),
         plToast(message) { calls.toast.push(String(message)); },
-        allSongs: () => (songs || []).slice()
+        allSongs: () => (songs || []).slice(),
+        /* 🎵 trk227：ライブラリに表示している一覧（無ければ全曲） */
+        shufflePool: () => ((view && view.length) ? view.slice() : (songs || []).slice())
       }
     },
     TrkMediaPlayer: { open: () => { calls.openPlayer += 1; }, close() {}, isOpen: () => media },
