@@ -1,6 +1,6 @@
 # trk! 開発引き継ぎ
 
-> **最終更新：2026-10-31**（`trk-PWA` の **trk223**）。アプリ本体は trk223（trk222 レビューへの対応）、`npm run check` は **861 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk223`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
+> **最終更新：2026-10-31**（`trk-PWA` の **trk224**）。アプリ本体は trk224（trk222 レビューへの対応＝trk223＋trk223 レビューの F1・F2）、`npm run check` は **871 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk224`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
 >
 > 現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`../README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`../NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md)。**レビューと実機確認のお願いは [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)**、その指摘への対応は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)、trk223 を実際の端末で見る手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
 
@@ -24,6 +24,7 @@
 
 | 版 | trk番号 | 中身（1行） | 日付 |
 | --- | --- | --- | --- |
+| （trk-PWA） | trk224 | trk223 レビューの F1・F2（配布ZIPの時刻を UTC で書く・文書からZIP自身のハッシュを外す） | 2026-10-31 |
 | （trk-PWA） | trk223 | trk222 レビューへの対応（エフェクトのタブ・再生バーの重なり・ZIPの vendor・キャッシュの持ち主・設定の保存） | 2026-10-31 |
 | （trk-PWA） | trk222 | 拡大率・アイコンの大きさ・PC型／スマホ型の2択・エフェクト欄のタブ分け | 2026-10-31 |
 | （trk-PWA） | trk221 | PC でもスマホ型の UX＋下の再生バー（スキンに追従） | 2026-10-31 |
@@ -44,6 +45,7 @@
 - Arenaで指定された作業ブランチを維持し、`main` へ直接 push しない。反映はPR経由。
 - バンドラーはありません。`index.html` の `<script>` 順が依存関係と実行順を決めます。
 - 変更後は `npm run check` と `git diff --check` を実行。静的・VM・スモーク検査の成功を、実音声・実機での確認済みとは扱いません。
+- **時刻はタイムゾーンに依存させない**（trk224・レビュー F1）。CI は UTC なので、UTC だけで緑でも油断できません。日時を作る・比べるコードを触ったら `TZ=Asia/Tokyo node tools/run-tests.mjs` も流してください（PowerShell は `$env:TZ="Asia/Tokyo"; node tools/run-tests.mjs`）。`toISOString()` は UTC、`getFullYear()`／`getHours()` はローカルです。
 - 公開JSを変更したら関連テスト・文書・`sw.js` のcache名更新要否を確認します。vendor pinの正は `tools/vendor-lock.json` です。
 - `js/fx.js`／`js/fx-presets.js` の凍結は **trk114で解除**しました（2026-10-11、空さんの判断。trk109でfx.jsに足したMIDI MIXの経路も追認）。ほかのファイルと同じく、変更時はテスト・文書・実音声で確認します。fx.jsが読むための互換名（`chartMeta`・`phase`・`prefs`・`stats`・`videoReady`、読み取り専用の `_trkStudyRoomOpen`）はまだ残っていて、fx.jsを書き換えれば外せます（`docs/ADDONS.md` §0、`docs/NAMESPACE-PLAN.md`）。
 
@@ -58,8 +60,8 @@
 | 配り方 | GitHub Pages（`.github/workflows/pages.yml`）＋ `manifest.webmanifest` ＋ `sw.js`。配布ZIPは作りません |
 | 画面の形 | `settings.uiMode`（PC型／スマホ型の2択）＋❓謎設定「画面の形は、常に選んだものを使う」。詳しくは [`UI-MODE-AND-PLAYER-BAR.md`](UI-MODE-AND-PLAYER-BAR.md) |
 | trk222 の設定 | `uiScale`（50/75/100/125）・`fixedIconSize`・`uiModeLock`・`fxInLibrary`・`playerBar`。**新しい保存キーは増やしていません** |
-| テスト | `npm run check` **861 pass / 0 fail**（trk220 の47件・trk221 の27件・trk222 の13件・trk223 の25件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning |
-| Service Worker | cache は **`trk-v2026.10.31-trk223@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
+| テスト | `npm run check` **871 pass / 0 fail**（trk220 の47件・trk221 の27件・trk222 の13件・trk223 の30件・trk224 の5件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning。**`TZ=Asia/Tokyo` でも同じ**（CI も両方で流します） |
+| Service Worker | cache は **`trk-v2026.10.31-trk224@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
 | まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。trk223 の確認項目は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) |
 | 移行 | 新リポジトリ `trk-Standalone` はまだ空。Pages の有効化と初回デプロイは未実施 |
 
@@ -563,7 +565,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 📦 まるごとバックアップ・ZIP CRC・復元 | `js/backup.js`（歌詞・字幕キーの許可、アドオン概要の確認、復元アドオンの無効化）、`js/zip-io.js`、`js/custom.js`（.stpackのストリーム読書き・`packIdentityFromManifest`）、`tests/backup-codec.test.mjs`、`tests/backup-restore.test.mjs`、`tests/pack-identity.test.mjs`、`tests/pack-zip-stream.test.mjs`、`tests/zip-io.test.mjs`、`tools/check-security.mjs` |
 | CBZ／ZIP書斎のページ展開上限 | `js/study-room.js`（`studyAlbumLimits`・`studyImportArchiveBook`）、`tests/storage-limits.test.mjs` |
 | Endfield楽曲台帳・曲名fixture・検査 | `docs/ARKNIGHTS-ENDFIELD-MUSIC.md`、`tools/endfield-zeroth-directive-tracklist.json`、`tools/endfield-msr-albums-tracklist.json`、`tools/check-repo.mjs` |
-| Service Worker | `sw.js`（**このリポジトリの現行cache名：`trk-v2026.10.31-trk223`＝trk223。名前に `@<スコープ>` が付きます（`/trk-PWA/` なら `@trk-pwa`）**。上流の配布版は `trk-v2026.10.29-trk219`＝trk219。**配布ZIP（1.1.7）は `trk218`**、配布済みの 1.1.6 は `trk217`、1.1.5 は `trk216`、1.1.4 は `trk214`。1.1.2 は `trk211`、1.1.1 は `trk210`、1.1.0 は `trk208`、1.0.9 は `trk207`。アプリ本体が変わらない版では cache 名を上げない） |
+| Service Worker | `sw.js`（**このリポジトリの現行cache名：`trk-v2026.10.31-trk224`＝trk224。名前に `@<スコープ>` が付きます（`/trk-PWA/` なら `@trk-pwa`）**。上流の配布版は `trk-v2026.10.29-trk219`＝trk219。**配布ZIP（1.1.7）は `trk218`**、配布済みの 1.1.6 は `trk217`、1.1.5 は `trk216`、1.1.4 は `trk214`。1.1.2 は `trk211`、1.1.1 は `trk210`、1.1.0 は `trk208`、1.0.9 は `trk207`。アプリ本体が変わらない版では cache 名を上げない） |
 | 🚪 メディアプレイヤーの抜け方（trk206） | `js/media-player-mode.js`（`mediaExitPlan`・`closeMedia`）、`js/library.js`（`previewContinue`）、`js/core.js`（`mediaReloadOnExit`）、`js/i18n-options.js`＋`index.html`（❓謎設定）、`tests/trk206-media-exit.test.mjs` |
 | 📦 配布ZIPの組み立て（1.0.8〜・現在 1.1.7） | `tools/prepare-release.mjs`（`npm run release`。`index.html`＋`README.txt`＋`trk-files/` に組み、形を検査してZIPにする）、`release/README.txt`（配布用のかんたん起動。`--readme` を省くとこれが入る。**版と `README-1.x.y.md` の名前は `--version` とそろえる**）、`tests/release-layout.test.mjs`（形・時刻・README の版） |
 | 📂 フォルダー共有の共通部品（trk208） | `js/shared-folders.js`（`window.TrkSharedFolders`＝`plan`／`uniqueLabel`／`mergeScans`／`walk`／`pathParts`／`readFileAt`。DOM・IndexedDB・書き込みなし）、`js/library.js`（登録簿 `"folders"`・`addSharedFolder`／`readSharedFolders`／`restoreSharedFolders`／`folderAutoKickShared`／`removeSharedFolder`／`renderSharedFolderList`）、`index.html`（`#libShareVideoBtn`・`#libSharedFolderList`）、`tests/trk208-shared-folders.test.mjs` |
@@ -583,6 +585,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 🧭 trk223：レビュー対応（配布ZIPの作り方） | `tools/pack-standalone.mjs`（**`git ls-files` から集める**・`vendor-lock.json` 全件と `index.html` の参照を照合・`--check-only` で一覧だけ確認）、`release/README-standalone.txt`（ZIP同梱の読み方） |
 | 🧭 trk223：キャッシュの持ち主と先読み | `sw.js`（`scopeTagOf`・`CACHE_NAME`／`VENDOR_CACHE`／`SHARE_CACHE_NAME`・`cacheIsOurs`・`matchOwned`・`fetchWithTimeout`・`PRECACHE_EXTRA`）、`js/share-inbox.js`（`shareScopeTag`・`shareScopePath`・`SHARE_CACHE_NAME`） |
 | 🧭 trk223：設定の保存（マージ） | `js/core.js`（`storedPrefsRaw`・`saveUserPrefs({fresh})`・`resetAllPrefs` の2経路は `fresh`）、`js/mobile-shell.js`（`uiMode()` が `uiModeLock === false` なら保存値を使わない・`syncUiControls` は実効値） |
+| 🧭 trk224：ZIPの時刻をタイムゾーンに依存させない（F1） | `js/zip-io.js`（`zipDosDateTime` が UTC の getter を使う・理由をコメントに明記。`mtime` を渡すのは配布ZIPの組み立てだけ）、`tests/trk224-timezone.test.mjs`（5つの TZ の子プロセスで実際にZIPを組み、バイトと DOS 欄を比較）、`.github/workflows/check.yml`（`TZ=Asia/Tokyo` でも `run-tests` を流す） |
 | 🧭 trk223：テストの道具 | `tests/helpers/css-rules.mjs`（CSS を規則として当てる）、`tests/helpers/player-bar-harness.mjs`（偽 DOM）、`tests/trk223-review.test.mjs`（25件） |
 | 📝 レビューと実機確認の依頼（2026-10-31） | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)（trk220〜trk222：レビューしてほしいコード・実機で見てほしいこと・判断してほしいこと）、[`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)（指摘ごとの対応）、[`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)（trk223 を実機で見る手順） |
 | 全体・安全検査 | `tools/check-repo.mjs`、`tools/check-security.mjs`、`tools/check-a11y.mjs`、`tools/check-lite.mjs` |
@@ -593,14 +596,15 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 | 検査 | 結果 | 範囲・注意 |
 |---|---|---|
-| `npm run check` | **861 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の27件・trk222 の13件・trk223 の25件を足して 861。Static 0 failure・0 warning・Security 64/0 |
+| `npm run check` | **871 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の27件・trk222 の13件・trk223 の30件・trk224 の5件を足して 871。Static 0 failure・0 warning・Security 64/0。`TZ=Asia/Tokyo` でも同じ（F1 の再発防止） |
 | `node tools/check-repo.mjs` | **0 failure / 0 warning** | 文書・`sw.js` の cache 名・読み込み順・名前空間の検査を含む |
 | jsdom で実 `index.html` を通しで操作（trk221） | **OK** | PC→スマホ型の切り替え・保存・設定の欄の追随、曲を選んだときの再生バー表示、音量の反映、プレイ中に隠れる、PC型へ戻したときの後片付け、往復、設定中は下余白0 |
 | jsdom で実 `index.html` を通しで操作（trk222） | **OK（37項目）** | 既定値（100%／on／アイコン固定オン／謎設定オン）、125%・75%・50% の設計サイズと倍率、アイコン固定のオン／オフ、知らない値は100%、プレイ中は等倍、縦型 1080×1920 でのはみ出しなし、スマホ型はステージを拡大しない、エフェクト／ライブラリのタブで `display` が設計どおり、2択ボタンの往復と保存の有無 |
 | 画面サイズ×拡大率のはみ出し | **OK（24/24）** | 1920×1080・1440×900・1366×768・1080×1920・2560×1440・800×600 の6通り × 50・75・100・125% の4通り。ステージが画面からはみ出さない |
 | CSS を規則として検査（trk223） | **OK** | `tests/helpers/css-rules.mjs` が `@media` を除いた規則を要素に当て、カスケードで勝つ `display` / `max-height` / `padding-bottom` を出す。エフェクトのタブの ▶ TV、`.songCol` の `flex`＋`gap:14px`、カードの `max-height:100%` を確認 |
 | 再生バーとカードの重なり（trk223） | **OK（4/4）** | 1440×900・バー実寸 60px で、拡大率 50／75／100／125% のカードの下端 738.8／732.9／727.5／721.9px が、バーの上端 750px より上 |
-| 手渡し用ZIP（trk223） | **OK** | `tools/pack-standalone.mjs` が `git ls-files` から 264 ファイルを集め、`vendor-lock.json` の全 100 件（`three-mmd-loader@0.8.4/dist/` の 91 件を含む）と `index.html` の参照を照合。`unzip -t` 破損なし・`sha256 a6134a0c…36dbb` |
+| 手渡し用ZIP（trk223・trk224） | **OK** | `tools/pack-standalone.mjs` が `git ls-files` から集め、`vendor-lock.json` の全 100 件（`three-mmd-loader@0.8.4/dist/` の 91 件を含む）と `index.html` の参照を照合。`unzip -t` 破損なし。**ファイル数と `sha256` は同梱の外側（`README-まず読む-*.txt`）に書く**（ZIPの中の文書に自分のハッシュを書くと、固めた瞬間に古くなる＝レビュー F2） |
+| タイムゾーンを変えた検査（trk224・F1） | **OK（5/5）** | `tests/trk224-timezone.test.mjs` が TZ=UTC／Asia/Tokyo／America/Los_Angeles／Pacific/Kiritimati／Asia/Kolkata で実際にZIPを組み、**バイト（sha256）と DOS の時刻欄が同じ**ことを確認。`TZ=Asia/Tokyo npm run check` も 871 pass / 0 fail |
 | 実ブラウザ・実機で触る | **未確認** | この作業環境にブラウザも端末もない。とくに再生バーの拡大に使う CSS の `zoom` はブラウザ差が出やすい。trk223 の手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) §2 |
 
 **trk219（2026-10-29）の確認**
@@ -750,6 +754,10 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 ## 7. 最近の変更
 
+- **🕰 trk224：trk223 レビューの F1・F2（2026-10-31）**：手渡しの `trk223-F1-fix-2026-10-31.zip` で届いた2件。詳しくは [`REVIEW-FIX-TRK224-2026-10-31.md`](REVIEW-FIX-TRK224-2026-10-31.md)。
+  - **F1（タイムゾーン依存）**：`js/zip-io.js` の `zipDosDateTime()` がローカル時刻の getter を使っていたため、配布ZIPのエントリ時刻が組んだ人の TZ で変わり、`tests/release-layout.test.mjs` が UTC 以外で落ちていた（CI は UTC なので緑に見えていた）。**UTC の getter** に変更。`mtime` を渡すのは配布ZIPの組み立てだけ（バックアップ・`.stpack` は 1980-01-01 固定）なので、利用者の書き出しには影響しません。副作用として、**配布ZIPを日本で展開すると時刻が9時間前（UTC）で表示されます**（中身と動作には影響なし）。Extended Timestamp でローカル表示にする案は、レイアウト変更とテストの手間に見合わないため今回は採りませんでした。
+  - **F2（文書の古いハッシュ）**：ZIPに入る文書に自分のZIPの `sha256` を書くと、固めた瞬間に古くなります（実際に1回目と2回目で食い違った）。**ハッシュは外側の `README-まず読む-*.txt` にだけ書く**運用にし、`tests/trk223-review.test.mjs` で「配布ZIPの名前と同じ行に64桁のハッシュを書かない」ことを検査します。
+  - `sw.js` の cache は **`trk-v2026.10.31-trk224@<スコープ>`**（アプリ本体が変わったため）。`TZ=Asia/Tokyo npm run check` も **871 pass / 0 fail**、`node tools/check-repo.mjs` 0 failure / 0 warning。CI（`.github/workflows/check.yml`）に **`TZ=Asia/Tokyo` のテスト**を足しました。**実機は未確認**（§4-64 の手順のまま）。
 - **🧭 trk223：trk222 レビュー（2026-10-31）への対応**：指摘の12項目を「検討して実装」。詳しくは [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)。
   - **① スマホ型のエフェクトのタブ**：`#tvDock`（▶ TV）を隠す条件を「エフェクトのタブでも、ライブラリに出す設定でもないとき」に絞り、`.songCol` は `flex` のまま（`gap:14px` が消えない）。
   - **② 再生バーとカードの重なり**：倍率の基準を 1080 固定から **ステージの設計の高さ（`offsetHeight`）** に変え、カードの上限は `calc(1020px - …)` をやめて `.screen` の内容の高さに。`uiscale` を購読し、`resize` でも測り直します。
@@ -759,7 +767,7 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
   - **⑥〜⑫**：`#view`・`#fx` と MMD/VRM の拡大率のずれ、ようこそを閉じたあとの再生バー、先読みの `no-cache` と 3 秒の時間切れ、`verified.json`・`preset.json` の先読み、Pages の公開物から開発用を除外、`display_override` の先頭を `standalone`、テストを数値・規則で見る形（`tests/trk223-review.test.mjs` 25件）。
   - **手渡し用ZIP**：`node tools/pack-standalone.mjs`（`git ls-files`＋`vendor-lock.json` 全100件の照合）で作り、**264ファイル・7,515,649 bytes・`sha256 a6134a0c5d35c6a2fb2ebabd91c6559fee345b849391e789540ce9d83ee36dbb`**（`unzip -t` 破損なし。vendor 101エントリ＝`three-mmd-loader@0.8.4/dist/` の91件を含む）。
   - **配布の扱い**：公開URLの配布物は差し替えていません。確認用のZIPを Drive の手渡しフォルダに置き（`trk-standalone-2026-10-31-trk223.zip`・`trk-handover-2026-10-31-trk223.zip`・`README-まず読む-2026-10-31-trk223.txt`）、前回の trk222 のZIPは名前の先頭に「【旧】」を付けています。
-  - `sw.js` の cache は **`trk-v2026.10.31-trk223@<スコープ>`**。**実ブラウザ・実機は未確認**（§4-64）。実機の手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
+  - `sw.js` の cache は **`trk-v2026.10.31-trk224@<スコープ>`**（trk224 で F1 を直したときに上げました）。**実ブラウザ・実機は未確認**（§4-64）。実機の手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
 - **🔍 trk222：拡大率・アイコンの大きさ・2択の画面切り替え・エフェクト欄のタブ分け（2026-10-31）**：実際に触っての要望5点。
   - **拡大率**（`settings.uiScale`＝50／75／100／125%、既定100%）：`fitStage()` がステージの設計サイズを `1/拡大率` に縮めて `min(iw/W, ih/H) × 拡大率` で描くので、文字とボタンが同じ比率で大きくなり、**画面からはみ出さない**。ゲーム中は100%（盤面を欠けさせない）、スマホ型は再生バーだけ `zoom` で拡大。
   - **アイコンの大きさは100%で固定**（`fixedIconSize`・既定オン）：アイコンだけ `1/拡大率` に割り戻す（`--trk-icon-zoom`）。

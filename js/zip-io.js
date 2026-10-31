@@ -20,15 +20,22 @@
     constructor(key) { super(key); this.key = key; }
   }
 
-  /* Convert a Unix millisecond timestamp to ZIP's local-time DOS fields (2-second precision).
+  /* Convert a Unix millisecond timestamp to ZIP's DOS fields (2-second precision).
+     🧭 trk224（2026-10-31 レビュー F1）：UTC の getter を **意図的に** 使う。同じ瞬間なら、どのタイムゾーンで
+     組み立てても同じエントリ時刻（＝同じ決定的なZIP）になるようにするため。
+     ローカル時刻の getter（getFullYear / getHours など）だと、日本では `2026-10-27T12:00:00Z` が 21:00 になり、
+     `tests/release-layout.test.mjs`（trk204）が UTC 以外で落ちていた（CI は UTC なので緑に見えていた）。
+     ・DOS の時刻欄はタイムゾーンを持たないので、ここは「組み立て時刻は UTC で書く」と決める。展開したときに
+       見える時刻は UTC になるが、配布ZIPでは「どの環境でも同じバイトになること」のほうが大事。
+     ・利用者のバックアップと .stpack は opts.mtime を渡さない（1980-01-01 固定）ので、この変更の影響を受けない。
      If no mtime is supplied, callers retain the deterministic 1980-01-01 default. */
   function zipDosDateTime(timestamp) {
     if (!Number.isFinite(timestamp)) throw new ZipIOError("zipBad");
     const d = new Date(timestamp);
     if (!Number.isFinite(d.getTime())) throw new ZipIOError("zipBad");
-    const year = Math.min(2107, Math.max(1980, d.getFullYear()));
-    const month = d.getMonth() + 1, day = d.getDate();
-    const time = (d.getHours() << 11) | (d.getMinutes() << 5) | Math.floor(d.getSeconds() / 2);
+    const year = Math.min(2107, Math.max(1980, d.getUTCFullYear()));
+    const month = d.getUTCMonth() + 1, day = d.getUTCDate();
+    const time = (d.getUTCHours() << 11) | (d.getUTCMinutes() << 5) | Math.floor(d.getUTCSeconds() / 2);
     const date = ((year - 1980) << 9) | (month << 5) | day;
     return { time, date };
   }

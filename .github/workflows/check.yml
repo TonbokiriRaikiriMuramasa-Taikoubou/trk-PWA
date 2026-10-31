@@ -34,3 +34,10 @@ jobs:
         # npm run check = check-repo / check-security / check-a11y / check-vendor /
         # check-mmd-motion-data / check-study-room / check-lite / run-tests
         run: npm run check
+      - name: Run tests outside UTC
+        # ランナーは UTC で動くので、ローカル時刻を使うコードの不具合は UTC では見えません
+        # （trk224・レビュー F1：ZIP の時刻が TZ 依存で、UTC 以外では release-layout が落ちていた）。
+        # 日本（UTC+9・日付をまたぐ側）でもテストを流しておきます。
+        env:
+          TZ: Asia/Tokyo
+        run: node tools/run-tests.mjs

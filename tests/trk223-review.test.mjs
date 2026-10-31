@@ -159,6 +159,10 @@ describe("trk223 ④ 自分のスコープのキャッシュだけを片付け�
   const scopeTagFn = swSrc.match(/function scopeTagOf\(pathname\) \{[\s\S]*?\n\}/)[0];
   const cacheIsOursFn = swSrc.match(/async function cacheIsOurs\(key\) \{[\s\S]*?\n\}/)[0];
 
+  /* 🧭 trk224：版は sw.js の CACHE から読む（テストに書き写すと、版を上げるたびに直すことになる）。
+     形（trk-v<日付>-trk<番号>）と、trk223 以降であることは別に確かめる。 */
+  const CACHE_IN_SW = (swSrc.match(/^const CACHE = "([^"]+)";$/m) || [])[1];
+
   function harness({ scope = "https://x/trk-PWA/", keys = [], contents = {} } = {}) {
     const deleted = [];
     const caches = {
@@ -172,7 +176,7 @@ describe("trk223 ④ 自分のスコープのキャッシュだけを片付け�
 ${scopeTagFn}
 const SCOPE = new URL(self.registration.scope);
 const SCOPE_TAG = scopeTagOf(SCOPE.pathname);
-const CACHE = "trk-v2026.10.31-trk223";
+const CACHE = ${JSON.stringify(CACHE_IN_SW)};
 const CACHE_PREFIX = "trk-";
 const CACHE_NAME = CACHE + "@" + SCOPE_TAG;
 const VENDOR_CACHE_BASE = "trk-vendor-v1";
@@ -188,15 +192,17 @@ globalThis.__names = { CACHE_NAME, VENDOR_CACHE, SHARE_CACHE_NAME, SCOPE_TAG };
 
   test("名前の印：スコープのパスから作る（/ は root）", async () => {
     const h = harness({ scope: "https://x/trk-PWA/" });
-    assert.equal(h.names.CACHE_NAME, "trk-v2026.10.31-trk223@trk-pwa");
+    assert.match(CACHE_IN_SW, /^trk-v\d{4}\.\d{2}\.\d{2}-trk\d+$/, "CACHE の形は変えない（検査と同じ）");
+    assert.ok(Number(CACHE_IN_SW.match(/-trk(\d+)$/)[1]) >= 223, "trk223 以降");
+    assert.equal(h.names.CACHE_NAME, `${CACHE_IN_SW}@trk-pwa`);
     assert.equal(h.names.SHARE_CACHE_NAME, "trk-share-inbox-v1@trk-pwa");
     assert.equal(h.names.VENDOR_CACHE, "trk-vendor-v1@trk-pwa");
   });
 
   test("別のスコープのキャッシュは、自分のものと認めない", async () => {
     const h = harness({ scope: "https://x/trk-PWA/" });
-    assert.equal(await h.isOurs("trk-v2026.10.31-trk223@trk"), false, "trk! の trk223");
-    assert.equal(await h.isOurs("trk-v2026.10.31-trk223@trk-pwa"), true);
+    assert.equal(await h.isOurs(`${CACHE_IN_SW}@trk`), false, "trk! の trk223");
+    assert.equal(await h.isOurs(`${CACHE_IN_SW}@trk-pwa`), true);
     assert.equal(await h.isOurs("trk-vendor-v1@trk-pwa"), true);
     assert.equal(await h.isOurs("trk-share-inbox-v1@trk-pwa"), true);
     assert.equal(await h.isOurs("trk-vendor-v1@trk"), false, "vendor も取り違えない");
@@ -299,6 +305,31 @@ describe("trk223 ⑤ 画面の形の固定がオフなら、保存値をその�
   });
   test("壊れた保存値は auto", () => {
     assert.equal(run({ lock: true, stored: "tablet" }), "auto");
+  });
+});
+
+/* ---------- F2（trk223 レビュー）：ZIPの中の文書は、ZIP自身のハッシュを書かない ----------
+   ZIP に入る文書に「そのZIPの sha256」を書くと、固めた瞬間に古くなる（実際に、依頼書と HANDOFF に
+   1回目のZIPのハッシュが残り、2回目のZIPと食い違った）。ハッシュは外側の README にだけ書く。 */
+describe("trk223 F2 配布物の中の文書は、ZIP自身のハッシュを書かない", () => {
+  const ARCHIVE = /trk-standalone-2026-10-31[^\n]*\b[0-9a-f]{64}\b/;
+  const shipped = [
+    "docs/HANDOFF.md",
+    "docs/REVIEW-REQUEST-TRK223-2026-10-31.md",
+    "docs/REVIEW-RESPONSE-2026-10-31.md",
+    "docs/REVIEW-FIX-TRK224-2026-10-31.md"
+  ];
+  for (const rel of shipped) {
+    test(`${rel}：配布ZIPの名前と同じ行に 64桁のハッシュを書かない`, () => {
+      const text = read(rel);
+      const bad = text.split("\n").filter(line => ARCHIVE.test(line));
+      assert.deepEqual(bad, [], `見つかった行: ${bad.join(" / ")}`);
+    });
+  }
+  test("依頼書は、ハッシュの置き場所（外側の README）を指している", () => {
+    const text = read("docs/REVIEW-REQUEST-TRK223-2026-10-31.md");
+    assert.match(text, /README-まず読む-2026-10-31-trk224\.txt/, "外側の README の名前を書く");
+    assert.match(text, /ZIP自身のハッシュは書きません/, "理由も書く");
   });
 });
 
