@@ -1,6 +1,6 @@
 # trk! 開発引き継ぎ
 
-> **最終更新：2026-10-31**（`trk-PWA` の **trk225**）。アプリ本体は trk225（trk222 レビューへの対応＝trk223＋trk223 レビューの F1・F2＋下の再生バーの置き場所と「隠さない」設定）、`npm run check` は **896 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk225`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
+> **最終更新：2026-10-31**（`trk-PWA` の **trk226**）。アプリ本体は trk226（下の再生バーをプレイヤーにする＝触れてシーク・❓謎設定「触れても位置を移動しない」・🎲 シャッフル・🔁 リピート・⧉ 別窓の操作パネル）、`npm run check` は **923 pass / 0 fail**、`sw.js` の cache は **`trk-v2026.10.31-trk226`**。上流 `trk` の配布版は **1.1.8（trk219）** で、その仕様と条件をこの文書が引き継いでいます。
 >
 > 現在の仕様・守る条件・未確認事項の要約です。過去の詳細な変更履歴・検証記録は [`HANDOFF-ARCHIVE.md`](HANDOFF-ARCHIVE.md)、利用者向け仕様は [`../README.md`](../README.md) と [`guide/`](guide/)、権利表記は [`../NOTICE.md`](../NOTICE.md)、品質・安全確認は [`QUALITY-CHECKS.md`](QUALITY-CHECKS.md) と [`SECURITY.md`](SECURITY.md)。**レビューと実機確認のお願いは [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)**、その指摘への対応は [`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)、trk223 を実際の端末で見る手順は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)。
 
@@ -24,6 +24,7 @@
 
 | 版 | trk番号 | 中身（1行） | 日付 |
 | --- | --- | --- | --- |
+| （trk-PWA） | trk226 | 下の再生バーをプレイヤーにする（触れてシーク・❓「触れても位置を移動しない」・🎲 シャッフル・🔁 リピート・⧉ 別窓の操作パネル） | 2026-10-31 |
 | （trk-PWA） | trk225 | 下の再生バーの置き場所（画面のいちばん下／操作パネルの上）と「隠さない」設定（実機の相談から） | 2026-10-31 |
 | （trk-PWA） | trk224 | trk223 レビューの F1・F2（配布ZIPの時刻を UTC で書く・文書からZIP自身のハッシュを外す） | 2026-10-31 |
 | （trk-PWA） | trk223 | trk222 レビューへの対応（エフェクトのタブ・再生バーの重なり・ZIPの vendor・キャッシュの持ち主・設定の保存） | 2026-10-31 |
@@ -60,10 +61,10 @@
 | ミッションと決定事項 | [`HANDOFF-TRK-STANDALONE.md`](HANDOFF-TRK-STANDALONE.md)、配布URLの決定は [`ORIGIN.md`](ORIGIN.md) |
 | 配り方 | GitHub Pages（`.github/workflows/pages.yml`）＋ `manifest.webmanifest` ＋ `sw.js`。配布ZIPは作りません |
 | 画面の形 | `settings.uiMode`（PC型／スマホ型の2択）＋❓謎設定「画面の形は、常に選んだものを使う」。詳しくは [`UI-MODE-AND-PLAYER-BAR.md`](UI-MODE-AND-PLAYER-BAR.md) |
-| trk222 の設定 | `uiScale`（50/75/100/125）・`fixedIconSize`・`uiModeLock`・`fxInLibrary`・`playerBar`。**新しい保存キーは増やしていません** |
-| テスト | `npm run check` **896 pass / 0 fail**（trk220 の47件・trk221 の27件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning。**`TZ=Asia/Tokyo` でも同じ**（CI も両方で流します） |
-| Service Worker | cache は **`trk-v2026.10.31-trk225@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
-| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。trk223 の確認項目は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) |
+| trk222〜trk226 の設定 | `uiScale`（50/75/100/125）・`fixedIconSize`・`uiModeLock`・`fxInLibrary`・`playerBar`・`playerBarPos`・`playerBarLock`（trk225 まで**新しい保存キーなし**）・`playerBarSeekLock`（trk226 で足した**唯一の新しいキー**、既定オフ） |
+| テスト | `npm run check` **923 pass / 0 fail**（trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件を追加）、`node tools/check-repo.mjs` 0 failure / 0 warning。**`TZ=Asia/Tokyo` でも同じ**（CI も両方で流します） |
+| Service Worker | cache は **`trk-v2026.10.31-trk226@<スコープ>`**（`/trk-PWA/` なら `@trk-pwa`）。install で `index.html` と、それが読み込む CSS・JS・アイコンを先に取ります（[`PWA.md`](PWA.md) §9.1）。同じオリジンに2つ置いても、片方の更新がもう片方のキャッシュを消しません |
+| まだ足りないもの | **実機・実ブラウザでの見た目**（この作業環境にブラウザも端末もない）。trk226 の確認項目は [`PLAYER-BAR-TRK226-2026-10-31.md`](PLAYER-BAR-TRK226-2026-10-31.md) §6、trk225 は [`PLAYER-BAR-TRK225-2026-10-31.md`](PLAYER-BAR-TRK225-2026-10-31.md) §5、trk223 の確認項目は [`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)、trk220〜trk222 は [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md) |
 | 移行 | 新リポジトリ `trk-Standalone` はまだ空。Pages の有効化と初回デプロイは未実施 |
 
 **この系統で変えてはいけないこと**：§3 の条件に加えて、**実行時に外部へ通信しない**（CDN・外部API・解析タグを足さない）、**端末内データだけ**、**GPL-3.0-or-later のクレジットを消さない**、**保存キーを変えるときは移行を書く**（[`MIGRATIONS.md`](MIGRATIONS.md)）。
@@ -588,6 +589,8 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 | 🧭 trk223：キャッシュの持ち主と先読み | `sw.js`（`scopeTagOf`・`CACHE_NAME`／`VENDOR_CACHE`／`SHARE_CACHE_NAME`・`cacheIsOurs`・`matchOwned`・`fetchWithTimeout`・`PRECACHE_EXTRA`）、`js/share-inbox.js`（`shareScopeTag`・`shareScopePath`・`SHARE_CACHE_NAME`） |
 | 🧭 trk223：設定の保存（マージ） | `js/core.js`（`storedPrefsRaw`・`saveUserPrefs({fresh})`・`resetAllPrefs` の2経路は `fresh`）、`js/mobile-shell.js`（`uiMode()` が `uiModeLock === false` なら保存値を使わない・`syncUiControls` は実効値） |
 | 🧭 trk224：ZIPの時刻をタイムゾーンに依存させない（F1） | `js/zip-io.js`（`zipDosDateTime` が UTC の getter を使う・理由をコメントに明記。`mtime` を渡すのは配布ZIPの組み立てだけ）、`tests/trk224-timezone.test.mjs`（5つの TZ の子プロセスで実際にZIPを組み、バイトと DOS 欄を比較）、`.github/workflows/check.yml`（`TZ=Asia/Tokyo` でも `run-tests` を流す） |
+| ▶🎲 バーの置き場所と「隠さない」（trk225） | `js/player-bar.js`（`barOffset`・`barPos`・`barLocked`・`measure()`）、`css/player-bar.css`（`body.trk-playerbar-at-bottom .trk-mobile-nav { bottom: var(--trk-playerbar-h) }`）、`js/core.js`（`playerBarPos`・`playerBarLock`）、`tests/trk225-player-bar-settings.test.mjs`、[`PLAYER-BAR-TRK225-2026-10-31.md`](PLAYER-BAR-TRK225-2026-10-31.md) |
+| 🎵 バーをプレイヤーにする（trk226） | `js/player-bar.js`（`seekEnabled`・`shufflePick`・`nextRepeat`・`panelAllowed`・`snapshot`・`seekToRatio`・`playPause`・🎲🔁⧉ のボタン）、**`js/player-panel.js`（新規）**（Document PiP／小窓の鏡パネル・`Trk.playerPanel`）、`js/media-player-mode.js`（`announceMediaOptions`／`pullMediaOptions`）、`js/library.js`（`previewRestartFor`）、`js/core.js`（`playerBarSeekLock`）、`css/player-bar.css`、`tests/trk226-player-bar-player.test.mjs`、[`PLAYER-BAR-TRK226-2026-10-31.md`](PLAYER-BAR-TRK226-2026-10-31.md) |
 | 🧭 trk223：テストの道具 | `tests/helpers/css-rules.mjs`（CSS を規則として当てる）、`tests/helpers/player-bar-harness.mjs`（偽 DOM）、`tests/trk223-review.test.mjs`（33件） |
 | 📝 レビューと実機確認の依頼（2026-10-31） | [`REVIEW-REQUEST-2026-10-31.md`](REVIEW-REQUEST-2026-10-31.md)（trk220〜trk222：レビューしてほしいコード・実機で見てほしいこと・判断してほしいこと）、[`REVIEW-RESPONSE-2026-10-31.md`](REVIEW-RESPONSE-2026-10-31.md)（指摘ごとの対応）、[`REVIEW-REQUEST-TRK223-2026-10-31.md`](REVIEW-REQUEST-TRK223-2026-10-31.md)（trk223 を実機で見る手順） |
 | 全体・安全検査 | `tools/check-repo.mjs`、`tools/check-security.mjs`、`tools/check-a11y.mjs`、`tools/check-lite.mjs` |
@@ -598,7 +601,8 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 | 検査 | 結果 | 範囲・注意 |
 |---|---|---|
-| `npm run check` | **896 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の27件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件を足して 896。Static 0 failure・0 warning・Security 64/0。`TZ=Asia/Tokyo` でも同じ（F1 の再発防止） |
+| `npm run check` | **923 pass / 0 fail** | trk219 の746 から、trk220 の47件・trk221 の28件・trk222 の13件・trk223 の33件・trk224 の5件・trk225 の22件・trk226 の27件を足して 923。Static 0 failure・0 warning・Security 64/0。`TZ=Asia/Tokyo`・`TZ=America/Los_Angeles` でも同じ（F1 の再発防止） |
+| 下の再生バーを触ってシーク（trk226） | **OK（27件）** | `tests/trk226-player-bar-player.test.mjs`。触れる条件（画面・読み込み・長さ・謎設定）の純粋関数、謎設定オンで `currentTime` が動かないこと、`previewRestartFor`、`shufflePick` の乱数の位置、🎲🔁 の設定共有と合図、別窓の組み立て（11部品）と描き直し・小窓が二重に開かないこと・PC型だけ ⧉ を出すこと |
 | `node tools/check-repo.mjs` | **0 failure / 0 warning** | 文書・`sw.js` の cache 名・読み込み順・名前空間の検査を含む |
 | jsdom で実 `index.html` を通しで操作（trk221） | **OK** | PC→スマホ型の切り替え・保存・設定の欄の追随、曲を選んだときの再生バー表示、音量の反映、プレイ中に隠れる、PC型へ戻したときの後片付け、往復、設定中は下余白0 |
 | jsdom で実 `index.html` を通しで操作（trk222） | **OK（37項目）** | 既定値（100%／on／アイコン固定オン／謎設定オン）、125%・75%・50% の設計サイズと倍率、アイコン固定のオン／オフ、知らない値は100%、プレイ中は等倍、縦型 1080×1920 でのはみ出しなし、スマホ型はステージを拡大しない、エフェクト／ライブラリのタブで `display` が設計どおり、2択ボタンの往復と保存の有無 |
@@ -756,6 +760,13 @@ Windows の「サウンド」などで**音の出力先（スピーカー／ヘ�
 
 ## 7. 最近の変更
 
+- **🎵 trk226：下の再生バーを「プレイヤー」にする（2026-10-31）**：PC でバーを触ったときの相談（画像2枚）。「メディアプレイヤーの中と同じように、バーを触ってシークしたい」「ただし、触れない今のままがいい人も一定割合いる」「プレイリスト内シャッフルと単曲リピートを切り替えたい（シャッフルしたあと、特定の曲だけを1曲繰り返す使い方のため）」「画像2のような横長の操作パネルを別窓に出せないか（アイデア。PC 版のみで良い）」。
+  - **触れてシーク**：`seekEnabled(ctx)` で「謎設定がオフ・読み込み済み・長さが分かる・画面がライブラリ／プレイ中／一時停止」のときだけ触れるようにし、**ライブラリの試聴中でも動く**ようにしました（これまではプレイ中だけ）。ライブラリでは映像の `currentTime` を直接、プレイ中は `Trk.play.seekTo()`（ゲームの進行に任せる＝これまでと同じ道）。
+  - **❓謎設定「バーに触れても位置を移動しない」**（`settings.playerBarSeekLock`、**既定オフ**）：trk226 で足した**唯一の新しい保存キー**。オンのときは線が `disabled` になり `.is-locked`（カーソルも `default`）、触ると理由を案内します。
+  - **🎲 シャッフル・🔁 リピート**：値は**再生画面と同じ** `core.settings.mediaShuffle`／`mediaRepeat` を1つだけ使い、変えたら `core.emit("mediaOptions")` で互いに反映（新しいキーは増やしていません）。リピートは **なし → 1曲 → 全曲 → なし**（1曲のときは 🔂）。シャッフル中の ⏮⏭ は `shufflePick(allSongs(), currentKey)`＝**いまの曲を除いた中から**選びます（1曲ならその曲）。試聴の曲の終わりは、リピート1曲なら**頭から**（`previewRestartFor`）。
+  - **⧉ 別窓の操作パネル**（`js/player-panel.js`・新規）：実装前に Document Picture-in-Picture の対応を調べ（**Chrome／Edge 116+、Firefox 151+、Safari・モバイルは未対応**、https とユーザー操作が要る、位置はサイトから指定できない）、**Document PiP を第一・`window.open` の小窓を予備**にしました。**PC型のときだけ ⧉ を出します**（スマホ型では出さない）。**DOM は移さず**、`Trk.playerBar.snapshot()` を見て 250ms ごとに絵を描き直す**鏡方式**（曲名・時間・⏮▶⏭・🎲🔁・音量・✕）。スキンの `--ui-*` を写します。窓の `pagehide`・本体の `pagehide`・スマホ型への切り替えで片付けます。
+  - テストは `tests/trk226-player-bar-player.test.mjs`（**27件**）。純粋関数の戻り値・偽 DOM の実測（`currentTime` が 50 になる／謎設定オンで動かない／小窓が二重に開かない）・組み立てた中身の値（11部品・描き直しの文字と `aria-pressed`）・CSS を規則として当てた値で見ています。`npm run check` は **923 pass / 0 fail**（日本・米国西海岸の両方）。`sw.js` の cache は **`trk-v2026.10.31-trk226@<スコープ>`**。
+  - **未確認**：実ブラウザ・実機での見え方（Document PiP の窓・スキン色の追従・線をドラッグした感触・狭い幅での 🎲🔁⧉ の収まり）。手順は [`PLAYER-BAR-TRK226-2026-10-31.md`](PLAYER-BAR-TRK226-2026-10-31.md) §6。
 - **🎵 trk225：下の再生バーの置き場所と「隠さない」設定（2026-10-31）**：PC の実機（スマホ型で使用）からの相談。「バーが下部ナビに押し上げられて画面の途中に浮いて見える」「再生時間を出したままにしたいが ✕ で消してしまいそう」。
   - **置き場所**（`settings.playerBarPos`、既定 **`bottom`**）：`bottom`＝画面のいちばん下（下部ナビはバーの高さぶん上へ）／`above`＝下部ナビの上（trk221〜trk224 までと同じ）。PC型は下部ナビが無いので、どちらを選んでも同じ（いちばん下）。**ナビを動かすのは CSS**（`body.trk-playerbar-at-bottom .trk-mobile-nav { bottom: var(--trk-playerbar-h) }`）、**バーの下余白は JS**（`--trk-playerbar-offset`）と役割を分けました。バーが画面のいちばん下に来るぶん、`env(safe-area-inset-bottom)` はバー自身が空けます。
   - **隠さない**（`settings.playerBarLock`、既定オフ）：オンにするとバーの ✕ を出さない（`display:grid` に負けないよう `[hidden]` を `!important` で消す）。設定の「表示しない」は本人の選択なので止めません（止めるのは ✕ だけ）。
