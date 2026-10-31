@@ -66,7 +66,7 @@ ZIP の中に入る文書に「そのZIP自身のハッシュ」を書くと、*
 | `js/zip-io.js` | F1：`zipDosDateTime()` を UTC の getter に（+コメントで理由。コードはレビューのパッチと同一） |
 | `sw.js` | cache を `trk-v2026.10.31-trk224` に（アプリ本体が変わったため） |
 | `tests/trk224-timezone.test.mjs`（新規） | F1：5つのタイムゾーンの子プロセスで実際にZIPを組み、バイトと DOS 欄が同じことを確認。日付をまたぐ時刻・`mtime` 無し（1980固定）・`prepare-release` の組み立ても確認（5件） |
-| `tests/trk223-review.test.mjs` | 版を `sw.js` から読む形に（テストに書き写さない）＋F2 の再発防止（1件） |
+| `tests/trk223-review.test.mjs` | 版を `sw.js` から読む形に（テストに書き写さない）＋F2 の再発防止（8件＝配布物の文書6つ・置き場所の案内・検査自身の点検） |
 | `docs/REVIEW-REQUEST-TRK223-2026-10-31.md` | F2：古いハッシュを削除（外側の README を指す）。trk224 のZIP名に |
 | `docs/HANDOFF.md` | F2：§6 の ZIP の行から自分のハッシュを削除。trk224 の検証行・版の表・cache 名 |
 | `.github/workflows/check.yml` | **`TZ=Asia/Tokyo` でもテストを流す**（UTC だけで緑に見える状態をやめる） |
@@ -77,8 +77,8 @@ ZIP の中に入る文書に「そのZIP自身のハッシュ」を書くと、*
 ## 5. 確かめたこと（数値）
 
 - `TZ=Asia/Tokyo node --test tests/release-layout.test.mjs` → **12 pass / 0 fail**（修正前は 11/1）
-- `npm run check` → **871 pass / 0 fail**、`node tools/check-repo.mjs` → 0 failure / 0 warning
-- `node tools/run-tests.mjs` を TZ=UTC／Asia/Tokyo／America/Los_Angeles で流して **いずれも 871 pass / 0 fail**。ZIPの時刻そのものは +14（Pacific/Kiritimati）・+5:30（Asia/Kolkata）も含む5つのタイムゾーンで照合
+- `npm run check` → **874 pass / 0 fail**、`node tools/check-repo.mjs` → 0 failure / 0 warning
+- `node tools/run-tests.mjs` を TZ=UTC／Asia/Tokyo／America/Los_Angeles で流して **いずれも 874 pass / 0 fail**。ZIPの時刻そのものは +14（Pacific/Kiritimati）・+5:30（Asia/Kolkata）も含む5つのタイムゾーンで照合
 - `tests/trk224-timezone.test.mjs`：日本で組んだZIPと UTC で組んだZIPの `sha256` が一致。DOS 時刻欄は `12:00Z` → 12:00（修正前は日本で 21:00）
 - 手渡し用ZIPを作り直し、`unzip -t` 破損なし・`vendor-lock.json` 全 100 件と `index.html` の参照を照合（`node tools/pack-standalone.mjs --check-only`）
 

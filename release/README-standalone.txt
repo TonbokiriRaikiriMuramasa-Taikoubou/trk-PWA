@@ -1,8 +1,11 @@
-trk! — 手渡し用ビルド（trk222＋2026-10-31 レビュー対応）
+trk! — 手渡し用ビルド（trk224＝trk222 レビュー対応＋trk223 レビューの F1・F2）
 ================================================================
 
 レビューと実機確認のために、そのまま動かせる形にしたZIPです。
 公式の配布版ではなく、確認用のビルドです（版の番号は付けていません）。
+
+このZIPのファイル数と sha256 は、ZIPの**外側**にある `README-まず読む-*.txt` に書いてあります。
+（この文書はZIPの中に入るので、自分のZIPのハッシュをここに書くと、固めた瞬間に古くなります。trk224 の F2）
 
 このZIPは `node tools/pack-standalone.mjs` で作れます（リポジトリの中身から、
 git が追跡しているファイルだけを集めます）。
@@ -37,7 +40,11 @@ git が追跡しているファイルだけを集めます）。
 ■ 入っていないもの（開発用）
 
     tests/  tools/  .github/  package.json  capacitor.config.ts など、
-    それと開発用の文書（HANDOFF 類・MIGRATIONS・レビュー依頼書）。
+    それと開発者向けの文書（HANDOFF 類・MIGRATIONS・REVIEW-REQUEST-2026-10-31.md）。
+
+    実機で見てくださる人向けの文書は、あえて入れています:
+    docs/REVIEW-REQUEST-TRK223-2026-10-31.md（見る順番と期待）／
+    docs/REVIEW-FIX-TRK224-2026-10-31.md（レビューで直したこと）。
     ソース一式はリポジトリから:
         https://github.com/TonbokiriRaikiriMuramasa-Taikoubou/trk-PWA
 

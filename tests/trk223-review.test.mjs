@@ -310,26 +310,54 @@ describe("trk223 ⑤ 画面の形の固定がオフなら、保存値をその�
 
 /* ---------- F2（trk223 レビュー）：ZIPの中の文書は、ZIP自身のハッシュを書かない ----------
    ZIP に入る文書に「そのZIPの sha256」を書くと、固めた瞬間に古くなる（実際に、依頼書と HANDOFF に
-   1回目のZIPのハッシュが残り、2回目のZIPと食い違った）。ハッシュは外側の README にだけ書く。 */
+   1回目のZIPのハッシュが残り、2回目のZIPと食い違った）。ハッシュは外側の README にだけ書く。
+   ⚠ 「同じ行に両方あるとき」だけを見ると、行が折り返された版を見逃す（実際にそうなっていた）。
+   ハッシュの前後2行までに手渡し用ZIPの名前があれば違反とする。上流 trk の配布ZIPのハッシュ
+   （`trk-slim-*` や 1.1.x の表）は、このリポジトリのZIPではないので対象外。 */
+const OUR_ZIP_NAME = /trk-(?:standalone|handover)-\d{4}-\d{2}-\d{2}/;
+const HEX64_ALL = /\b[0-9a-f]{64}\b/g;
+/** その文書の中で「手渡し用ZIPの名前の近く」にある64桁hexを返す（違反の一覧） */
+function hashesNearHandoverZip(text) {
+  const lines = text.split("\n");
+  const hits = [];
+  lines.forEach((line, i) => {
+    for (const m of line.matchAll(HEX64_ALL)) {
+      const around = lines.slice(Math.max(0, i - 2), i + 3).join(" ");
+      if (OUR_ZIP_NAME.test(around)) hits.push(`${i + 1}: ${m[0].slice(0, 8)}…`);
+    }
+  });
+  return hits;
+}
+
 describe("trk223 F2 配布物の中の文書は、ZIP自身のハッシュを書かない", () => {
-  const ARCHIVE = /trk-standalone-2026-10-31[^\n]*\b[0-9a-f]{64}\b/;
   const shipped = [
     "docs/HANDOFF.md",
+    "docs/HANDOFF-ARCHIVE.md",
     "docs/REVIEW-REQUEST-TRK223-2026-10-31.md",
     "docs/REVIEW-RESPONSE-2026-10-31.md",
-    "docs/REVIEW-FIX-TRK224-2026-10-31.md"
+    "docs/REVIEW-FIX-TRK224-2026-10-31.md",
+    "release/README-standalone.txt"
   ];
   for (const rel of shipped) {
-    test(`${rel}：配布ZIPの名前と同じ行に 64桁のハッシュを書かない`, () => {
-      const text = read(rel);
-      const bad = text.split("\n").filter(line => ARCHIVE.test(line));
-      assert.deepEqual(bad, [], `見つかった行: ${bad.join(" / ")}`);
+    test(`${rel}：手渡し用ZIPの名前の近くに 64桁のハッシュを書かない`, () => {
+      assert.deepEqual(hashesNearHandoverZip(read(rel)), []);
     });
   }
   test("依頼書は、ハッシュの置き場所（外側の README）を指している", () => {
     const text = read("docs/REVIEW-REQUEST-TRK223-2026-10-31.md");
     assert.match(text, /README-まず読む-2026-10-31-trk224\.txt/, "外側の README の名前を書く");
     assert.match(text, /ZIP自身のハッシュは書きません/, "理由も書く");
+  });
+  test("この検査は、直す前の文面なら落ちる（検査が空回りしていない）", () => {
+    /* 実際に食い違っていた当時の2行（ハッシュとZIPの名前が別の行）を持ってくる */
+    const before = [
+      "  - **手渡し用ZIP**：264ファイル・`sha256 a6134a0c5d35c6a2fb2ebabd91c6559fee345b849391e789540ce9d83ee36dbb`",
+      "  - **配布の扱い**：`trk-standalone-2026-10-31-trk223.zip` を Drive に置いた。"
+    ].join("\n");
+    assert.equal(hashesNearHandoverZip(before).length, 1);
+    /* 上流 trk の配布ZIPのハッシュは対象外（誤検知しない） */
+    const upstream = "| 配布ZIP（1.1.8） | 227エントリ・`sha256 8075ce5bc3a15af65273455b5f29ed9be9657283ecf9b61dedda9d80274be9c2` |";
+    assert.deepEqual(hashesNearHandoverZip(upstream), []);
   });
 });
 
