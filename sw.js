@@ -21,8 +21,12 @@
    版の名前だけだと片方の更新がもう片方のオフライン用キャッシュまで消してしまいます。
 
    🧭 trk224（2026-10-31 レビュー F1）：js/zip-io.js の配布ZIPの時刻を UTC で書くように直したので、
-   アプリ本体が変わった版として名前を上げます（古い殻を持っている人の画面が、直る前のJSに留まらないように）。 */
-const CACHE = "trk-v2026.10.31-trk224";
+   アプリ本体が変わった版として名前を上げます（古い殻を持っている人の画面が、直る前のJSに留まらないように）。
+
+   🧭 trk225（2026-10-31）：下の再生バーの置き場所（画面のいちばん下／操作パネルの上）と、
+   「隠さない」設定を足しました。js/player-bar.js・css/player-bar.css・index.html が変わったので、
+   これまでどおり版の名前を上げます。 */
+const CACHE = "trk-v2026.10.31-trk225";
 const CACHE_PREFIX = "trk-";
 const SCOPE = new URL(self.registration.scope);
 const VENDOR_PREFIX = "assets/vendor/";

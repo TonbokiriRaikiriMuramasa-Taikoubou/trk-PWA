@@ -46,11 +46,14 @@ describe("trk221 再生バーを出すかどうかの判断（純粋関数）", 
     assert.equal(decide({ mode: "on", phase: "title", hasSong: true, media: false, study: false, modal: true }), false, "ほかの窓（プレイリスト・ようこそ）");
   });
 
-  test("スマホのシェルでは、下部ナビの高さぶん上に載せる", () => {
+  test("スマホのシェルでは、置き場所の設定に合わせて下部ナビとの前後を決める（trk225）", () => {
     const { window } = runBar();
-    assert.equal(window.Trk.playerBar.offset(0), 0);
-    assert.equal(window.Trk.playerBar.offset(66.4), 66);
-    assert.equal(window.Trk.playerBar.offset(undefined), 0);
+    /* above＝下部ナビの上（trk221〜trk224 までと同じ）／bottom＝画面のいちばん下（trk225 の既定） */
+    assert.equal(window.Trk.playerBar.offset(66.4, "above"), 66, "ナビの上に置くときだけ持ち上げる");
+    assert.equal(window.Trk.playerBar.offset(66.4, "bottom"), 0, "いちばん下なら持ち上げない");
+    assert.equal(window.Trk.playerBar.offset(66.4), 0, "位置を省いたときは重ならない側（いちばん下）");
+    assert.equal(window.Trk.playerBar.offset(0, "above"), 0);
+    assert.equal(window.Trk.playerBar.offset(undefined, "above"), 0);
   });
 
   test("時間の表示（1時間を超えたら時:分:秒）", () => {

@@ -13,6 +13,7 @@ export const barSrc = fs.readFileSync(path.join(ROOT, "js/player-bar.js"), "utf8
 
 export function fakeDom() {
   const created = [];
+  const log = [];
   function makeNode(tagName) {
     const node = {
       tagName: String(tagName).toUpperCase(), id: "", className: "", type: "",
@@ -26,9 +27,12 @@ export function fakeDom() {
       },
       classList: {
         set: new Set(),
-        add(c) { this.set.add(c); },
-        remove(c) { this.set.delete(c); },
-        toggle(c, on) { if (on === undefined ? !this.set.has(c) : on) this.set.add(c); else this.set.delete(c); },
+        add(c) { this.set.add(c); log.push(`toggle:${c}`); },
+        remove(c) { this.set.delete(c); log.push(`toggle:${c}`); },
+        toggle(c, on) {
+          if (on === undefined ? !this.set.has(c) : on) this.set.add(c); else this.set.delete(c);
+          log.push(`toggle:${c}`);
+        },
         contains(c) { return this.set.has(c); }
       },
       append(...kids) { for (const kid of kids) { kid.parentNode = node; node.childNodes.push(kid); } },
@@ -37,8 +41,12 @@ export function fakeDom() {
       setAttribute(name, value) { node.attributes[name] = String(value); },
       removeAttribute(name) { delete node.attributes[name]; },
       blur() {},
-      /* 既定は「画面に出ている大きさ＝設計の大きさ」。テストで上書きする */
-      getBoundingClientRect() { return node.__rect || { width: 0, height: node.offsetHeight, top: 0, left: 0 }; },
+      /* 既定は「画面に出ている大きさ＝設計の大きさ」。テストで上書きする。
+         いつ測ったか（順番）を dom.log に残す（trk225：印を付けてから測る、を確かめる） */
+      getBoundingClientRect() {
+        log.push(`rect:${node.id || node.className || node.tagName}`);
+        return node.__rect || { width: 0, height: node.offsetHeight, top: 0, left: 0 };
+      },
       __events: {},
       addEventListener(name, fn) { (node.__events[name] = node.__events[name] || []).push(fn); },
       removeEventListener() {},
@@ -62,18 +70,21 @@ export function fakeDom() {
     addEventListener() {},
     activeElement: null
   };
-  return { document, body, created, makeNode };
+  return { document, body, created, makeNode, log };
 }
 
 export function fire(node, name) {
   for (const fn of (node && node.__events && node.__events[name]) || []) fn({ target: node, preventDefault() {} });
 }
 
-/* stage: { designH, screenH } を与えると #stage を置く（designH＝offsetHeight、screenH＝実寸） */
-export function runBar({ playerBar = "auto", phase = "title", hasSong = true, media = false, study = false, stage = null, mobile = false } = {}) {
+/* stage: { designH, screenH } を与えると #stage を置く（designH＝offsetHeight、screenH＝実寸）
+   navHeight を与えると下部ナビ（.trk-mobile-nav）を置く（trk225：バーとの前後）
+   controls を与えると、設定の欄（#playerBarMode／#playerBarPos／#playerBarLock）を置く */
+export function runBar({ playerBar = "auto", phase = "title", hasSong = true, media = false, study = false, stage = null, mobile = false,
+  playerBarPos, playerBarLock, navHeight = null, controls = false } = {}) {
   const dom = fakeDom();
   const events = [];
-  const calls = { save: 0, seek: [], select: [], openPlayer: 0, bannerClick: 0 };
+  const calls = { save: 0, seek: [], select: [], openPlayer: 0, bannerClick: 0, toast: [] };
   const banner = dom.makeNode("button");
   banner.className = "bannerPlayBtn";
   banner.textContent = "▶";
@@ -86,8 +97,11 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
   video.currentTime = 10;
   video.paused = false;
 
+  const settings = { language: "ja", playerBar, musicVolume: 0.5 };
+  if (playerBarPos !== undefined) settings.playerBarPos = playerBarPos;
+  if (playerBarLock !== undefined) settings.playerBarLock = playerBarLock;
   const core = {
-    settings: { language: "ja", playerBar, musicVolume: 0.5 },
+    settings,
     phase,
     currentSong: hasSong ? { key: "song-a", base: "曲A", artist: "歌手A" } : null,
     videoReady: true,
@@ -106,7 +120,7 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
         selectSong: async it => { calls.select.push(it.key); },
         songDisplayMeta: it => ({ title: `${it.base}（表示）`, artist: it.artist || "" }),
         loadSongArtwork: () => Promise.resolve(null),
-        plToast() {}
+        plToast(message) { calls.toast.push(String(message)); }
       }
     },
     TrkMediaPlayer: { open: () => { calls.openPlayer += 1; }, close() {}, isOpen: () => media },
@@ -130,6 +144,23 @@ export function runBar({ playerBar = "auto", phase = "title", hasSong = true, me
     node.__rect = { width: 0, height: stage.screenH, top: 0, left: 0 };
     dom.body.append(node);
     dom.stage = node;
+  }
+  /* 下部ナビ（スマホのシェル）。高さは実寸（getBoundingClientRect）で返す */
+  if (navHeight !== null) {
+    const nav2 = dom.makeNode("nav");
+    nav2.className = "trk-mobile-nav";
+    nav2.offsetHeight = navHeight;
+    nav2.__rect = { width: 0, height: navHeight, top: 0, left: 0 };
+    dom.body.append(nav2);
+    dom.nav = nav2;
+  }
+  /* 設定の欄（⚙ → 🖥 画面と再生バー）。値を書き換えたかをテストで見られるようにする */
+  if (controls) {
+    const mode = dom.makeNode("select"); mode.id = "playerBarMode"; mode.value = playerBar;
+    const pos = dom.makeNode("select"); pos.id = "playerBarPos"; pos.value = playerBarPos || "bottom";
+    const lock = dom.makeNode("input"); lock.id = "playerBarLock"; lock.checked = playerBarLock === true;
+    for (const node of [mode, pos, lock]) dom.body.append(node);
+    dom.controls = { mode, pos, lock };
   }
   if (mobile) dom.body.classList.add("trk-mobile");
   if (study) dom.body.classList.add("study-room-open");

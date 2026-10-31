@@ -274,6 +274,11 @@ const settings = {
   /* 🎵 trk221：下に出す再生バー。on＝つねに／auto＝曲を選んだら／off＝出さない
      （trk222：既定を on に。前回聞いていた曲を、そのままバーに出しておける） */
   playerBar: pick(prefs.playerBar, ["on", "auto", "off"], "on"),
+  /* 🎵 trk225：再生バーを下のどこに置くか（スマホ型のとき）。
+     bottom＝画面のいちばん下（操作パネルはバーの上へ）／above＝操作パネルの上（trk221〜trk224 と同じ） */
+  playerBarPos: pick(prefs.playerBarPos, ["bottom", "above"], "bottom"),
+  /* 🔒 trk225：再生バーを隠さない（バーの ✕ を出さない。誤って消す対策。既定オフ） */
+  playerBarLock: prefs.playerBarLock === true,
   /* 🖥 trk222：画面の拡大率（%）。50／75／100／125 の4つだけ。ゲーム中は 100% のまま */
   uiScale: pick(prefs.uiScale, [50, 75, 100, 125], 100),
   /* 🖥 trk222：拡大率を変えても、アイコンの大きさは 100% のまま固定する（既定オン） */
@@ -703,6 +708,8 @@ function resetAllPrefs() {
   /* 🖥 trk221/222：画面の形（自動）・下の再生バー（つねに表示）・拡大率（100%）も工場出荷状態へ戻す */
   settings.uiMode = "auto"; settings.playerBar = "on";
   settings.uiScale = 100; settings.fixedIconSize = true; settings.uiModeLock = true; settings.fxInLibrary = false;
+  /* 🎵 trk225：バーの置き場所（いちばん下）と、隠さない設定（オフ）も工場出荷状態へ */
+  settings.playerBarPos = "bottom"; settings.playerBarLock = false;
 }
 function exportPrefs(kind) {
   const out = {};

@@ -345,7 +345,8 @@ describe("trk223 F2 配布物の中の文書は、ZIP自身のハッシュを書
   }
   test("依頼書は、ハッシュの置き場所（外側の README）を指している", () => {
     const text = read("docs/REVIEW-REQUEST-TRK223-2026-10-31.md");
-    assert.match(text, /README-まず読む-2026-10-31-trk224\.txt/, "外側の README の名前を書く");
+    /* 版は上がるので、名前の形で見る（trk223 → trk224 → trk225 …） */
+    assert.match(text, /README-まず読む-2026-10-31-trk\d+\.txt/, "外側の README の名前を書く");
     assert.match(text, /ZIP自身のハッシュは書きません/, "理由も書く");
   });
   test("この検査は、直す前の文面なら落ちる（検査が空回りしていない）", () => {
